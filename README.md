@@ -4,7 +4,7 @@
 
 > # ⚠ **Trước khi push code lên git cần phải chạy lệnh `yarn format`**
 >
-> # ⚠ **Tạo file mới theo format dưới đâyđây**
+> # ⚠ **Tạo file mới theo format dưới đây**
 
 # Cấu trúc thư mục dự án React + Vite + TypeScript + Redux Toolkit + RTK Query
 
