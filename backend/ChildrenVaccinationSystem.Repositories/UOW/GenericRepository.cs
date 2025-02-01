@@ -21,10 +21,10 @@ namespace ChildrenVaccinationSystem.Repositories.UOW
 			_dbSet.Remove((T)entity);
 		}
 
-		public async Task DeleteAsync(object id)
+		public Task DeleteAsync(object entity)
 		{
-			T entity = await _dbSet.FindAsync(id) ?? throw new Exception();
-			_dbSet.Remove(entity);
+			_dbSet.Remove((T)entity);
+			return Task.CompletedTask; // Trả về một Task hoàn thành ngay lập tức
 		}
 
 		public IEnumerable<T> GetAll()
