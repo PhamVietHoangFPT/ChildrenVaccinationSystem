@@ -6,6 +6,9 @@ on:
       - main
   workflow_dispatch:
 
+env:
+  AZURE_WEBAPP_NAME: "VaccinationSystemSWDSpring2025"
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -21,11 +24,21 @@ jobs:
         with:
           dotnet-version: "8.x"
 
-      - name: Build with dotnet
-        run: dotnet build backend/ChildrenVaccinationSystem.API/ChildrenVaccinationSystem.API.csproj --configuration Release
+      - name: Restore
+        run: dotnet restore backend/ChildrenVaccinationSystem.sln
+
+      - name: Build
+        run: dotnet build backend/ChildrenVaccinationSystem.sln --configuration Release --no-restore
 
       - name: dotnet publish
-        run: dotnet publish backend/ChildrenVaccinationSystem.API/ChildrenVaccinationSystem.API.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish backend/ChildrenVaccinationSystem.sln --configuration Release --no-restore
+
+      - name: deployment
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
+          package: backend/ChildrenVaccinationSystem/bin/Release/net6.0/publish
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
