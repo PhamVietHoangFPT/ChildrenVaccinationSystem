@@ -1,12 +1,15 @@
 import React from 'react'
 import { Layout, Typography, Button } from 'antd'
-import { useGetTestListQuery } from '../../features/Test/testAPI'
+import { useGetCountryListQuery } from '../../features/country/countryApi'
 
 const { Content } = Layout
 const { Title, Paragraph } = Typography
 
 const Homepage: React.FC = () => {
-  const { data: test = [] } = useGetTestListQuery({})
+  const { data, error, isLoading } = useGetCountryListQuery({
+    pageNumber: 1,
+    pageSize: 1,
+  })
 
   return (
     <Layout>
@@ -19,13 +22,9 @@ const Homepage: React.FC = () => {
         <Button type='primary' href='/login'>
           Register Now
         </Button>
-        {Array.isArray(test) && test.length > 0 && (
+        {Array.isArray(data) && data.length > 0 && (
           <Paragraph>
-            {test.map((item: any) => (
-              <div key={item.id}>
-                <p>{item.name}</p>
-              </div>
-            ))}
+            {data?.map((country) => <li key={country.id}>{country.name}</li>)}
           </Paragraph>
         )}
       </Content>
