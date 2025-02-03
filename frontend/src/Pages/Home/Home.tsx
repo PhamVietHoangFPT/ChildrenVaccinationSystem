@@ -6,7 +6,7 @@ const { Content } = Layout
 const { Title, Paragraph } = Typography
 
 const Homepage: React.FC = () => {
-  const { data, error, isLoading } = useGetCountryListQuery({
+  const { data } = useGetCountryListQuery({
     pageNumber: 1,
     pageSize: 1,
   })
