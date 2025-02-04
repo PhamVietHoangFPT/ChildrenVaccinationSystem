@@ -24,8 +24,9 @@ namespace ChildrenVaccinationSystem.API
 			services.AddAutoMapper();
 			services.AddInfrastructure(configuration);
 			services.AddServices();
-			//services.AddDbContextInitializer();
-		}
+			services.AddCors();
+            //services.AddDbContextInitializer();
+        }
 
 		public static async void ApplicationSetUp(this WebApplication app)
 		{
@@ -84,7 +85,21 @@ namespace ChildrenVaccinationSystem.API
 			});
 		}
 
-		public static void AddAutoMapper(this IServiceCollection services)
+		public static void AddCors(this IServiceCollection services)
+        {
+			services.AddCors(options =>
+            {
+                options.AddPolicy("AllowSpecificOrigins",
+                    policy =>
+                    {
+                        policy.WithOrigins("http://localhost:5173", "https://children-vaccination-system.vercel.app")
+                              .AllowAnyMethod()
+                              .AllowAnyHeader();
+                    });
+            });
+        }
+
+        public static void AddAutoMapper(this IServiceCollection services)
 		{
 			services.AddAutoMapper(Assembly.GetExecutingAssembly());
 		}
