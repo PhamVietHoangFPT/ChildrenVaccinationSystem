@@ -1,6 +1,6 @@
 import React from 'react'
 import { Layout, Typography, Button } from 'antd'
-import { useGetCountryListQuery } from '../../features/country/countryApi'
+import { useGetCountryListQuery } from '../../features/country/countriesApi'
 
 const { Content } = Layout
 const { Title, Paragraph } = Typography
