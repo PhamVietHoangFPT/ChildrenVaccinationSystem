@@ -1,8 +1,10 @@
 ﻿using ChildrenVaccinationSystem.API.Middleware;
 using ChildrenVaccinationSystem.Contract.Repositories.IUOW;
+using ChildrenVaccinationSystem.Contract.Services;
 using ChildrenVaccinationSystem.Repositories.DatabaseContext;
 using ChildrenVaccinationSystem.Repositories.SeedData;
 using ChildrenVaccinationSystem.Repositories.UOW;
+using ChildrenVaccinationSystem.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -22,13 +24,13 @@ namespace ChildrenVaccinationSystem.API
 			services.AddAutoMapper();
 			services.AddInfrastructure(configuration);
 			services.AddServices();
-			services.AddDbContextInitializer();
+			//services.AddDbContextInitializer();
 		}
 
 		public static async void ApplicationSetUp(this WebApplication app)
 		{
 			//app.UseMiddleware<PermissionMiddleware>();
-			await app.UseDbContextInitializerAsync();
+			//await app.UseDbContextInitializerAsync();
 		}
 
 		public static void ConfigRoute(this IServiceCollection services)
@@ -95,6 +97,7 @@ namespace ChildrenVaccinationSystem.API
 		public static void AddServices(this IServiceCollection services)
 		{
 			//services.AddScoped<IUserService, UserService>();
+			services.AddScoped<ICountryService, CountryService>();
 		}
 
 		public static void AddRepositories(this IServiceCollection services)

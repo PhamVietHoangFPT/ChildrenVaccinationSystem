@@ -21,10 +21,10 @@ namespace ChildrenVaccinationSystem.Repositories.UOW
 			_dbSet.Remove((T)entity);
 		}
 
-		public async Task DeleteAsync(object id)
+		public Task DeleteAsync(object entity)
 		{
-			T entity = await _dbSet.FindAsync(id) ?? throw new Exception();
-			_dbSet.Remove(entity);
+			_dbSet.Remove((T)entity);
+			return Task.CompletedTask; // Trả về một Task hoàn thành ngay lập tức
 		}
 
 		public IEnumerable<T> GetAll()
@@ -51,7 +51,12 @@ namespace ChildrenVaccinationSystem.Repositories.UOW
 		{
 			query = query.AsNoTracking();
 			int count = await query.CountAsync();
-			IReadOnlyCollection<T> items = await query.Skip((pageSize - 1) * pageSize).Take(pageSize).ToListAsync();
+
+			IReadOnlyCollection<T> items = await query
+				.Skip((index - 1) * pageSize)
+				.Take(pageSize)
+				.ToListAsync();
+
 			return new BasePaginatedList<T>(items, count, index, pageSize);
 		}
 

@@ -11,7 +11,13 @@ function MainLayout() {
         overflow: 'hidden',
       }}
     >
-      <Content style={{ margin: '24px', overflow: 'initial' }}>
+      <Content
+        style={{
+          margin: '24px',
+          overflow: 'initial',
+          width: '100vw',
+        }}
+      >
         <Outlet />
       </Content>
     </Layout>

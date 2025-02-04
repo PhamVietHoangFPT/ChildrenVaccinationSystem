@@ -1,18 +1,7 @@
-import React from 'react'
 import MainLayout from '../components/layout/MainLayout'
-import Homepage from '../components/Home/Homepage'
-
-interface Route {
-  path: string
-  component: React.ComponentType
-  exact?: boolean
-  role?: string[]
-}
-
-interface LayoutRoute {
-  layout: React.ComponentType
-  data: Route[]
-}
+import Homepage from '../Pages/Home/Home'
+import Login from '../Pages/Login/Login'
+import { LayoutRoute } from '../types/routes'
 
 const routes: LayoutRoute[] = [
   {
@@ -23,10 +12,10 @@ const routes: LayoutRoute[] = [
         component: Homepage,
         exact: true,
       },
-      // {
-      //   path: '/company',
-      //   component: Company,
-      // },
+      {
+        path: '/login',
+        component: Login,
+      },
     ],
   },
   // {
