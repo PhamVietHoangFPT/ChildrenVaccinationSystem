@@ -24,14 +24,14 @@ namespace ChildrenVaccinationSystem.API
 			services.AddAutoMapper();
 			services.AddInfrastructure(configuration);
 			services.AddServices();
+			services.AddDbContextInitializer();
 			services.AddCors();
-            //services.AddDbContextInitializer();
-        }
+     }
 
 		public static async void ApplicationSetUp(this WebApplication app)
 		{
 			//app.UseMiddleware<PermissionMiddleware>();
-			//await app.UseDbContextInitializerAsync();
+			await app.UseDbContextInitializerAsync();
 		}
 
 		public static void ConfigRoute(this IServiceCollection services)
