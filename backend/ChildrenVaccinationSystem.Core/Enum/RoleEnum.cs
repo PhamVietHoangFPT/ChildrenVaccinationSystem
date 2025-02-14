@@ -2,10 +2,10 @@
 {
 	public enum RoleEnum
 	{
-		MANAGER,
-		STAFF,
-		DOCTOR,
-		VACCINATOR,
-		CUSTOMER
+		Manager,
+		Staff,
+		Doctor,
+		Vaccinator,
+		Customer
 	}
 }
