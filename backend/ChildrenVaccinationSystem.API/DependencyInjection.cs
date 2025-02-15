@@ -92,7 +92,7 @@ namespace ChildrenVaccinationSystem.API
                 options.AddPolicy("AllowSpecificOrigins",
                     policy =>
                     {
-                        policy.WithOrigins("http://localhost:5173", "https://children-vaccination-system.vercel.app")
+                        policy.AllowAnyOrigin()
                               .AllowAnyMethod()
                               .AllowAnyHeader();
                     });
