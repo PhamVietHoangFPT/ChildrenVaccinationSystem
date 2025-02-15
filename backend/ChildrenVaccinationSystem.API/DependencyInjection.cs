@@ -7,6 +7,7 @@ using ChildrenVaccinationSystem.Repositories.UOW;
 using ChildrenVaccinationSystem.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.OpenApi.Models;
 using System.Net;
 using System.Reflection;
@@ -77,15 +78,22 @@ namespace ChildrenVaccinationSystem.API
 
 		public static void AddDatabase(this IServiceCollection services, IConfiguration configuration)
 		{
-			services.AddDbContext<ChildrenVaccinationSystemDbContext>(options =>
-			{
-				options.UseLazyLoadingProxies() // Enable lazy loading
-					   .UseSqlServer(configuration.GetConnectionString("MyCnn"), b =>
-						   b.MigrationsAssembly("ChildrenVaccinationSystem.API")); // Specify migrations assembly
-			});
-		}
+			//services.AddDbContext<ChildrenVaccinationSystemDbContext>(options =>
+			//{
+			//	options.UseLazyLoadingProxies() // Enable lazy loading
+			//		   .UseSqlServer(configuration.GetConnectionString("MyCnn"), b =>
+			//			   b.MigrationsAssembly("ChildrenVaccinationSystem.API")); // Specify migrations assembly
+			//});
+            services.AddDbContext<ChildrenVaccinationSystemDbContext>(options =>
+            {
+                options.UseSqlServer(configuration.GetConnectionString("MyCnn"), b =>
+                    b.MigrationsAssembly("ChildrenVaccinationSystem.API"));
+                options.ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
+            });
 
-		public static void AddCors(this IServiceCollection services)
+        }
+
+        public static void AddCors(this IServiceCollection services)
         {
 			services.AddCors(options =>
             {
