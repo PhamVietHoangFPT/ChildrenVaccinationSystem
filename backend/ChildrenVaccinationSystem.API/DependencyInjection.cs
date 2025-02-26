@@ -7,6 +7,7 @@ using ChildrenVaccinationSystem.Repositories.UOW;
 using ChildrenVaccinationSystem.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.OpenApi.Models;
 using System.Net;
 using System.Reflection;
@@ -82,6 +83,7 @@ namespace ChildrenVaccinationSystem.API
 				options.UseLazyLoadingProxies() // Enable lazy loading
 					   .UseSqlServer(configuration.GetConnectionString("MyCnn"), b =>
 						   b.MigrationsAssembly("ChildrenVaccinationSystem.API")); // Specify migrations assembly
+				options.ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
 			});
 		}
 
@@ -92,7 +94,7 @@ namespace ChildrenVaccinationSystem.API
                 options.AddPolicy("AllowSpecificOrigins",
                     policy =>
                     {
-                        policy.WithOrigins("http://localhost:5173", "https://children-vaccination-system.vercel.app")
+                        policy.AllowAnyOrigin()
                               .AllowAnyMethod()
                               .AllowAnyHeader();
                     });
@@ -111,7 +113,7 @@ namespace ChildrenVaccinationSystem.API
 
 		public static void AddServices(this IServiceCollection services)
 		{
-			//services.AddScoped<IUserService, UserService>();
+			services.AddScoped<IAuthenticationService, AuthenticationService>();
 			services.AddScoped<ICountryService, CountryService>();
 		}
 
