@@ -7,11 +7,11 @@ namespace ChildrenVaccinationSystem.API.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class CountriesController : ControllerBase
+	public class CountryController : ControllerBase
 	{
 		private ICountryService _countryService;
 		
-		public CountriesController(ICountryService countryService)
+		public CountryController(ICountryService countryService)
 		{
 			_countryService = countryService;
 		}

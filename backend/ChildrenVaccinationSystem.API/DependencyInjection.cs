@@ -83,15 +83,8 @@ namespace ChildrenVaccinationSystem.API
 				options.UseLazyLoadingProxies() // Enable lazy loading
 					   .UseSqlServer(configuration.GetConnectionString("MyCnn"), b =>
 						   b.MigrationsAssembly("ChildrenVaccinationSystem.API")); // Specify migrations assembly
-                options.ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
-            });
-			//services.AddDbContext<ChildrenVaccinationSystemDbContext>(options =>
-			//{
-			//    options.UseSqlServer(configuration.GetConnectionString("MyCnn"), b =>
-			//        b.MigrationsAssembly("ChildrenVaccinationSystem.API"));
-			//    options.ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
-			//});
-
+				options.ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
+			});
 		}
 
         public static void AddCors(this IServiceCollection services)
@@ -120,7 +113,7 @@ namespace ChildrenVaccinationSystem.API
 
 		public static void AddServices(this IServiceCollection services)
 		{
-			//services.AddScoped<IUserService, UserService>();
+			services.AddScoped<IAuthenticationService, AuthenticationService>();
 			services.AddScoped<ICountryService, CountryService>();
 		}
 

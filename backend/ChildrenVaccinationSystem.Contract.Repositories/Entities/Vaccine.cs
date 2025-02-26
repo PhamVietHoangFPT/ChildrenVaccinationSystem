@@ -9,8 +9,9 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Entities
 		public string? Description { get; set; }
 		public int? StartRecommendedAge { get; set; }
 		public int? EndRecommendedAge { get; set; }
-		public int? Dose { get; set; }
-		public int? DosageInterval { get; set; } // calculated by months
+		public int? Sequence { get; set; }
+		public double? Dosage { get; set; } // mililitres
+		public int? DosageInterval { get; set; } // months
 
 		public string CategoryId { get; set; } = default!;
 		public virtual Category Category { get; set;} = default!;
