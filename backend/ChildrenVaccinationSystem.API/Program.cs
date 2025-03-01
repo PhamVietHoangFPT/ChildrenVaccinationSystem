@@ -18,16 +18,15 @@ namespace ChildrenVaccinationSystem.API
 			// Execute the DI pipeline
 			builder.Services.AddConfig(builder.Configuration);
 
+            
 
-			var app = builder.Build();
+            var app = builder.Build();
 
+            app.UseCors("AllowSpecificOrigins");
 
-			// Configure the HTTP request pipeline.
-			if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+            // Configure the HTTP request pipeline.
+            app.UseSwagger();
+            app.UseSwaggerUI();
 
             app.UseHttpsRedirection();
 

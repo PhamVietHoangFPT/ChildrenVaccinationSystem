@@ -10,6 +10,7 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Entities
 		public double? Height { get; set; }
 		public double? Weight { get; set; }
 		public bool? Gender { get; set; }
+		public string? MedicalNote { get; set; }
 
 		public string AccountId { get; set; } = default!;
 		public virtual Account Account { get; set; } = default!;

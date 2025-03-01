@@ -70,6 +70,9 @@ namespace ChildrenVaccinationSystem.Repositories.DatabaseContext
 
 			modelBuilder.Entity<Vaccination>()
 				.HasMany(v => v.VaccinationDetails).WithOne(vd => vd.Vaccination).HasForeignKey(vd => vd.VaccinationId).OnDelete(DeleteBehavior.NoAction);
+			modelBuilder.Entity<Vaccination>()
+				.HasMany(v => v.Installments).WithOne(i => i.Vaccination).HasForeignKey(vd => vd.VaccinationId).OnDelete(DeleteBehavior.NoAction);
+
 
 			modelBuilder.Entity<Package>()
 				.HasMany(p => p.VaccinationDetails).WithOne(vd => vd.Package).HasForeignKey(vd => vd.PackageId).OnDelete(DeleteBehavior.NoAction);
