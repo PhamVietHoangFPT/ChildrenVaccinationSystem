@@ -20,7 +20,7 @@ const Homepage: React.FC = () => {
           vaccinations.
         </Paragraph>
         <Button type='primary' href='/login'>
-          Register Now
+          Login
         </Button>
         {Array.isArray(data) && data.length > 0 && (
           <Paragraph>

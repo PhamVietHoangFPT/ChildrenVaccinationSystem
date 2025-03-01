@@ -4,33 +4,27 @@ import { login, logout } from './authSlice'
 export const authApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation<
-      { accessToken: string },
+      { token: string },
       { email: string; password: string }
     >({
       query: (credentials) => ({
-        url: '/auth/login',
+        url: '/authentication/login',
         method: 'POST',
         body: credentials,
-        credentials: 'include', // Quan trọng: Gửi cookies khi đăng nhập
       }),
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled
-          dispatch(login(data))
+          dispatch(login({ token: data.token }))
         } catch (error) {
           console.error('Login failed', error)
         }
       },
     }),
     logout: builder.mutation<void, void>({
-      query: () => ({
-        url: '/auth/logout',
-        method: 'POST',
-        credentials: 'include',
-      }),
-      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+      query: () => ({}),
+      async onQueryStarted(_, { dispatch }) {
         try {
-          await queryFulfilled
           dispatch(logout())
         } catch (error) {
           console.error('Logout failed', error)
@@ -40,4 +34,4 @@ export const authApi = apiSlice.injectEndpoints({
   }),
 })
 
-export const { useLoginMutation } = authApi
+export const { useLoginMutation, useLogoutMutation } = authApi
