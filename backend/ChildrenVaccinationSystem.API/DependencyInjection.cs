@@ -27,6 +27,7 @@ namespace ChildrenVaccinationSystem.API
 			services.AddServices();
 			services.AddDbContextInitializer();
 			services.AddCors();
+			services.AddHttpContextAccessor();
      }
 
 		public static async void ApplicationSetUp(this WebApplication app)
@@ -114,6 +115,7 @@ namespace ChildrenVaccinationSystem.API
 		public static void AddServices(this IServiceCollection services)
 		{
 			services.AddScoped<IAuthenticationService, AuthenticationService>();
+			services.AddTransient<IEmailService, EmailService>();
 			services.AddScoped<ICountryService, CountryService>();
 		}
 

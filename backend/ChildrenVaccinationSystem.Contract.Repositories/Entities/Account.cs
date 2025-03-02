@@ -13,6 +13,7 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Entities
 		public string? Address { get; set; }
 		public bool? Gender { get; set; }
 		public RoleEnum Role { get; set; }
+		public string? VerificationToken { get; set; }
 
 		public virtual ICollection<Child>? Children { get; set; }
 		public virtual ICollection<Vaccination>? DoctorVaccinations { get; set; }
