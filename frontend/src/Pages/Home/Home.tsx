@@ -1,14 +1,17 @@
 import React from 'react'
 import { Layout } from 'antd'
+import Homepage from '../../components/Home/Homepage'
 
 const { Content } = Layout
 
-const Homepage: React.FC = () => {
+const Home: React.FC = () => {
   return (
     <Layout>
-      <Content></Content>
+      <Content>
+        <Homepage />
+      </Content>
     </Layout>
   )
 }
 
-export default Homepage
+export default Home
