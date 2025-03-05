@@ -1,6 +1,7 @@
 ﻿using ChildrenVaccinationSystem.Contract.Repositories.Entities;
 using ChildrenVaccinationSystem.Contract.Services;
 using ChildrenVaccinationSystem.Core.Base;
+using ChildrenVaccinationSystem.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChildrenVaccinationSystem.API.Controllers
@@ -10,11 +11,14 @@ namespace ChildrenVaccinationSystem.API.Controllers
 	public class CountryController : ControllerBase
 	{
 		private ICountryService _countryService;
-		
-		public CountryController(ICountryService countryService)
+		private IAuthenticationService _authenticationService;
+
+		public CountryController(ICountryService countryService, IAuthenticationService authenticationService)
 		{
 			_countryService = countryService;
-		}
+			_authenticationService = authenticationService;
+
+        }
 		[HttpGet]
 		public async Task<IActionResult> GetCountries(int pageNumber = -1, int pageSize = -1)
 		{
