@@ -1,12 +1,12 @@
 import { Layout } from 'antd'
 const { Content } = Layout
-import { LoginForm } from '../../components/Authentication/Login'
+import { RegisterForm } from '../../components/Authentication/Register'
 
-export default function Login() {
+export default function Register() {
   return (
     <Layout>
       <Content>
-        <LoginForm />
+        <RegisterForm />
       </Content>
     </Layout>
   )
