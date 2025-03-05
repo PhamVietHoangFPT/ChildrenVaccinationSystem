@@ -26,7 +26,7 @@ const routes: LayoutRoute[] = [
         path: '/testPage',
         component: TestPage,
         role: ['Staff'],
-      }
+      },
     ],
   },
   // {

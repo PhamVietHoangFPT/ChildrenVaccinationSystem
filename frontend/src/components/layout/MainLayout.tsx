@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router-dom'
 import { Layout } from 'antd'
+import Navbar from './Navbar/Navbar'
 
 const { Content } = Layout
 
@@ -11,6 +12,7 @@ function MainLayout() {
         overflow: 'hidden',
       }}
     >
+      <Navbar />
       <Content
         style={{
           margin: '24px',

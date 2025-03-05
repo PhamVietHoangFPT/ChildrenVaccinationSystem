@@ -2,14 +2,27 @@ import { useLoginMutation } from '../../features/auth/authApi'
 import type { FormProps } from 'antd'
 import { Button, Form, Input } from 'antd'
 import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { selectAuthUser } from '../../features/auth/authSlice'
+import { useEffect } from 'react'
 
 export function LoginForm() {
   const [login] = useLoginMutation()
   const navigate = useNavigate()
+  const userData = useSelector(selectAuthUser).userToken
   interface FieldType {
     username: string
     password: string
   }
+
+  useEffect(() => {
+    const checkUser = () => {
+      if (userData) {
+        navigate('/')
+      }
+    }
+    checkUser()
+  }, [navigate, userData]) // `navigate` trong dependency array để tránh cảnh báo từ React
 
   const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
     try {
