@@ -1,26 +1,27 @@
-import { useLoginMutation } from '../../features/auth/authApi'
+import { useRegisterMutation } from '../../features/auth/authApi'
 import type { FormProps } from 'antd'
 import { Button, Form, Input } from 'antd'
 import { useNavigate } from 'react-router-dom'
 
-export function LoginForm() {
-  const [login] = useLoginMutation()
+export function RegisterForm() {
+  const [register] = useRegisterMutation()
   const navigate = useNavigate()
   interface FieldType {
-    username: string
+    name: string
     password: string
+    email: string
   }
 
   const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
     try {
-      await login({
-        email: values.username,
+      await register({
+        email: values.email,
         password: values.password,
+        name: values.name,
       }).unwrap()
-      alert('Đăng nhập thành công')
-      navigate('/')
+      alert('Đăng ký thành công')
+      navigate('/login')
     } catch (error: any) {
-      // Kiểm tra nếu error có response từ server
       if (error?.status === 400) {
         alert(error.data.message)
       } else {
@@ -32,7 +33,7 @@ export function LoginForm() {
   const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (
     errorInfo
   ) => {
-    alert(errorInfo)
+    console.log('Failed:', errorInfo)
   }
   return (
     <Form
@@ -46,9 +47,17 @@ export function LoginForm() {
       autoComplete='off'
     >
       <Form.Item<FieldType>
-        label='Username'
-        name='username'
-        rules={[{ required: true, message: 'Please input your username!' }]}
+        label='Email'
+        name='email'
+        rules={[{ required: true, message: 'Please input your email!' }]}
+      >
+        <Input />
+      </Form.Item>
+
+      <Form.Item<FieldType>
+        label='name'
+        name='name'
+        rules={[{ required: true, message: 'Please input your name!' }]}
       >
         <Input />
       </Form.Item>

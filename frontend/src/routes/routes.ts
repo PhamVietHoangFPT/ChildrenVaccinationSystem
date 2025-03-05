@@ -2,6 +2,7 @@ import MainLayout from '../components/layout/MainLayout'
 import Homepage from '../Pages/Home/Home'
 import Login from '../Pages/Login/Login'
 import TestPage from '../Pages/TestPage/TestPage'
+import Register from '../Pages/Register/Register'
 import { LayoutRoute } from '../types/routes'
 
 const routes: LayoutRoute[] = [
@@ -16,6 +17,10 @@ const routes: LayoutRoute[] = [
       {
         path: '/login',
         component: Login,
+      },
+      {
+        path: '/register',
+        component: Register,
       },
       {
         path: '/testPage',
