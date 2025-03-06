@@ -35,6 +35,7 @@ namespace ChildrenVaccinationSystem.Services
                 Sequence = vaccineCreateDto.Sequence,
                 Dosage = vaccineCreateDto.Dosage,
                 DosageInterval = vaccineCreateDto.DosageInterval,
+                //Category = vaccineCreateDto.Category,
                 CategoryId = vaccineCreateDto.CategoryId,
                 ManufacturerId = vaccineCreateDto.ManufacturerId
             };
@@ -96,9 +97,16 @@ namespace ChildrenVaccinationSystem.Services
             return new BasePaginatedList<Vaccine>(resultQuery.Items, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
         }
 
-        public Task<Vaccine?> CreateVaccineAsync(Vaccine vaccine)
+        public async Task<Vaccine?> CreateVaccineAsync(Vaccine vaccine)
         {
-            throw new NotImplementedException();
+            if (vaccine == null)
+                return null; 
+
+            await _unitOfWork.GetRepository<Vaccine>().InsertAsync(vaccine);
+            var isSaved = await _unitOfWork.SaveAsync() > 0;
+
+            return isSaved ? vaccine : null;
         }
+
     }
 }
