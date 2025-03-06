@@ -39,5 +39,10 @@ namespace ChildrenVaccinationSystem.Core.Base
 		{
 			return new BaseResponse<T>(StatusCodeEnum.OK, StatusCodeEnum.OK.Name(), mess);
 		}
-	}
+
+        public static object? ErrorResponse(string v)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

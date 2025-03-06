@@ -1,4 +1,6 @@
 
+using ChildrenVaccinationSystem.Contract.Services;
+using ChildrenVaccinationSystem.Services;
 using Microsoft.OpenApi.Models;
 
 namespace ChildrenVaccinationSystem.API
@@ -17,8 +19,10 @@ namespace ChildrenVaccinationSystem.API
 
 			// Execute the DI pipeline
 			builder.Services.AddConfig(builder.Configuration);
+            builder.Services.AddScoped<IVaccineService, VaccineService>();
 
-            
+
+
 
             var app = builder.Build();
 

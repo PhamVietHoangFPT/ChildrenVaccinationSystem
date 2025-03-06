@@ -25,6 +25,11 @@ namespace ChildrenVaccinationSystem.Services
             throw new NotImplementedException();
         }
 
+        public Task<Vaccine?> CreateVaccineAsync(Vaccine vaccine)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<bool> DeleteVaccineAsync(string id)
         {
             throw new NotImplementedException();
