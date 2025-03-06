@@ -15,7 +15,8 @@ namespace ChildrenVaccinationSystem.Contract.Services
 
         Task<bool> CreateVaccineAsync(VaccineCreateDto vaccineCreateDto);
 
-        Task<bool> UpdateVaccineAsync(Va
+        Task<bool> UpdateVaccineAsync(VaccineUpdateDto vaccineUpdateDto);
+        Task<bool> DeleteVaccineAsync(string id);
 
     }
 }

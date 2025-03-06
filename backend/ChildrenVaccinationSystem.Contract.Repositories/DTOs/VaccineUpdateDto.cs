@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace ChildrenVaccinationSystem.Contract.Repositories.DTOs
 {
-    public class VaccineCreateDto
+    public class VaccineUpdateDto
     {
+        public string Id { get; set; } = default!;
         public string Name { get; set; } = default!;
         public double Price { get; set; }
         public string? Description { get; set; }
@@ -18,6 +19,5 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.DTOs
         public int? DosageInterval { get; set; } // months
         public string CategoryId { get; set; } = default!;
         public string ManufacturerId { get; set; } = default!;
-
     }
 }
