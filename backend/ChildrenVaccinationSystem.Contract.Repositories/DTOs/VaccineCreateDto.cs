@@ -14,8 +14,8 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.DTOs
         public int? StartRecommendedAge { get; set; }
         public int? EndRecommendedAge { get; set; }
         public int? Sequence { get; set; }
-        public double? Dosage { get; set; } // mililitres
-        public int? DosageInterval { get; set; } // months
+        public double? Dosage { get; set; } 
+        public int? DosageInterval { get; set; } 
         public string CategoryId { get; set; } = default!;
         public string ManufacturerId { get; set; } = default!;
 

@@ -1,6 +1,7 @@
 ﻿using ChildrenVaccinationSystem.Contract.Repositories.IUOW;
 using ChildrenVaccinationSystem.Core.Base;
 using ChildrenVaccinationSystem.Repositories.DatabaseContext;
+using Microsoft.EntityFrameworkCore;
 
 namespace ChildrenVaccinationSystem.Repositories.UOW
 {
@@ -45,12 +46,13 @@ namespace ChildrenVaccinationSystem.Repositories.UOW
 			_dbContext.SaveChanges();
 		}
 
-		public async Task SaveAsync()
-		{
-			await _dbContext.SaveChangesAsync();
-		}
+        public async Task<int> SaveAsync()
+        {
+            return await _dbContext.SaveChangesAsync();
+        }
 
-		public IGenericRepository<T> GetRepository<T>() where T : class
+
+        public IGenericRepository<T> GetRepository<T>() where T : class
 		{
 			return new GenericRepository<T>(_dbContext);
 		}
@@ -62,5 +64,5 @@ namespace ChildrenVaccinationSystem.Repositories.UOW
 			return (entity is not null && entity.DeletedBy is null);
 		}
 
-	}
+    }
 }
