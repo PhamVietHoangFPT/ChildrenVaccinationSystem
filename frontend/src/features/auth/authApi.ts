@@ -4,7 +4,7 @@ export const authApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation<
       { data: string },
-      { email: string; password: string }
+      { email: string; password: string, phoneNumber: string }
     >({
       query: (credentials) => ({
         url: '/authentication/login',
@@ -26,7 +26,7 @@ export const authApi = apiSlice.injectEndpoints({
         try {
           dispatch(logout())
         } catch (error) {
-          console.error('Logout failed', error)
+          console.log(error)
         }
       },
     }),

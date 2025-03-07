@@ -7,9 +7,11 @@ const userData: UserData | null = Cookies.get('userData')
   ? JSON.parse(Cookies.get('userData') as string)
   : null
 
+  const userToken = Cookies.get('userToken')
+
 const initialState: AuthState = {
   userData,
-  userToken: null, // Không lưu token vào localStorage nữa
+  userToken: userToken ? { token: userToken } : null,
   isAuthenticated: !!userData,
   isLoading: false,
 }
@@ -36,24 +38,25 @@ const authSlice = createSlice({
         exp: decodedToken.exp,
       }
 
-      state.userToken = { token: token, refreshToken: '' } // Chỉ lưu Access Token tạm thời
+      state.userToken = { token: token }
       state.isAuthenticated = true
+
+      const expirationDate = new Date(state.userData.exp * 1000);
+      Cookies.set('userData', JSON.stringify(state.userData), { expires: expirationDate })
+      Cookies.set('userToken', token, { expires: expirationDate })
     },
     logout: (state) => {
       state.userData = null
       state.userToken = null
       state.isAuthenticated = false
-    },
-    refreshToken: (state, action: PayloadAction<string>) => {
-      state.userToken = {
-        token: action.payload,
-        refreshToken: state.userToken?.refreshToken || '',
-      }
+
+      Cookies.remove('userData')
+      Cookies.remove('userToken')
     },
   },
 })
 
-export const { login, logout, refreshToken, setLoading } = authSlice.actions
+export const { login, logout, setLoading } = authSlice.actions
 export default authSlice.reducer
 export const selectAuthUser = (state: { authSlice: AuthState }) =>
   state.authSlice

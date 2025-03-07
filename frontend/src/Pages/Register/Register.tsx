@@ -1,11 +1,17 @@
 import { Layout } from 'antd'
 const { Content } = Layout
-import { RegisterForm } from '../../components/Authentication/Register'
+import { RegisterForm } from '../../components/Authentication/RegisterForm'
 
 export default function Register() {
   return (
     <Layout>
-      <Content>
+      <Content
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
         <RegisterForm />
       </Content>
     </Layout>
