@@ -1,21 +1,25 @@
-import { Button, Result } from 'antd'
+import { Result, Button } from 'antd'
 import { useNavigate } from 'react-router-dom'
-export default function NotFound() {
+
+const NoPermission = () => {
   const navigate = useNavigate()
+
   const handleBackHome = () => {
     navigate('/')
   }
 
   return (
     <Result
-      status='404'
-      title='404'
-      subTitle='Sorry, the page you visited does not exist.'
+      status='403'
+      title='403'
+      subTitle='Xin lỗi, bạn không có quyền truy cập trang này.'
       extra={
         <Button type='primary' onClick={handleBackHome}>
-          Back Home
+          Trở về trang chủ
         </Button>
       }
     />
   )
 }
+
+export default NoPermission

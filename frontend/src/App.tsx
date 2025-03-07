@@ -1,7 +1,10 @@
 import { Route, Routes } from 'react-router-dom'
 import routes from './routes/routes.ts'
 import NotFound from './components/NotFound/NotFound.tsx'
+import PermissionCheck from './components/Permission/PermissionCheck.tsx'
+import { useAutoLogout } from './hooks/useAutoLogout.ts'
 function App() {
+  useAutoLogout()
   return (
     <Routes>
       {routes.map((route, i) => {
@@ -15,9 +18,9 @@ function App() {
                   key={item.path}
                   path={item.path}
                   element={
-                    // <PermissionCheck protectedRole={item.role}>
-                    <Component />
-                    // </PermissionCheck>
+                    <PermissionCheck protectedRole={item.role}>
+                      <Component />
+                    </PermissionCheck>
                   }
                 />
               )

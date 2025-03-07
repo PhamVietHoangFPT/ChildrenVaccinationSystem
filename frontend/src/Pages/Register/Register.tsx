@@ -1,8 +1,8 @@
 import { Layout } from 'antd'
 const { Content } = Layout
-import { LoginForm } from '../../components/Authentication/LoginForm'
+import { RegisterForm } from '../../components/Authentication/RegisterForm'
 
-export default function Login() {
+export default function Register() {
   return (
     <Layout>
       <Content
@@ -10,10 +10,9 @@ export default function Login() {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          minWidth: '100vw',
         }}
       >
-        <LoginForm />
+        <RegisterForm />
       </Content>
     </Layout>
   )

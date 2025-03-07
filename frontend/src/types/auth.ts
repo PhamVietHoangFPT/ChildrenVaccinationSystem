@@ -1,14 +1,15 @@
 export interface UserToken {
   token: string
-  refreshToken: string
 }
 
 export interface UserData {
-  email: string
-  id: string
-  role: string
-  name: string
-  avatar: string
+  Email: string
+  Id: string
+  Address: string
+  Role: string
+  Name: string
+  PhoneNumber: string
+  exp: number
 }
 
 export interface AuthState {
