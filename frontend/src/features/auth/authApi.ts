@@ -3,8 +3,8 @@ import { login, logout } from './authSlice'
 export const authApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation<
-      { token: string },
-      { email: string; password: string }
+      { data: string },
+      { email: string; password: string, phoneNumber: string }
     >({
       query: (credentials) => ({
         url: '/authentication/login',
@@ -14,34 +14,38 @@ export const authApi = apiSlice.injectEndpoints({
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled
-          dispatch(login({ token: data.token }))
+          dispatch(login({ token: data.data }))
         } catch (error) {
-          console.error('Login failed', error)
+          console.log(error)
         }
       },
     }),
     logout: builder.mutation<void, void>({
-      query: () => ({}),
+      queryFn: async () => ({ data: undefined }),
       async onQueryStarted(_, { dispatch }) {
         try {
           dispatch(logout())
         } catch (error) {
-          console.error('Logout failed', error)
+          console.log(error)
         }
       },
     }),
     register: builder.mutation<
-    { token: string;},{
-      email: string;
-      password: string;
-      name: string;
-    }>({ query: (credentials) => ({
+      { token: string },
+      {
+        email: string
+        password: string
+        name: string
+      }
+    >({
+      query: (credentials) => ({
         url: '/authentication/register',
         method: 'POST',
         body: credentials,
       }),
-    })
+    }),
   }),
 })
 
-export const { useLoginMutation, useLogoutMutation, useRegisterMutation } = authApi
+export const { useLoginMutation, useLogoutMutation, useRegisterMutation } =
+  authApi
