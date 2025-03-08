@@ -18,7 +18,6 @@ namespace ChildrenVaccinationSystem.Services
 		public async Task<BasePaginatedList<Country>> GetCountriesAsync(int pageNumber, int pageSize)
 		{
 			IQueryable<Country> query = _unitOfWork.GetRepository<Country>().Entities;
-
 			// If either pageNumber or pageSize is <= 0, retrieve all data
 			if (pageNumber <= 0 || pageSize <= 0)
 			{
