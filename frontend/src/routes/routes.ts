@@ -16,6 +16,10 @@ const routes: LayoutRoute[] = [
         component: Homepage,
         exact: true,
       },
+      {
+        path: '/profile',
+        component: Homepage,
+      }
     ],
   },
   {
