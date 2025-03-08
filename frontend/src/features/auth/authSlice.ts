@@ -2,15 +2,16 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { jwtDecode } from 'jwt-decode'
 import Cookies from 'js-cookie'
 import { UserData, AuthState } from '../../types/auth'
-
 // Lấy userData từ Cookies
 const userData: UserData | null = Cookies.get('userData')
   ? JSON.parse(Cookies.get('userData') as string)
   : null
 
+  const userToken = Cookies.get('userToken')
+
 const initialState: AuthState = {
   userData,
-  userToken: null, // Không lưu token vào localStorage nữa
+  userToken: userToken ? { token: userToken } : null,
   isAuthenticated: !!userData,
   isLoading: false,
 }
@@ -22,40 +23,40 @@ const authSlice = createSlice({
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload
     },
-    login: (state, action: PayloadAction<{ accessToken: string }>) => {
-      const { accessToken } = action.payload
-      const decodedToken: any = jwtDecode(accessToken)
+    login: (state, action: PayloadAction<{ token: string }>) => {
+      const { token } = action.payload
+
+      const decodedToken: any = jwtDecode(token)
 
       state.userData = {
-        email: decodedToken.sub,
-        id: decodedToken.id,
-        role: decodedToken.role,
-        name: decodedToken.name,
-        avatar: decodedToken.avatar,
+        Email: decodedToken.Email,
+        Id: decodedToken.Id,
+        Role: decodedToken.Role,
+        Name: decodedToken.Name,
+        PhoneNumber: decodedToken.PhoneNumber,
+        Address: decodedToken.Address,
+        exp: decodedToken.exp,
       }
 
-      state.userToken = { token: accessToken, refreshToken: '' } // Chỉ lưu Access Token tạm thời
+      state.userToken = { token: token }
       state.isAuthenticated = true
 
-      // ✅ Lưu userData vào Cookies thay vì localStorage
-      Cookies.set('userData', JSON.stringify(state.userData), { expires: 7 }) // Cookies có hạn 7 ngày
+      const expirationDate = new Date(state.userData.exp * 1000);
+      Cookies.set('userData', JSON.stringify(state.userData), { expires: expirationDate })
+      Cookies.set('userToken', token, { expires: expirationDate })
     },
     logout: (state) => {
       state.userData = null
       state.userToken = null
       state.isAuthenticated = false
 
-      // ✅ Xóa userData trong Cookies
       Cookies.remove('userData')
-    },
-    refreshToken: (state, action: PayloadAction<string>) => {
-      state.userToken = {
-        token: action.payload,
-        refreshToken: state.userToken?.refreshToken || '',
-      }
+      Cookies.remove('userToken')
     },
   },
 })
 
-export const { login, logout, refreshToken, setLoading } = authSlice.actions
+export const { login, logout, setLoading } = authSlice.actions
 export default authSlice.reducer
+export const selectAuthUser = (state: { authSlice: AuthState }) =>
+  state.authSlice
