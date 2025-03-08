@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom'
 import { Layout } from 'antd'
-import Navbar from './Navbar/Navbar'
+import SideBarStaff from './SiderBarStaff/SideBarStaff'
 
 const { Content } = Layout
 
@@ -12,7 +12,7 @@ function StaffLayout() {
         overflow: 'hidden',
       }}
     >
-      <Navbar />
+      <SideBarStaff></SideBarStaff>
       <Content
         style={{
           margin: '24px',
