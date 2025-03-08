@@ -79,11 +79,6 @@ const Navbar: React.FC = () => {
         label: 'Cài đặt',
         children: [
           {
-            key: 'profile',
-            label: 'Hồ sơ cá nhân',
-            url: '/settings/profile',
-          },
-          {
             key: 'security',
             label: 'Bảo mật',
             url: '/settings/security',
@@ -144,19 +139,17 @@ const Navbar: React.FC = () => {
           )
         )}
         {userData && (
-          <div>
-            <Menu.Item
-              key='logout'
-              icon={<LogoutOutlined />}
-              onClick={() => {
-                Cookies.remove('userData')
-                Cookies.remove('userToken')
-                navigate('/login')
-              }}
-            >
-              Đăng xuất
-            </Menu.Item>
-          </div>
+          <Menu.Item
+            key='logout'
+            icon={<LogoutOutlined />}
+            onClick={() => {
+              Cookies.remove('userData')
+              Cookies.remove('userToken')
+              navigate('/login')
+            }}
+          >
+            Đăng xuất
+          </Menu.Item>
         )}
       </Menu>
     </Header>
