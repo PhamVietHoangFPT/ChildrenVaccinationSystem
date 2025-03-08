@@ -148,17 +148,21 @@ const Navbar: React.FC = () => {
           >
             Welcome, {userData.Name}
           </Menu.Item>
+          <div>
+          <Menu.Item key="welcome">Welcome, {userData.Name}</Menu.Item>
           <Menu.Item
-            key='logout'
-            icon={<LogoutOutlined />}
-            onClick={() => {
-              Cookies.remove('userData')
-              Cookies.remove('userToken')
-              navigate('/login')
-            }}
-          >
-            Đăng xuất
-          </Menu.Item>
+              key='logout'
+              icon={<LogoutOutlined />}
+              onClick={() => {
+                Cookies.remove('userData')
+                Cookies.remove('userToken')
+                navigate('/login')
+              }}
+            >
+              Đăng xuất
+            </Menu.Item>
+        </div>
+
         </div>
 
       )}
