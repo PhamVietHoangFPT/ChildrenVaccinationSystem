@@ -4,7 +4,7 @@ const countryApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getCountryList: builder.query({
       query: ({ pageNumber, pageSize }) => ({
-        url: '/countries',
+        url: '/country',
         method: 'GET',
         params: {
           pageNumber,
@@ -12,41 +12,41 @@ const countryApi = apiSlice.injectEndpoints({
         },
       }),
       transformResponse: (res) => res,
-      providesTags: ['countries'],
+      providesTags: ['country'],
     }),
     createCountry: builder.mutation({
       query: (data) => ({
-        url: '/countries',
+        url: '/country',
         method: 'POST',
         body: data,
       }),
       transformResponse: (res) => res,
-      invalidatesTags: ['countries'],
+      invalidatesTags: ['country'],
     }),
     getCountryDetail: builder.query({
       query: (id) => ({
-        url: `/countries/${id}`,
+        url: `/country/${id}`,
         method: 'GET',
       }),
       transformResponse: (res) => res,
-      providesTags: ['countries'],
+      providesTags: ['country'],
     }),
     updateCountry: builder.mutation({
       query: ({ data, id }) => ({
-        url: `/countries/${id}`,
+        url: `/country/${id}`,
         method: 'PUT',
         body: data,
       }),
       transformResponse: (res) => res,
-      invalidatesTags: ['countries'],
+      invalidatesTags: ['country'],
     }),
     deleteCountry: builder.mutation({
       query: (id) => ({
-        url: `/countries/${id}`,
+        url: `/country/${id}`,
         method: 'DELETE',
       }),
       transformResponse: (res) => res,
-      invalidatesTags: ['countries'],
+      invalidatesTags: ['country'],
     }),
   }),
 })

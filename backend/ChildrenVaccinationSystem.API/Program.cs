@@ -32,7 +32,10 @@ namespace ChildrenVaccinationSystem.API
             app.UseSwagger();
             app.UseSwaggerUI();
 
-            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+			app.UseRouting();
+
+			app.UseHttpsRedirection();
 
             app.UseAuthorization();
 
