@@ -11,7 +11,7 @@ const Home: React.FC = () => {
   const navigate = useNavigate()
   useEffect(() => {
     if (userData === null || userData.Role === 'Customer') {
-      navigate('/')
+      navigate('/'  )
     } else {
       navigate(`/${userData.Role.toLowerCase()}`)
     }
