@@ -11,11 +11,11 @@ namespace ChildrenVaccinationSystem.API.Controllers
 	public class AuthenticationController : ControllerBase
 	{
 		private readonly IAuthenticationService _authenticationService;
-		private readonly IEmailService _emailService;
-		public AuthenticationController(IAuthenticationService authenticationService, IEmailService emailService)
+		private readonly IConfiguration _configuration;
+		public AuthenticationController(IAuthenticationService authenticationService, IConfiguration configuration)
 		{
 			_authenticationService = authenticationService;
-			_emailService = emailService;
+			_configuration = configuration;
 		}
 
 		[HttpPost("login")]
@@ -23,12 +23,22 @@ namespace ChildrenVaccinationSystem.API.Controllers
 		{
 			string? token = await _authenticationService.LoginAsync(loginDto);
 
-			if (token == null)
+			if (token == "Unauthenticated")
 			{
 				return BadRequest(new BaseResponse<string>(
 					statusCode: StatusCodeEnum.BadRequest,
 					code: StatusCodeEnum.BadRequest.ToString(),
-					message: "Log in unsuccessfully",
+					message: "Sai mật khẩu hoặc tài khoản!",
+					data: null
+				));
+			}
+
+			if (token == "Unverified")
+			{
+				return BadRequest(new BaseResponse<string>(
+					statusCode: StatusCodeEnum.BadRequest,
+					code: StatusCodeEnum.BadRequest.ToString(),
+					message: "Tài khoản chưa được xác thực, khách hàng vui lòng kiểm tra hộp mail!",
 					data: null
 				));
 			}
@@ -36,7 +46,7 @@ namespace ChildrenVaccinationSystem.API.Controllers
 			return Ok(new BaseResponse<string>(
 				statusCode: StatusCodeEnum.OK,
 				code: StatusCodeEnum.OK.ToString(),
-				message: "Log in successfully",
+				message: "Đăng nhập thành công",
 				data: token
 			));
 		}
@@ -79,12 +89,13 @@ namespace ChildrenVaccinationSystem.API.Controllers
 				));
 			}
 
-			return Ok(new BaseResponse<string>(
-				statusCode: StatusCodeEnum.OK,
-				code: StatusCodeEnum.OK.ToString(),
-				message: "Your account has been verified",
-				data: null
-			));
+			//return Ok(new BaseResponse<string>(
+			//	statusCode: StatusCodeEnum.OK,
+			//	code: StatusCodeEnum.OK.ToString(),
+			//	message: "Your account has been verified",
+			//	data: null
+			//));
+			return Redirect(_configuration["VerifySuccessUrl"]!);
 		}
 	}
 }

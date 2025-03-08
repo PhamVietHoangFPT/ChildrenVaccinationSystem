@@ -1,7 +1,10 @@
+import LoginRegisterLayout from '../components/layout/LoginRegisterLayout'
 import MainLayout from '../components/layout/MainLayout'
+import StaffLayout from '../components/layout/StaffLayout'
 import Homepage from '../Pages/Home/Home'
 import Login from '../Pages/Login/Login'
 import Register from '../Pages/Register/Register'
+import StaffHomePage from '../Pages/Staff/StaffDefault/StaffHomePage'
 import { LayoutRoute } from '../types/routes'
 
 const routes: LayoutRoute[] = [
@@ -13,6 +16,22 @@ const routes: LayoutRoute[] = [
         component: Homepage,
         exact: true,
       },
+    ],
+  },
+  {
+    layout: StaffLayout,
+    data: [
+      {
+        path: '/staff',
+        component: StaffHomePage,
+        exact: true,
+        role: ['Staff'],
+      },
+    ],
+  },
+  {
+    layout: LoginRegisterLayout,
+    data: [
       {
         path: '/login',
         component: Login,

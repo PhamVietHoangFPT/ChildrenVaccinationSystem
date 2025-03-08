@@ -1,18 +1,59 @@
-import { Layout } from 'antd'
-const { Content } = Layout
 import { RegisterForm } from '../../components/Authentication/RegisterForm'
+import Logo from '../../assets/Logo.png'
+import { Layout, Card, Typography, Row, Col, Button } from 'antd'
+const { Title } = Typography
+const { Content } = Layout
+import { useNavigate } from 'react-router-dom'
 
 export default function Register() {
+  const navigate = useNavigate()
   return (
-    <Layout>
-      <Content
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <RegisterForm />
+    <Layout
+      style={{
+        minHeight: 'calc(100vh - 124px)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <Content style={{ width: '80%', maxWidth: '1200px', display: 'flex' }}>
+        <Row gutter={[32, 32]} align='middle'>
+          {/* Hình ảnh */}
+          <Col xs={24} md={12} style={{ textAlign: 'center' }}>
+            <img
+              src={Logo}
+              alt='Register'
+              style={{ maxWidth: '100%', height: 'auto', borderRadius: '12px' }}
+            />
+          </Col>
+
+          {/* Form đăng ký */}
+          <Col xs={24} md={12}>
+            <Card
+              bordered={false}
+              style={{
+                boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+                borderRadius: '12px',
+                padding: '24px',
+              }}
+            >
+              <Title
+                level={2}
+                style={{ textAlign: 'center', marginBottom: '24px' }}
+              >
+                Tạo tài khoản
+              </Title>
+              <RegisterForm />
+              <Button
+                type='link'
+                onClick={() => navigate('/')}
+                style={{ padding: 0, margin: 0 }}
+              >
+                Về lại trang chủ
+              </Button>
+            </Card>
+          </Col>
+        </Row>
       </Content>
     </Layout>
   )

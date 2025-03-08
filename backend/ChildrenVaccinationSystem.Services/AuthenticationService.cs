@@ -49,9 +49,14 @@ namespace ChildrenVaccinationSystem.Services
 				.Where(a => a.Email == loginDto.Email || a.PhoneNumber == loginDto.PhoneNumber)
 				.FirstOrDefaultAsync();
 
-			if (account == null || !BCrypt.Net.BCrypt.Verify(loginDto.Password, account.Password) || account.VerificationToken != null)
+			if (account == null || !BCrypt.Net.BCrypt.Verify(loginDto.Password, account.Password))
 			{
-				return null;
+				return "Unauthenticated";
+			}
+
+			if (account.VerificationToken != null)
+			{
+				return "Unverified";
 			}
 
 			return GenerateJwtToken(account!);
