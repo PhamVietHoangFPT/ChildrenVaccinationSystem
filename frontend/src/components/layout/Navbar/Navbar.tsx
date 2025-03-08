@@ -4,7 +4,7 @@ import {
   LoginOutlined,
   UserOutlined,
   LogoutOutlined,
-  
+
 } from '@ant-design/icons'
 import type { MenuProps } from 'antd'
 import { Menu } from 'antd'
@@ -59,17 +59,21 @@ const Navbar: React.FC = () => {
         </Menu.Item>
       ))}
       {userData && (
-        <Menu.Item
-          key='logout'
-          icon={<LogoutOutlined />}
-          onClick={() => {
-            Cookies.remove('userData')
-            Cookies.remove('userToken')
-            navigate('/login')
-          }}
-        >
-          Đăng xuất
-        </Menu.Item>
+        <div>
+          <Menu.Item key="welcome">Welcome, {userData.Name}</Menu.Item>
+          <Menu.Item
+            key='logout'
+            icon={<LogoutOutlined />}
+            onClick={() => {
+              Cookies.remove('userData')
+              Cookies.remove('userToken')
+              navigate('/login')
+            }}
+          >
+            Đăng xuất
+          </Menu.Item>
+        </div>
+
       )}
     </Menu>
   )
