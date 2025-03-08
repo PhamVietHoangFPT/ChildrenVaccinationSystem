@@ -2,12 +2,13 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { jwtDecode } from 'jwt-decode'
 import Cookies from 'js-cookie'
 import { UserData, AuthState } from '../../types/auth'
+
 // Lấy userData từ Cookies
 const userData: UserData | null = Cookies.get('userData')
   ? JSON.parse(Cookies.get('userData') as string)
   : null
 
-  const userToken = Cookies.get('userToken')
+const userToken = Cookies.get('userToken')
 
 const initialState: AuthState = {
   userData,
@@ -41,8 +42,10 @@ const authSlice = createSlice({
       state.userToken = { token: token }
       state.isAuthenticated = true
 
-      const expirationDate = new Date(state.userData.exp * 1000);
-      Cookies.set('userData', JSON.stringify(state.userData), { expires: expirationDate })
+      const expirationDate = new Date(state.userData.exp * 1000)
+      Cookies.set('userData', JSON.stringify(state.userData), {
+        expires: expirationDate,
+      })
       Cookies.set('userToken', token, { expires: expirationDate })
     },
     logout: (state) => {

@@ -1,11 +1,13 @@
-import { Layout, Card, Typography, Row, Col } from 'antd'
+import { Layout, Card, Typography, Row, Col, Button } from 'antd'
 import { LoginForm } from '../../components/Authentication/LoginForm'
 import Logo from '../../assets/Logo.png'
+import { useNavigate } from 'react-router-dom'
 
 const { Content } = Layout
 const { Title } = Typography
 
 export default function Login() {
+  const navigate = useNavigate()
   return (
     <Layout
       style={{
@@ -45,6 +47,13 @@ export default function Login() {
                 Đăng nhập
               </Title>
               <LoginForm />
+              <Button
+                type='link'
+                onClick={() => navigate('/')}
+                style={{ padding: 0, margin: 0 }}
+              >
+                Về lại trang chủ
+              </Button>
             </Card>
           </Col>
         </Row>

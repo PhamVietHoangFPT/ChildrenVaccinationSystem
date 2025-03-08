@@ -4,12 +4,13 @@ import {
   LoginOutlined,
   UserOutlined,
   LogoutOutlined,
-SettingOutlined,
+  SettingOutlined,
   AppstoreOutlined,
   InfoCircleOutlined,
 } from '@ant-design/icons'
 import type { MenuProps } from 'antd'
-import { Menu } from 'antd'
+import { Menu, Layout } from 'antd'
+const { Header } = Layout
 import { useNavigate, useLocation } from 'react-router-dom'
 import Cookies from 'js-cookie'
 
@@ -61,12 +62,12 @@ const Navbar: React.FC = () => {
         label: 'Cẩm nang',
         children: [
           {
-            key: 'service1',
+            key: 'blogs1',
             label: 'Dịch vụ 1',
             url: '/services/service1',
           },
           {
-            key: 'service2',
+            key: 'blogs2',
             label: 'Dịch vụ 2',
             url: '/services/service2',
           },
@@ -101,10 +102,10 @@ const Navbar: React.FC = () => {
   const onClick: MenuProps['onClick'] = (e) => {
     setCurrent(e.key)
     const findItem = (items: any[], key: string) => {
-      for (let item of items) {
+      for (const item of items) {
         if (item.key === key) return item
         if (item.children) {
-          const found = findItem(item.children, key)
+          const found: any = findItem(item.children, key)
           if (found) return found
         }
       }
@@ -118,39 +119,33 @@ const Navbar: React.FC = () => {
   }
 
   return (
-    <Menu
-      onClick={onClick}
-      selectedKeys={[current]}
-      mode='horizontal'
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        borderBottom: '1px solid #f0f0f0',
-      }}
-    >
-      {items.map((item) =>
-        item.children ? (
-          <Menu.SubMenu key={item.key} icon={item.icon} title={item.label}>
-            {item.children.map((child) => (
-              <Menu.Item key={child.key}>{child.label}</Menu.Item>
-            ))}
-          </Menu.SubMenu>
-        ) : (
-          <Menu.Item key={item.key} icon={item.icon}>
-            {item.label}
-          </Menu.Item>
-        )
-      )}
-      {userData && (
-        <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-          <Menu.Item
-            key='welcome'
-          >
-            Welcome, {userData.Name}
-          </Menu.Item>
+    <Header style={{ background: '#fff' }}>
+      <Menu
+        onClick={onClick}
+        selectedKeys={[current]}
+        mode='horizontal'
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          borderBottom: '1px solid #f0f0f0',
+        }}
+      >
+        {items.map((item) =>
+          item.children ? (
+            <Menu.SubMenu key={item.key} icon={item.icon} title={item.label}>
+              {item.children.map((child) => (
+                <Menu.Item key={child.key}>{child.label}</Menu.Item>
+              ))}
+            </Menu.SubMenu>
+          ) : (
+            <Menu.Item key={item.key} icon={item.icon}>
+              {item.label}
+            </Menu.Item>
+          )
+        )}
+        {userData && (
           <div>
-          <Menu.Item key="welcome">Welcome, {userData.Name}</Menu.Item>
-          <Menu.Item
+            <Menu.Item
               key='logout'
               icon={<LogoutOutlined />}
               onClick={() => {
@@ -161,12 +156,10 @@ const Navbar: React.FC = () => {
             >
               Đăng xuất
             </Menu.Item>
-        </div>
-
-        </div>
-
-      )}
-    </Menu>
+          </div>
+        )}
+      </Menu>
+    </Header>
   )
 }
 
