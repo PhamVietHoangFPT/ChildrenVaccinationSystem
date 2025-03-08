@@ -3,7 +3,7 @@ import MainLayout from '../components/layout/MainLayout'
 import StaffLayout from '../components/layout/StaffLayout'
 import Homepage from '../Pages/Home/Home'
 import Login from '../Pages/Login/Login'
-// import ProfilePage from '../Pages/Profile/ProfilePage'
+import ProfilePage from '../Pages/Profile/ProfilePage'
 import Register from '../Pages/Register/Register'
 import StaffHomePage from '../Pages/Staff/StaffDefault/StaffHomePage'
 import { LayoutRoute } from '../types/routes'
@@ -17,10 +17,10 @@ const routes: LayoutRoute[] = [
         component: Homepage,
         exact: true,
       },
-      // {
-      //   path: '/profile',
-      //   component: ProfilePage,
-      // }
+      {
+        path: '/profile',
+        component: ProfilePage,
+      }
     ],
   },
   {
