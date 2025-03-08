@@ -4,7 +4,7 @@ import {
   LoginOutlined,
   UserOutlined,
   LogoutOutlined,
-  SettingOutlined,
+SettingOutlined,
   AppstoreOutlined,
   InfoCircleOutlined,
 } from '@ant-design/icons'
@@ -142,17 +142,25 @@ const Navbar: React.FC = () => {
         )
       )}
       {userData && (
-        <Menu.Item
-          key='logout'
-          icon={<LogoutOutlined />}
-          onClick={() => {
-            Cookies.remove('userData')
-            Cookies.remove('userToken')
-            navigate('/login')
-          }}
-        >
-          Đăng xuất
-        </Menu.Item>
+        <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+          <Menu.Item
+            key='welcome'
+          >
+            Welcome, {userData.Name}
+          </Menu.Item>
+          <Menu.Item
+            key='logout'
+            icon={<LogoutOutlined />}
+            onClick={() => {
+              Cookies.remove('userData')
+              Cookies.remove('userToken')
+              navigate('/login')
+            }}
+          >
+            Đăng xuất
+          </Menu.Item>
+        </div>
+
       )}
     </Menu>
   )
