@@ -23,8 +23,7 @@ import {
   PhoneOutlined,
   MailOutlined,
 } from '@ant-design/icons'
-import nursepng from '../../assets/Nurse.png'
-import ThanhHoa from '../../assets/36ThanhHoa.png'
+import Logo from '../../assets/Logo.png'
 
 interface VaccinationStat {
   count: number
@@ -69,25 +68,25 @@ const Homepage: React.FC = () => {
 
   const vaccines: VaccineType[] = [
     {
-      name: 'Bệnh TRÍ dại',
+      name: 'Bệnh dại',
       description:
         'Protects against coronavirus disease with high efficacy rate.',
       effectiveness: '94-95%',
-      image: nursepng,
+      image: Logo,
     },
     {
-      name: 'Nôn mữa 36',
+      name: 'Cúm mùa',
       description:
         'Annual protection against seasonal flu strains. 36 Thanh Hóa mãi đỉnh',
       effectiveness: '40-60%',
-      image: nursepng,
+      image: Logo,
     },
     {
-      name: 'Dốt bẩm sinh',
+      name: 'Viêm gan B',
       description:
         'Prevents human papillomavirus infections and related cancers.',
       effectiveness: '90%+',
-      image: nursepng,
+      image: Logo,
     },
   ]
 
@@ -162,7 +161,7 @@ const Homepage: React.FC = () => {
           </Col>
           <Col xs={24} md={12}>
             <img
-              src={ThanhHoa || '/placeholder.svg'}
+              src={Logo || '/placeholder.svg'}
               alt='Vắc xin Thanh Hóa'
               style={{
                 width: '100%',

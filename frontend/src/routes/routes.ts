@@ -1,4 +1,4 @@
-// import LoginRegisterLayout from '../components/layout/LoginRegisterLayout'
+import LoginRegisterLayout from '../components/layout/LoginRegisterLayout'
 import MainLayout from '../components/layout/MainLayout'
 import { ManagerLayout } from '../components/layout/ManagerLayout'
 import StaffLayout from '../components/layout/StaffLayout'
@@ -8,6 +8,7 @@ import StaffList from '../Pages/Home/Staff/StaffList'
 import VaccineList from '../Pages/Home/Vaccine/VaccineList'
 import Login from '../Pages/Login/Login'
 import ManagerHomePage from '../Pages/Manager/ManagerHomePage'
+import ProfilePage from '../Pages/Profile/ProfilePage'
 import Register from '../Pages/Register/Register'
 import StaffHomePage from '../Pages/Staff/StaffDefault/StaffHomePage'
 import { LayoutRoute } from '../types/routes'
@@ -22,15 +23,10 @@ const routes: LayoutRoute[] = [
         exact: true,
       },
       {
-        path: '/login',
-        component: Login,
-      },
-      {
-        path: '/register',
-        component: Register,
-      },
+        path: '/profile',
+        component: ProfilePage,
+      }
     ],
-
   },
   {
     layout: StaffLayout,
@@ -39,8 +35,13 @@ const routes: LayoutRoute[] = [
         path: '/staff',
         component: StaffHomePage,
         exact: true,
-        role: ['Staff']
+        role: ['Staff'],
       },
+    ],
+  },
+  {
+    layout: LoginRegisterLayout,
+    data: [
       {
         path: '/login',
         component: Login,
@@ -49,7 +50,7 @@ const routes: LayoutRoute[] = [
         path: '/register',
         component: Register,
       },
-    ]
+    ],
   },
   {
     layout: ManagerLayout,

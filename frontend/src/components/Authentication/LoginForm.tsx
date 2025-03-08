@@ -69,7 +69,6 @@ export const LoginForm = () => {
         initialValues={{ remember: true }}
         autoComplete='on'
         style={{
-          width: 800,
           padding: 24,
           background: '#fff',
           borderRadius: 8,
@@ -78,7 +77,6 @@ export const LoginForm = () => {
       >
         {/* Ô nhập email hoặc số điện thoại */}
         <Form.Item
-          label='Nhập email hoặc số điện thoại'
           name='contact' // Luôn giữ cố định là "contact"
           rules={[{ validator: (_, value) => validateInput(value) }]}
         >
@@ -100,7 +98,6 @@ export const LoginForm = () => {
 
         {/* Trường mật khẩu */}
         <Form.Item
-          label='Mật khẩu'
           name='password'
           rules={[
             { required: true, message: 'Vui lòng nhập mật khẩu' },

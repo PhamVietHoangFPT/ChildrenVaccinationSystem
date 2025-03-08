@@ -73,19 +73,16 @@ export function RegisterForm() {
       {({ handleSubmit, errors, touched }) => (
         <AntdForm
           style={{
-            width: 800,
+            width: 'auto',
             padding: 24,
             background: '#fff',
             borderRadius: 8,
             boxShadow: '0px 4px 10px rgba(0,0,0,0.1)',
           }}
           onFinish={handleSubmit}
-          labelCol={{ span: 6 }} // Cố định độ rộng của label
-          wrapperCol={{ span: 16 }} // Độ rộng của input
         >
           {/* Email */}
           <AntdForm.Item
-            label='Email'
             validateStatus={errors.email && touched.email ? 'error' : ''}
             help={touched.email && errors.email}
             required
@@ -95,7 +92,6 @@ export function RegisterForm() {
 
           {/* Tên người dùng */}
           <AntdForm.Item
-            label='Tên người dùng'
             validateStatus={errors.name && touched.name ? 'error' : ''}
             help={touched.name && errors.name}
             required
@@ -105,7 +101,6 @@ export function RegisterForm() {
 
           {/* Mật khẩu */}
           <AntdForm.Item
-            label='Mật khẩu'
             validateStatus={errors.password && touched.password ? 'error' : ''}
             help={touched.password && errors.password}
             required
@@ -118,7 +113,6 @@ export function RegisterForm() {
           </AntdForm.Item>
 
           <AntdForm.Item
-            label='Nhập lại mật khẩu'
             validateStatus={
               errors.retypePassword && touched.retypePassword ? 'error' : ''
             }
@@ -133,7 +127,7 @@ export function RegisterForm() {
           </AntdForm.Item>
 
           {/* Button Submit */}
-          <AntdForm.Item wrapperCol={{ offset: 6, span: 16 }}>
+          <AntdForm.Item>
             <AntdForm.Item>
               <div
                 style={{
