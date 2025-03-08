@@ -17,7 +17,6 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.DTOs
         public int? Sequence { get; set; }
         public double? Dosage { get; set; } 
         public int? DosageInterval { get; set; }
-        //public Category? Category { get; set; }
         public string CategoryId { get; set; } = default!;
         public string ManufacturerId { get; set; } = default!;
 

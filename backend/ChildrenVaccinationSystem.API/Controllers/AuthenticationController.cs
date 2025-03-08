@@ -21,27 +21,7 @@ namespace ChildrenVaccinationSystem.API.Controllers
 		[HttpPost("login")]
 		public async Task<IActionResult> LoginAsync(LoginDto loginDto)
 		{
-			string? token = await _authenticationService.LoginAsync(loginDto);
-
-			if (token == "Unauthenticated")
-			{
-				return BadRequest(new BaseResponse<string>(
-					statusCode: StatusCodeEnum.BadRequest,
-					code: StatusCodeEnum.BadRequest.ToString(),
-					message: "Sai mật khẩu hoặc tài khoản!",
-					data: null
-				));
-			}
-
-			if (token == "Unverified")
-			{
-				return BadRequest(new BaseResponse<string>(
-					statusCode: StatusCodeEnum.BadRequest,
-					code: StatusCodeEnum.BadRequest.ToString(),
-					message: "Tài khoản chưa được xác thực, khách hàng vui lòng kiểm tra hộp mail!",
-					data: null
-				));
-			}
+			string token = await _authenticationService.LoginAsync(loginDto);
 
 			return Ok(new BaseResponse<string>(
 				statusCode: StatusCodeEnum.OK,
@@ -54,22 +34,12 @@ namespace ChildrenVaccinationSystem.API.Controllers
 		[HttpPost("register")]
 		public async Task<IActionResult> RegisterAsync(RegisterDto registerDto)
 		{
-			bool result = await _authenticationService.RegisterAsync(registerDto);
-
-			if (!result)
-			{
-				return BadRequest(new BaseResponse<string>(
-					statusCode: StatusCodeEnum.BadRequest,
-					code: StatusCodeEnum.BadRequest.ToString(),
-					message: "Register unsuccessfully, the email or phone number you provided already exists",
-					data: null
-				));
-			}
+			await _authenticationService.RegisterAsync(registerDto);
 
 			return Ok(new BaseResponse<string>(
 				statusCode: StatusCodeEnum.OK,
 				code: StatusCodeEnum.OK.ToString(),
-				message: "Register successfully, please check email to confirm",
+				message: "Đăng ký thành công, bạn vui lòng kiểm tra mail để xác nhận tài khoản",
 				data: null
 			));
 		}

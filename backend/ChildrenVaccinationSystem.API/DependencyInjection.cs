@@ -1,5 +1,6 @@
 ﻿using ChildrenVaccinationSystem.API.Middleware;
 using ChildrenVaccinationSystem.Contract.Repositories.IUOW;
+using ChildrenVaccinationSystem.Contract.Repositories.Mapper;
 using ChildrenVaccinationSystem.Contract.Services;
 using ChildrenVaccinationSystem.Repositories.DatabaseContext;
 using ChildrenVaccinationSystem.Repositories.SeedData;
@@ -104,7 +105,7 @@ namespace ChildrenVaccinationSystem.API
 
         public static void AddAutoMapper(this IServiceCollection services)
 		{
-			services.AddAutoMapper(Assembly.GetExecutingAssembly());
+			services.AddAutoMapper(typeof(MapperProfile));
 		}
 
 		public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)

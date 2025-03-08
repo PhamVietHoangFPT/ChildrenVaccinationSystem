@@ -31,7 +31,7 @@ namespace ChildrenVaccinationSystem.Core.Base
 				: base(400, new ErrorDetail
 				{
 					ErrorCode = "bad_request",
-					ErrorMessage = errors
+					Message = errors
 				})
 			{
 			}
@@ -49,7 +49,7 @@ namespace ChildrenVaccinationSystem.Core.Base
 				ErrorDetail = new ErrorDetail
 				{
 					ErrorCode = errorCode,
-					ErrorMessage = message
+					Message = message
 				};
 			}
 
@@ -63,7 +63,7 @@ namespace ChildrenVaccinationSystem.Core.Base
 		{
 			public string? ErrorCode { get; set; }
 
-			public object? ErrorMessage { get; set; }
+			public object? Message { get; set; }
 		}
 	}
 }

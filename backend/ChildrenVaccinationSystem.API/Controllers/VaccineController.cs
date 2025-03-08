@@ -2,6 +2,7 @@
 using ChildrenVaccinationSystem.Contract.Repositories.Entities;
 using ChildrenVaccinationSystem.Contract.Services;
 using ChildrenVaccinationSystem.Core.Base;
+using ChildrenVaccinationSystem.Core.Enum;
 using ChildrenVaccinationSystem.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,67 +21,59 @@ namespace ChildrenVaccinationSystem.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetVaccine(int pageNumber = -1, int pageSize = -1)
         {
-            var vaccines = await _vaccineService.GetVaccinesAsync(pageNumber, pageSize);
-            return Ok(BaseResponse<BasePaginatedList<Vaccine>>.OkResponse(vaccines));
+            BasePaginatedList<VaccineViewDto> vaccines = await _vaccineService.GetVaccinesAsync(pageNumber, pageSize);
+
+            return Ok(new BaseResponse<BasePaginatedList<VaccineViewDto>>(
+                statusCode: StatusCodeEnum.OK,
+                code: StatusCodeEnum.OK.ToString(),
+                message: "Lấy vaccine thành công",
+                data: vaccines
+            ));
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddVaccine([FromBody] VaccineCreateDto vaccineDto)
+        public async Task<IActionResult> AddVaccine(VaccineCreateDto vaccineDto)
         {
-            if (vaccineDto == null)
-            {
-                return BadRequest(BaseResponse<string>.ErrorResponse("Invalid vaccine data"));
-            }
+            await _vaccineService.CreateVaccineAsync(vaccineDto);
 
-            var isCreated = await _vaccineService.CreateVaccineAsync(vaccineDto);
-
-            if (!isCreated)
-            {
-                return StatusCode(500, BaseResponse<string>.ErrorResponse("Failed to create vaccine"));
-            }
-
-            return Ok(BaseResponse<string>.OkResponse("Vaccine created successfully"));
+            return Ok(new BaseResponse<BasePaginatedList<string>>(
+                statusCode: StatusCodeEnum.OK,
+                code: StatusCodeEnum.OK.ToString(),
+                message: "Thêm vaccine thành công",
+                data: null
+            ));
         }
 
 
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateVaccine(string id, [FromBody] VaccineUpdateDto vaccineDto)
+        public async Task<IActionResult> UpdateVaccine(string id, VaccineUpdateDto vaccineDto)
         {
-            if (vaccineDto == null || id != vaccineDto.Id)
-            {
-                return BadRequest(BaseResponse<string>.ErrorResponse("Invalid vaccine data"));
-            }
+			await _vaccineService.UpdateVaccineAsync(id, vaccineDto);
 
-            var isUpdated = await _vaccineService.UpdateVaccineAsync(vaccineDto);
-
-            if (!isUpdated)
-            {
-                return NotFound(BaseResponse<string>.ErrorResponse("Vaccine not found or update failed"));
-            }
-
-            return Ok(BaseResponse<string>.OkResponse("Vaccine updated successfully"));
-        }
+			return Ok(new BaseResponse<BasePaginatedList<string>>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Cập nhật vaccine thành công",
+				data: null
+			));
+		}
 
 
-        [HttpDelete("{id}")]
+		[HttpDelete("{id}")]
         public async Task<IActionResult> DeleteVaccine(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-            {
-                return BadRequest(BaseResponse<string>.ErrorResponse("Invalid vaccine ID"));
-            }
 
-            var isDeleted = await _vaccineService.DeleteVaccineAsync(id);
+            await _vaccineService.DeleteVaccineAsync(id);
 
-            if (!isDeleted)
-            {
-                return NotFound(BaseResponse<string>.ErrorResponse("Vaccine not found"));
-            }
+			return Ok(new BaseResponse<BasePaginatedList<string>>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Xóa vaccine thành công",
+				data: null
+			));
+		}
 
-            return Ok(BaseResponse<string>.OkResponse("Vaccine deleted successfully"));
-        }
-
-    }
+	}
 
 }

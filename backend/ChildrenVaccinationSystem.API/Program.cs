@@ -1,4 +1,5 @@
 
+using ChildrenVaccinationSystem.API.Middleware;
 using ChildrenVaccinationSystem.Contract.Services;
 using ChildrenVaccinationSystem.Services;
 using Microsoft.OpenApi.Models;
@@ -37,7 +38,9 @@ namespace ChildrenVaccinationSystem.API
 
 			app.UseHttpsRedirection();
 
-            app.UseAuthorization();
+			app.UseMiddleware<ExceptionMiddleware>();
+
+			app.UseAuthorization();
 
             app.MapControllers();
 

@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ChildrenVaccinationSystem.Contract.Repositories.DTOs
+﻿namespace ChildrenVaccinationSystem.Contract.Repositories.DTOs
 {
     public class VaccineUpdateDto
     {
-        public string Id { get; set; } = default!;
         public string Name { get; set; } = default!;
         public double Price { get; set; }
         public string? Description { get; set; }
