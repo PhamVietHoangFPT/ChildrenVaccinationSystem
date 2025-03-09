@@ -1,4 +1,4 @@
-﻿using ChildrenVaccinationSystem.Contract.Repositories.DTOs;
+﻿using ChildrenVaccinationSystem.Contract.Repositories.Dtos.AccountDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Entities;
 using ChildrenVaccinationSystem.Contract.Repositories.IUOW;
 using ChildrenVaccinationSystem.Contract.Services;
@@ -20,14 +20,14 @@ using System.Threading.Tasks;
 
 namespace ChildrenVaccinationSystem.Services
 {
-	public class AuthenticationService : IAuthenticationService
+	public class AccountService : IAccountService
 	{
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IConfiguration _configuration;
 		private readonly IHttpContextAccessor _httpContextAccessor;
 		private readonly IEmailService _emailService;
 
-		public AuthenticationService(IUnitOfWork unitOfWork, IConfiguration configuration, IHttpContextAccessor httpContextAccessor, IEmailService emailService)
+		public AccountService(IUnitOfWork unitOfWork, IConfiguration configuration, IHttpContextAccessor httpContextAccessor, IEmailService emailService)
 		{
 			_unitOfWork = unitOfWork;
 			_configuration = configuration;
@@ -43,26 +43,26 @@ namespace ChildrenVaccinationSystem.Services
 		}
 
 
-		public async Task<string?> LoginAsync(LoginDto loginDto)
+		public async Task<string> LoginAsync(LoginDto loginDto)
 		{
 			Account? account = await _unitOfWork.GetRepository<Account>().Entities
-				.Where(a => a.Email == loginDto.Email || a.PhoneNumber == loginDto.PhoneNumber)
+				.Where(a => (a.Email == loginDto.Email || a.PhoneNumber == loginDto.PhoneNumber) && a.DeletedBy == null)
 				.FirstOrDefaultAsync();
 
 			if (account == null || !BCrypt.Net.BCrypt.Verify(loginDto.Password, account.Password))
 			{
-				return "Unauthenticated";
+				throw new BaseException.ErrorException(401, "unauthorized", "Sai mật khẩu hoặc tài khoản");
 			}
 
 			if (account.VerificationToken != null)
 			{
-				return "Unverified";
+				throw new BaseException.ErrorException(403, "forbidden", "Tài khoản chưa được xác thực, khách hàng vui lòng kiểm tra hộp mail");
 			}
 
-			return GenerateJwtToken(account!);
+			return GenerateJwtToken(account);
 		}
 
-		public async Task<bool> RegisterAsync(RegisterDto registerDto)
+		public async Task RegisterAsync(RegisterDto registerDto)
 		{
 			// Check if the user already exists
 			var existingAccount = await _unitOfWork.GetRepository<Account>().Entities
@@ -70,7 +70,7 @@ namespace ChildrenVaccinationSystem.Services
 				.FirstOrDefaultAsync();
 			if (existingAccount != null)
 			{
-				return false;
+				throw new BaseException.ErrorException(409, "conflict", "Email này đã được sử dụng, vui lòng thử lại");
 			}
 
 			// Hash the password
@@ -95,7 +95,6 @@ namespace ChildrenVaccinationSystem.Services
 
 			// Send verification email
 			await _emailService.SendVerificationEmailAsync(registerDto.Email, newCustomer.VerificationToken);
-			return true;
 		}
 
 		public Task ResetPasswordAsync(string token, string newPassword)
@@ -126,7 +125,7 @@ namespace ChildrenVaccinationSystem.Services
 		}
 
 
-		public void UpdateAudits(BaseEntity entity, bool isCreating = false, bool isDeleting = false)
+		public void UpdateAudits(BaseEntity entity, bool isCreating, bool isDeleting = false)
 		{
 			// Retrieve the JWT token from the Authorization header
 			var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
@@ -171,7 +170,7 @@ namespace ChildrenVaccinationSystem.Services
 			}
 
 			// Extract claims from the principal
-			var userIdClaim = principal.Claims.FirstOrDefault(c => c.Type == "userId");
+			var userIdClaim = principal.Claims.FirstOrDefault(c => c.Type == "Id");
 
 			if (userIdClaim != null && Guid.TryParse(userIdClaim.Value, out Guid parsedUserID))
 			{

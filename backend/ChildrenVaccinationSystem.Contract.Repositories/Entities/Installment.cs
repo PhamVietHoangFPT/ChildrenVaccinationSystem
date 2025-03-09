@@ -1,6 +1,5 @@
 ﻿using ChildrenVaccinationSystem.Core.Base;
 using ChildrenVaccinationSystem.Core.Enum;
-using System;
 
 namespace ChildrenVaccinationSystem.Contract.Repositories.Entities
 {

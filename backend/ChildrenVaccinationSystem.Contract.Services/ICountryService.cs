@@ -1,4 +1,5 @@
-﻿using ChildrenVaccinationSystem.Contract.Repositories.Entities;
+﻿using ChildrenVaccinationSystem.Contract.Repositories.Dtos.CountryDtos;
+using ChildrenVaccinationSystem.Contract.Repositories.Entities;
 using ChildrenVaccinationSystem.Core.Base;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,8 @@ namespace ChildrenVaccinationSystem.Contract.Services
 {
 	public interface ICountryService
 	{
-		Task<BasePaginatedList<Country>> GetCountriesAsync(int pageNumber, int pageSize);
+		Task<BasePaginatedList<CountryViewDto>> GetCountriesAsync(int pageNumber, int pageSize);
+		Task<BasePaginatedList<Country>> SearchCountriesAsync(int pageNumber, int pageSize);
 
 	}
 }
