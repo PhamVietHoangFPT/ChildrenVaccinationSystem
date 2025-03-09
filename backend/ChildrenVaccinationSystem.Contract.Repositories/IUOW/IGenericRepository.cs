@@ -23,7 +23,7 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.IUOW
 		Task<T?> GetByIdAsync(object id);
 		Task InsertAsync(T obj);
 		Task UpdateAsync(T obj);
-		Task DeleteAsync(object id);
+		Task DeleteAsync(object entity);
 		Task SaveAsync();
 	}
 }

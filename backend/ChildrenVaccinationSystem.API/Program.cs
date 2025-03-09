@@ -1,4 +1,7 @@
 
+using ChildrenVaccinationSystem.API.Middleware;
+using ChildrenVaccinationSystem.Contract.Services;
+using ChildrenVaccinationSystem.Services;
 using Microsoft.OpenApi.Models;
 
 namespace ChildrenVaccinationSystem.API
@@ -17,8 +20,10 @@ namespace ChildrenVaccinationSystem.API
 
 			// Execute the DI pipeline
 			builder.Services.AddConfig(builder.Configuration);
+            builder.Services.AddScoped<IVaccineService, VaccineService>();
 
-            
+
+
 
             var app = builder.Build();
 
@@ -28,9 +33,14 @@ namespace ChildrenVaccinationSystem.API
             app.UseSwagger();
             app.UseSwaggerUI();
 
-            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+			app.UseRouting();
 
-            app.UseAuthorization();
+			app.UseHttpsRedirection();
+
+			app.UseMiddleware<ExceptionMiddleware>();
+
+			app.UseAuthorization();
 
             app.MapControllers();
 
