@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ChildrenVaccinationSystem.Contract.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ChildrenVaccinationSystem.API.Controllers
 {
@@ -6,5 +7,12 @@ namespace ChildrenVaccinationSystem.API.Controllers
 	[ApiController]
 	public class FacilitiesController : ControllerBase
 	{
+		private IFacilityService _countryService;
+
+		public FacilitiesController(IFacilityService countryService)
+		{
+			_countryService = countryService;
+		}
+
 	}
 }

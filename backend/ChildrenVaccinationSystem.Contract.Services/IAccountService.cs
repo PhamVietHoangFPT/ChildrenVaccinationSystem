@@ -6,12 +6,12 @@ namespace ChildrenVaccinationSystem.Contract.Services
 {
 	public interface IAccountService
 	{
-		Task<string> LoginAsync(LoginDto loginDto);
-		Task RegisterAsync(RegisterDto registerDto);
-		Task<bool> VerifyAccountAsync(string token);
-		Task ForgotPasswordAsync(string email, string userName);
-		Task ResetPasswordAsync(string token, string newPassword);
-		Task VerifyResetPasswordTokenAsync(string token);
+		Task<string> Login(LoginDto loginDto);
+		Task Register(RegisterDto registerDto);
+		Task<bool> VerifyAccount(string token);
+		Task ForgotPassword(string email, string userName);
+		Task ResetPassword(string token, string newPassword);
+		Task VerifyResetPasswordToken(string token);
 		void UpdateAudits(BaseEntity entity, bool isCreating, bool isDeleting = false);
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ChildrenVaccinationSystem.Contract.Repositories.Dtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Dtos.AccountDtos;
+using ChildrenVaccinationSystem.Contract.Repositories.Dtos.BlogDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Dtos.CategoryDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Dtos.ChildDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Dtos.CountryDtos;
@@ -29,18 +30,44 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Mapper
 
 			CreateMap<Account, AccountViewDto>();
 
+			CreateMap<Blog, BlogViewDto>();
+			CreateMap<BlogCreateDto, Blog>();
+			CreateMap<BlogUpdateDto, Blog>()
+				.ForAllMembers(opt => opt.Condition(
+				(src, dest, srcMember) => srcMember != null &&
+										  (srcMember is not string || !string.IsNullOrWhiteSpace(srcMember.ToString()))
+				));
+
+
 			CreateMap<Category, CategoryViewDto>();
+			CreateMap<CategoryCreateDto, Category>();
+			CreateMap<CategoryUpdateDto, Category>()
+				.ForAllMembers(opt => opt.Condition(
+				(src, dest, srcMember) => srcMember != null &&
+										  (srcMember is not string || !string.IsNullOrWhiteSpace(srcMember.ToString()))
+				));
 
 			CreateMap<Child, ChildViewDto>();
 
 			CreateMap<Country, CountryViewDto>();
 
 			CreateMap<Facility, FacilityViewDto>();
-
+			CreateMap<FacilityCreateDto, Facility>();
+			CreateMap<FacilityUpdateDto, Facility>()
+				.ForAllMembers(opt => opt.Condition(
+				(src, dest, srcMember) => srcMember != null &&
+										  (srcMember is not string || !string.IsNullOrWhiteSpace(srcMember.ToString()))
+				));
 
 			CreateMap<Image, ImageViewDto>();
 
 			CreateMap<Manufacturer, ManufacturerViewDto>();
+			CreateMap<ManufacturerCreateDto, Manufacturer>();
+			CreateMap<ManufacturerUpdateDto, Manufacturer>()
+				.ForAllMembers(opt => opt.Condition(
+				(src, dest, srcMember) => srcMember != null &&
+										  (srcMember is not string || !string.IsNullOrWhiteSpace(srcMember.ToString()))
+				));
 
 			CreateMap<Package, PackageViewDto>();
 
@@ -52,8 +79,12 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Mapper
 			CreateMap<VaccinationDetail, VaccinationDetailViewDto>();
 
 			CreateMap<Vaccine, VaccineViewDto>();
-			CreateMap<Vaccine, VaccineCreateDto>().ReverseMap();
-			CreateMap<Vaccine, VaccineUpdateDto>().ReverseMap();
+			CreateMap<VaccineCreateDto, Vaccine>();
+			CreateMap<VaccineUpdateDto, Vaccine>()
+				.ForAllMembers(opt => opt.Condition(
+				(src, dest, srcMember) => srcMember != null &&
+										  (srcMember is not string || !string.IsNullOrWhiteSpace(srcMember.ToString()))
+				));
 
 			CreateMap<VaccineInventory, VaccineInventoryViewDto>();
 

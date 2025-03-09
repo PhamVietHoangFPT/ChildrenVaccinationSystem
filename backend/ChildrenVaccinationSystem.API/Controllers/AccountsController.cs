@@ -19,11 +19,11 @@ namespace ChildrenVaccinationSystem.API.Controllers
 		}
 
 		[HttpPost("login")]
-		public async Task<IActionResult> LoginAsync(LoginDto loginDto)
+		public async Task<IActionResult> Login(LoginDto loginDto)
 		{
-			string token = await _authenticationService.LoginAsync(loginDto);
+			string token = await _authenticationService.Login(loginDto);
 
-			return Ok(new BaseResponse<string>(
+			return Ok(new BaseResponse<object>(
 				statusCode: StatusCodeEnum.OK,
 				code: StatusCodeEnum.OK.ToString(),
 				message: "Đăng nhập thành công",
@@ -32,11 +32,11 @@ namespace ChildrenVaccinationSystem.API.Controllers
 		}
 
 		[HttpPost("register")]
-		public async Task<IActionResult> RegisterAsync(RegisterDto registerDto)
+		public async Task<IActionResult> Register(RegisterDto registerDto)
 		{
-			await _authenticationService.RegisterAsync(registerDto);
+			await _authenticationService.Register(registerDto);
 
-			return Ok(new BaseResponse<string>(
+			return Ok(new BaseResponse<object>(
 				statusCode: StatusCodeEnum.OK,
 				code: StatusCodeEnum.OK.ToString(),
 				message: "Đăng ký thành công, bạn vui lòng kiểm tra mail để xác nhận tài khoản",
@@ -45,9 +45,9 @@ namespace ChildrenVaccinationSystem.API.Controllers
 		}
 
 		[HttpGet("verify-account")]
-		public async Task<IActionResult> VerifyAccountAsync(string token)
+		public async Task<IActionResult> VerifyAccount(string token)
 		{
-			bool result = await _authenticationService.VerifyAccountAsync(token);
+			bool result = await _authenticationService.VerifyAccount(token);
 
 			if (!result)
 			{
@@ -58,13 +58,6 @@ namespace ChildrenVaccinationSystem.API.Controllers
 					data: null
 				));
 			}
-
-			//return Ok(new BaseResponse<string>(
-			//	statusCode: StatusCodeEnum.OK,
-			//	code: StatusCodeEnum.OK.ToString(),
-			//	message: "Your account has been verified",
-			//	data: null
-			//));
 			return Redirect(_configuration["VerifySuccessUrl"]!);
 		}
 	}

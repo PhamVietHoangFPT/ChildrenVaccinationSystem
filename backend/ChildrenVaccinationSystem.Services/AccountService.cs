@@ -37,13 +37,13 @@ namespace ChildrenVaccinationSystem.Services
 
 		
 
-		public Task ForgotPasswordAsync(string email, string userName)
+		public Task ForgotPassword(string email, string userName)
 		{
 			throw new NotImplementedException();
 		}
 
 
-		public async Task<string> LoginAsync(LoginDto loginDto)
+		public async Task<string> Login(LoginDto loginDto)
 		{
 			Account? account = await _unitOfWork.GetRepository<Account>().Entities
 				.Where(a => (a.Email == loginDto.Email || a.PhoneNumber == loginDto.PhoneNumber) && a.DeletedBy == null)
@@ -62,7 +62,7 @@ namespace ChildrenVaccinationSystem.Services
 			return GenerateJwtToken(account);
 		}
 
-		public async Task RegisterAsync(RegisterDto registerDto)
+		public async Task Register(RegisterDto registerDto)
 		{
 			// Check if the user already exists
 			var existingAccount = await _unitOfWork.GetRepository<Account>().Entities
@@ -94,15 +94,15 @@ namespace ChildrenVaccinationSystem.Services
 			await _unitOfWork.SaveAsync();
 
 			// Send verification email
-			await _emailService.SendVerificationEmailAsync(registerDto.Email, newCustomer.VerificationToken);
+			await _emailService.SendVerificationEmail(registerDto.Email, newCustomer.VerificationToken);
 		}
 
-		public Task ResetPasswordAsync(string token, string newPassword)
+		public Task ResetPassword(string token, string newPassword)
 		{
 			throw new NotImplementedException();
 		}
 
-		public async Task<bool> VerifyAccountAsync(string token)
+		public async Task<bool> VerifyAccount(string token)
 		{
 
 			Account? account = await _unitOfWork.GetRepository<Account>().Entities.Where(a => a.VerificationToken == token).FirstOrDefaultAsync();
@@ -119,7 +119,7 @@ namespace ChildrenVaccinationSystem.Services
 			return true;
 		}
 
-		public Task VerifyResetPasswordTokenAsync(string token)
+		public Task VerifyResetPasswordToken(string token)
 		{
 			throw new NotImplementedException();
 		}
