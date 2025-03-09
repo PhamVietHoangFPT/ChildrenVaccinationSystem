@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using ChildrenVaccinationSystem.Contract.Repositories.DTOs;
+using ChildrenVaccinationSystem.Contract.Repositories.Dtos.VaccineDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Entities;
 using ChildrenVaccinationSystem.Contract.Repositories.IUOW;
 using ChildrenVaccinationSystem.Contract.Services;
@@ -13,13 +13,13 @@ using System.Threading.Tasks;
 
 namespace ChildrenVaccinationSystem.Services
 {
-    public class VaccineService : IVaccineService
+	public class VaccineService : IVaccineService
     {
         private readonly IUnitOfWork _unitOfWork;
 		private readonly IMapper _mapper;
-        private readonly IAuthenticationService _authenticationService;
+        private readonly IAccountService _authenticationService;
 
-		public VaccineService(IUnitOfWork unitOfWork, IMapper mapper, IAuthenticationService authenticationService)
+		public VaccineService(IUnitOfWork unitOfWork, IMapper mapper, IAccountService authenticationService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;

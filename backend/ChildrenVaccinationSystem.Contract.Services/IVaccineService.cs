@@ -1,4 +1,4 @@
-﻿using ChildrenVaccinationSystem.Contract.Repositories.DTOs;
+﻿using ChildrenVaccinationSystem.Contract.Repositories.Dtos.VaccineDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Entities;
 using ChildrenVaccinationSystem.Core.Base;
 using System;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ChildrenVaccinationSystem.Contract.Services
 {
-    public interface IVaccineService
+	public interface IVaccineService
     {
         Task<BasePaginatedList<VaccineViewDto>> GetVaccinesAsync(int pageNumber, int pageSize);
 
