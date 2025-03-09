@@ -11,11 +11,12 @@ namespace ChildrenVaccinationSystem.Contract.Services
 {
 	public interface IVaccineService
     {
-        Task<BasePaginatedList<VaccineViewDto>> GetVaccinesAsync(int pageNumber, int pageSize);
+        Task<BasePaginatedList<VaccineViewDto>> GetVaccines(int pageNumber, int pageSize);
+        Task<VaccineViewDto> GetVaccineById(string id);
 
-        Task CreateVaccineAsync(VaccineCreateDto vaccineCreateDto);
+        Task CreateVaccine(VaccineCreateDto vaccineCreateDto);
 
-        Task UpdateVaccineAsync(string id, VaccineUpdateDto vaccineUpdateDto);
-        Task DeleteVaccineAsync(string id);
+        Task UpdateVaccine(string id, VaccineUpdateDto vaccineUpdateDto);
+        Task DeleteVaccine(string id);
     }
 }

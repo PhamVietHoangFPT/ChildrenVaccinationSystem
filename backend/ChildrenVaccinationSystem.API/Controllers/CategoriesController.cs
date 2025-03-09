@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ChildrenVaccinationSystem.Contract.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ChildrenVaccinationSystem.API.Controllers
 {
@@ -6,5 +7,11 @@ namespace ChildrenVaccinationSystem.API.Controllers
 	[ApiController]
 	public class CategoriesController : ControllerBase
 	{
+		private readonly ICategoryService _categoryService;
+
+		public CategoriesController(ICategoryService categoryService) 
+		{
+			_categoryService = categoryService;
+		}
 	}
 }

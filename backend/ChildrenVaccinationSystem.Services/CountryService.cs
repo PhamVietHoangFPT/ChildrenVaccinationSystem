@@ -20,7 +20,7 @@ namespace ChildrenVaccinationSystem.Services
 			_mapper = mapper;
 		}
 
-		public async Task<BasePaginatedList<CountryViewDto>> GetCountriesAsync(int pageNumber, int pageSize)
+		public async Task<BasePaginatedList<CountryViewDto>> GetCountries(int pageNumber, int pageSize)
 		{
 			IQueryable<Country> query = _unitOfWork.GetRepository<Country>().Entities.Where(c => c.DeletedBy == null);
 
@@ -33,7 +33,7 @@ namespace ChildrenVaccinationSystem.Services
 			return new BasePaginatedList<CountryViewDto>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
 		}
 
-		public Task<BasePaginatedList<Country>> SearchCountriesAsync(int pageNumber, int pageSize)
+		public Task<BasePaginatedList<CountryViewDto>> SearchCountries(int pageNumber, int pageSize)
 		{
 			throw new NotImplementedException();
 		}

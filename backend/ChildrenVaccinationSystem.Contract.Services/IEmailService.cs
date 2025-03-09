@@ -2,6 +2,6 @@
 {
 	public interface IEmailService
 	{
-		Task SendVerificationEmailAsync(string email, string verificationToken);
+		Task SendVerificationEmail(string email, string verificationToken);
 	}
 }

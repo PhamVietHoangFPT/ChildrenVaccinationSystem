@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ChildrenVaccinationSystem.API.Controllers
 {
-	[Route("api/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class VaccinesController : ControllerBase
     {
@@ -21,22 +21,35 @@ namespace ChildrenVaccinationSystem.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetVaccines(int pageNumber = -1, int pageSize = -1)
         {
-            BasePaginatedList<VaccineViewDto> vaccines = await _vaccineService.GetVaccinesAsync(pageNumber, pageSize);
+            BasePaginatedList<VaccineViewDto> vaccines = await _vaccineService.GetVaccines(pageNumber, pageSize);
 
-            return Ok(new BaseResponse<BasePaginatedList<VaccineViewDto>>(
+            return Ok(new BaseResponse<object>(
                 statusCode: StatusCodeEnum.OK,
                 code: StatusCodeEnum.OK.ToString(),
-                message: "Lấy vaccine thành công",
+                message: "Lấy vaccines thành công",
                 data: vaccines
             ));
         }
 
-        [HttpPost]
+        [HttpGet("{id}")]
+		public async Task<IActionResult> GetVaccineById(string id)
+		{
+			VaccineViewDto vaccine = await _vaccineService.GetVaccineById(id);
+
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Lấy vaccine thành công",
+				data: vaccine
+			));
+		}
+
+		[HttpPost]
         public async Task<IActionResult> AddVaccine(VaccineCreateDto vaccineDto)
         {
-            await _vaccineService.CreateVaccineAsync(vaccineDto);
+            await _vaccineService.CreateVaccine(vaccineDto);
 
-            return Ok(new BaseResponse<BasePaginatedList<string>>(
+            return Ok(new BaseResponse<object>(
                 statusCode: StatusCodeEnum.OK,
                 code: StatusCodeEnum.OK.ToString(),
                 message: "Thêm vaccine thành công",
@@ -48,9 +61,9 @@ namespace ChildrenVaccinationSystem.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateVaccine(string id, VaccineUpdateDto vaccineDto)
         {
-			await _vaccineService.UpdateVaccineAsync(id, vaccineDto);
+			await _vaccineService.UpdateVaccine(id, vaccineDto);
 
-			return Ok(new BaseResponse<BasePaginatedList<string>>(
+			return Ok(new BaseResponse<object>(
 				statusCode: StatusCodeEnum.OK,
 				code: StatusCodeEnum.OK.ToString(),
 				message: "Cập nhật vaccine thành công",
@@ -63,9 +76,9 @@ namespace ChildrenVaccinationSystem.API.Controllers
         public async Task<IActionResult> DeleteVaccine(string id)
         {
 
-            await _vaccineService.DeleteVaccineAsync(id);
+            await _vaccineService.DeleteVaccine(id);
 
-			return Ok(new BaseResponse<BasePaginatedList<string>>(
+			return Ok(new BaseResponse<object>(
 				statusCode: StatusCodeEnum.OK,
 				code: StatusCodeEnum.OK.ToString(),
 				message: "Xóa vaccine thành công",

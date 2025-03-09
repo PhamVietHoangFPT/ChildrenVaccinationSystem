@@ -24,7 +24,7 @@ namespace ChildrenVaccinationSystem.Services
 			_configuration = configuration;
 		}
 
-		public Task SendVerificationEmailAsync(string email, string verificationToken)
+		public Task SendVerificationEmail(string email, string verificationToken)
 		{
 			var mail = "kidsvaccinecorp@gmail.com";
 			var pw = "swdg enlv vfrk rpdf";
