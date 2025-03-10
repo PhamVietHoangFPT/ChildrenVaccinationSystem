@@ -28,11 +28,6 @@ namespace ChildrenVaccinationSystem.Services
 
 		public async Task CreateFacility(FacilityCreateDto facilityCreateDto)
 		{
-            if (!_unitOfWork.IsValid<Facility>(facilityCreateDto.Name))
-                throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy tên facility");
-
-            if (!_unitOfWork.IsValid<Facility>(facilityCreateDto.Address))
-                throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy address");
 
             Facility facility = new Facility();
 
@@ -93,12 +88,6 @@ namespace ChildrenVaccinationSystem.Services
 
             if (facility == null)
                 throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy facility id");
-
-            if (facilityUpdateDto.Name != null && !_unitOfWork.IsValid<Facility>(facilityUpdateDto.Name))
-                throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy tên facility");
-
-            if (facilityUpdateDto.Address != null && !_unitOfWork.IsValid<Facility>(facilityUpdateDto.Address))
-                throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy address");
 
             _mapper.Map(facilityUpdateDto, facility);
             _authenticationService.UpdateAudits(facility, false);

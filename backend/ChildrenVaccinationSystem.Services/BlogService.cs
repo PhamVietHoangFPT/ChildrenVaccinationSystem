@@ -32,12 +32,6 @@ namespace ChildrenVaccinationSystem.Services
 
 		public async Task CreateBlog(BlogCreateDto blogCreateDto)
 		{
-            if (!_unitOfWork.IsValid<Blog>(blogCreateDto.Title))
-                throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy category id");
-
-            if (!_unitOfWork.IsValid<Blog>(blogCreateDto.Content))
-                throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy author id");
-
             Blog blog = new Blog();
 
             _mapper.Map(blogCreateDto, blog);
@@ -94,12 +88,6 @@ namespace ChildrenVaccinationSystem.Services
 
             if (blog == null)
                 throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy blog id");
-
-            if (blogUpdateDto.Title != null && !_unitOfWork.IsValid<Blog>(blogUpdateDto.Title))
-                throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy category id");
-
-            if (blogUpdateDto.Content != null && !_unitOfWork.IsValid<Blog>(blogUpdateDto.Content))
-                throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy author id");
 
             _mapper.Map(blogUpdateDto, blog);
             _authenticationService.UpdateAudits(blog, false);

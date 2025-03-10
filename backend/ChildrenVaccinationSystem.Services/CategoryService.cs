@@ -31,8 +31,6 @@ namespace ChildrenVaccinationSystem.Services
 
 		public async Task CreateCategory(CategoryCreateDto categoryCreateDto)
 		{
-            if (!_unitOfWork.IsValid<Category>(categoryCreateDto.Name))
-                throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy tên Category");
 
             Category category = new Category();
 
@@ -91,9 +89,6 @@ namespace ChildrenVaccinationSystem.Services
 
             if (category == null)
                 throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy category id");
-
-            if (categoryUpdateDto.Name != null && !_unitOfWork.IsValid<Category>(categoryUpdateDto.Name))
-                throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy parent category id");
 
             _mapper.Map(categoryUpdateDto, category);
             _authenticationService.UpdateAudits(category, false);

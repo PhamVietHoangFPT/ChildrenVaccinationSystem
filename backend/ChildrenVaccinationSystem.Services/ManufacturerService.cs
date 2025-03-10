@@ -29,7 +29,7 @@ namespace ChildrenVaccinationSystem.Services
 
         public async Task CreateManufacturer(ManufacturerCreateDto manufacturerCreateDto)
 		{
-            if (!_unitOfWork.IsValid<Category>(manufacturerCreateDto.CountryId))
+            if (!_unitOfWork.IsValid<Country>(manufacturerCreateDto.CountryId))
                 throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy category id");
 
             Manufacturer manufacturer = new Manufacturer();
@@ -58,7 +58,7 @@ namespace ChildrenVaccinationSystem.Services
             Manufacturer? manufacturer = await _unitOfWork.GetRepository<Manufacturer>().Entities.Where(v => v.Id == id && v.DeletedBy == null).FirstOrDefaultAsync();
 
             if (manufacturer == null)
-                throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy vaccine id");
+                throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy manufacturer id");
 
             return _mapper.Map<ManufacturerViewDto>(manufacturer);
 		}
@@ -84,10 +84,7 @@ namespace ChildrenVaccinationSystem.Services
             if (manufacturer == null)
                 throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy vaccine id");
 
-            if (manufacturerUpdateDto.Name != null && !_unitOfWork.IsValid<Category>(manufacturerUpdateDto.Name))
-                throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy category id");
-
-            if (manufacturerUpdateDto.CountryId != null && !_unitOfWork.IsValid<Manufacturer>(manufacturerUpdateDto.CountryId))
+            if (manufacturerUpdateDto.CountryId != null && !_unitOfWork.IsValid<Country>(manufacturerUpdateDto.CountryId))
                 throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy manufacturer id");
 
             _mapper.Map(manufacturerUpdateDto, manufacturer);

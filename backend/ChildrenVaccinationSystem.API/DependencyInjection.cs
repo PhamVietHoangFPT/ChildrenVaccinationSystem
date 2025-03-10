@@ -118,7 +118,12 @@ namespace ChildrenVaccinationSystem.API
 			services.AddScoped<IAccountService, AccountService>();
 			services.AddTransient<IEmailService, EmailService>();
 			services.AddScoped<ICountryService, CountryService>();
-		}
+            services.AddScoped<IVaccineService, VaccineService>();
+            services.AddScoped<IBlogService, BlogService>();
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IFacilityService, FacilityService>();
+            services.AddScoped<IManufacturerService, ManufacturerService>();
+        }
 
 		public static void AddRepositories(this IServiceCollection services)
 		{
