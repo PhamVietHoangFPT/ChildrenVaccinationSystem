@@ -11,6 +11,6 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.IUOW
 		void CommitTransaction();
 		void RollBack();
 		bool IsValid<T>(string id) where T : BaseEntity;
-
+        bool IsValid<T>(object categoryId);
     }
 }
