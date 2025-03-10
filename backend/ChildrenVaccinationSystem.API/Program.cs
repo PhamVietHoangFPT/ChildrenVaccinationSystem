@@ -20,7 +20,8 @@ namespace ChildrenVaccinationSystem.API
 
 			// Execute the DI pipeline
 			builder.Services.AddConfig(builder.Configuration);
-            builder.Services.AddScoped<IVaccineService, VaccineService>();
+
+
 
 
 
