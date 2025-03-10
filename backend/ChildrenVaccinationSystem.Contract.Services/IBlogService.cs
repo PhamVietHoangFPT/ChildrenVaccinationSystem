@@ -9,7 +9,7 @@ namespace ChildrenVaccinationSystem.Contract.Services
 		Task<BasePaginatedList<BlogViewDto>> GetBlogs(int pageNumber, int pageSize);
 		Task<BlogViewDto> GetBlogById(string id);
 		Task CreateBlog(BlogCreateDto blog);
-		Task UpdateBlog(string id, BlogUpdateDto blog);
+		Task UpdateBlog(string id, BlogUpdateDto blogUpdateDto);
 		Task DeleteBlog(string id);
 	}
 }

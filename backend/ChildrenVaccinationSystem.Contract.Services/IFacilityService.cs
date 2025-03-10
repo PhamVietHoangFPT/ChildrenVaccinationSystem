@@ -14,8 +14,8 @@ namespace ChildrenVaccinationSystem.Contract.Services
 	{
 		Task<BasePaginatedList<FacilityViewDto>> GetFacilities(int pageNumber, int pageSize);
 		Task<FacilityViewDto> GetFacilityById(string id);
-		Task CreateFacility(FacilityCreateDto blog);
-		Task UpdateFacility(string id, FacilityUpdateDto blog);
+		Task CreateFacility(FacilityCreateDto facilityCreateDto);
+		Task UpdateFacility(string id, FacilityUpdateDto facilityUpdateDto);
 		Task DeleteFacility(string id);
 	}
 }

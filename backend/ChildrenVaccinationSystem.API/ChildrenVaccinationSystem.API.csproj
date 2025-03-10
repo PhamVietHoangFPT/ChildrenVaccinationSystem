@@ -22,4 +22,9 @@
     <ProjectReference Include="..\ChildrenVaccinationSystem.Services\ChildrenVaccinationSystem.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\images\7co.jpg" />
+    <None Include="wwwroot\images\Untitled.png" />
+  </ItemGroup>
+
 </Project>

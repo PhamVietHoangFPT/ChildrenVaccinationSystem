@@ -64,5 +64,9 @@ namespace ChildrenVaccinationSystem.Repositories.UOW
 			return (entity is not null && entity.DeletedBy is null);
 		}
 
+        public bool IsValid<T>(object categoryId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

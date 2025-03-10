@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
 using ChildrenVaccinationSystem.Contract.Repositories.Dtos.BlogDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Dtos.CategoryDtos;
+using ChildrenVaccinationSystem.Contract.Repositories.Dtos.VaccineDtos;
+using ChildrenVaccinationSystem.Contract.Repositories.Entities;
 using ChildrenVaccinationSystem.Contract.Repositories.IUOW;
 using ChildrenVaccinationSystem.Contract.Services;
 using ChildrenVaccinationSystem.Core.Base;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,29 +29,73 @@ namespace ChildrenVaccinationSystem.Services
 		}
 
 
-		public Task CreateCategory(CategoryCreateDto blog)
+		public async Task CreateCategory(CategoryCreateDto categoryCreateDto)
 		{
-			throw new NotImplementedException();
+
+            Category category = new Category();
+
+            _mapper.Map(categoryCreateDto, category);
+            _authenticationService.UpdateAudits(category, true);
+
+            await _unitOfWork.GetRepository<Category>().InsertAsync(category);
+            await _unitOfWork.SaveAsync();
 		}
 
-		public Task DeleteCategory(string id)
+        public async Task DeleteCategory(string id)
 		{
-			throw new NotImplementedException();
+            Category? category = await _unitOfWork.GetRepository<Category>().Entities
+                .Where(c => c.Id == id && c.DeletedBy == null)
+                .FirstOrDefaultAsync();
+
+            if (category == null)
+                throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy category id");
+
+            _authenticationService.UpdateAudits(category, false, true);
+            await _unitOfWork.SaveAsync();
 		}
 
-		public Task<BasePaginatedList<CategoryViewDto>> GetCategories(int pageNumber, int pageSize)
+
+        public async Task<BasePaginatedList<CategoryViewDto>> GetCategories(int pageNumber, int pageSize)
 		{
-			throw new NotImplementedException();
+            IQueryable<Category> query = _unitOfWork.GetRepository<Category>().Entities.Where(c => c.DeletedBy == null);
+
+            BasePaginatedList<Category> resultQuery = (pageNumber <= 0 || pageSize <= 0)
+                ? await _unitOfWork.GetRepository<Category>().GetPaging(query, 1, query.Count())
+                : await _unitOfWork.GetRepository<Category>().GetPaging(query, pageNumber, pageSize);
+
+            List<CategoryViewDto> responseItems = resultQuery.Items.Select(_mapper.Map<CategoryViewDto>).ToList();
+
+            return new BasePaginatedList<CategoryViewDto>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
 		}
 
-		public Task<CategoryViewDto> GetCategoryById(string id)
+
+        public async Task<CategoryViewDto> GetCategoryById(string id)
 		{
-			throw new NotImplementedException();
+            Category? category = await _unitOfWork.GetRepository<Category>().Entities
+                .Where(c => c.Id == id && c.DeletedBy == null)
+                .FirstOrDefaultAsync();
+
+            if (category == null)
+                throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy category id");
+
+            return _mapper.Map<CategoryViewDto>(category);
 		}
 
-		public Task UpdateCategory(string id, CategoryUpdateDto blog)
+		public async Task UpdateCategory(string id, CategoryUpdateDto categoryUpdateDto)
 		{
-			throw new NotImplementedException();
+            Category? category = await _unitOfWork.GetRepository<Category>().Entities
+                .Where(c => c.Id == id && c.DeletedBy == null)
+                .FirstOrDefaultAsync();
+
+            if (category == null)
+                throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy category id");
+
+            _mapper.Map(categoryUpdateDto, category);
+            _authenticationService.UpdateAudits(category, false);
+
+            await _unitOfWork.GetRepository<Category>().UpdateAsync(category);
+            await _unitOfWork.SaveAsync();
 		}
+
 	}
 }

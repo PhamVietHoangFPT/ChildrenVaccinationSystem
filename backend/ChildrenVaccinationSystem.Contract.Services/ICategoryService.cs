@@ -8,8 +8,8 @@ namespace ChildrenVaccinationSystem.Contract.Services
 	{
 		Task<BasePaginatedList<CategoryViewDto>> GetCategories(int pageNumber, int pageSize);
 		Task<CategoryViewDto> GetCategoryById(string id);
-		Task CreateCategory(CategoryCreateDto blog);
-		Task UpdateCategory(string id, CategoryUpdateDto blog);
+		Task CreateCategory(CategoryCreateDto categoryCreateDto);
+		Task UpdateCategory(string id, CategoryUpdateDto categoryUpdateDto);
 		Task DeleteCategory(string id);
 
 	}
