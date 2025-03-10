@@ -1,8 +1,10 @@
-﻿using ChildrenVaccinationSystem.Contract.Repositories.DTOs;
+﻿using AutoMapper;
+using ChildrenVaccinationSystem.Contract.Repositories.Dtos.VaccineDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Entities;
 using ChildrenVaccinationSystem.Contract.Repositories.IUOW;
 using ChildrenVaccinationSystem.Contract.Services;
 using ChildrenVaccinationSystem.Core.Base;
+using ChildrenVaccinationSystem.Repositories.UOW;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -11,102 +13,94 @@ using System.Threading.Tasks;
 
 namespace ChildrenVaccinationSystem.Services
 {
-    public class VaccineService : IVaccineService
+	public class VaccineService : IVaccineService
     {
         private readonly IUnitOfWork _unitOfWork;
+		private readonly IMapper _mapper;
+        private readonly IAccountService _authenticationService;
 
-        public VaccineService(IUnitOfWork unitOfWork)
+		public VaccineService(IUnitOfWork unitOfWork, IMapper mapper, IAccountService authenticationService)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
+            _authenticationService = authenticationService;
         }
 
-        public async Task<bool> CreateVaccineAsync(VaccineCreateDto vaccineCreateDto)
+        public async Task CreateVaccine(VaccineCreateDto vaccineCreateDto)
         {
-            if (vaccineCreateDto == null)
-                return false;
+            if (!_unitOfWork.IsValid<Category>(vaccineCreateDto.CategoryId))
+                throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy category id");
 
-            var vaccine = new Vaccine
-            {
-                Name = vaccineCreateDto.Name,
-                Price = vaccineCreateDto.Price,
-                Description = vaccineCreateDto.Description,
-                StartRecommendedAge = vaccineCreateDto.StartRecommendedAge,
-                EndRecommendedAge = vaccineCreateDto.EndRecommendedAge,
-                Sequence = vaccineCreateDto.Sequence,
-                Dosage = vaccineCreateDto.Dosage,
-                DosageInterval = vaccineCreateDto.DosageInterval,
-                //Category = vaccineCreateDto.Category,
-                CategoryId = vaccineCreateDto.CategoryId,
-                ManufacturerId = vaccineCreateDto.ManufacturerId
-            };
+			if (!_unitOfWork.IsValid<Manufacturer>(vaccineCreateDto.ManufacturerId))
+				throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy manufacturer id");
+
+            Vaccine vaccine = new Vaccine();
+
+            _mapper.Map(vaccineCreateDto, vaccine);
+            _authenticationService.UpdateAudits(vaccine, true);
 
             await _unitOfWork.GetRepository<Vaccine>().InsertAsync(vaccine);
-            return await _unitOfWork.SaveAsync() > 0;
+            await _unitOfWork.SaveAsync();
         }
 
-        public async Task<bool> DeleteVaccineAsync(string id)
+        public async Task DeleteVaccine(string id)
         {
-            var vaccineRepo = _unitOfWork.GetRepository<Vaccine>();
-            var vaccine = await vaccineRepo.GetByIdAsync(id);
+			Vaccine? vaccine = await _unitOfWork.GetRepository<Vaccine>().Entities.Where(v => v.Id == id && v.DeletedBy == null).FirstOrDefaultAsync();
+
+			if (vaccine == null)
+				throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy vaccine id");
+
+			_authenticationService.UpdateAudits(vaccine, false, true);
+			await _unitOfWork.SaveAsync();
+
+		}
+
+		public async Task UpdateVaccine(string id, VaccineUpdateDto vaccineUpdateDto)
+        {
+            Vaccine? vaccine = await _unitOfWork.GetRepository<Vaccine>().Entities.Where(v => v.Id == id && v.DeletedBy == null).FirstOrDefaultAsync();
 
             if (vaccine == null)
-                return false;
+				throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy vaccine id");
 
-            vaccineRepo.Delete(vaccine);
-            return await _unitOfWork.SaveAsync() > 0;
+			if (vaccineUpdateDto.CategoryId != null && !_unitOfWork.IsValid<Category>(vaccineUpdateDto.CategoryId))
+				throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy category id");
+
+			if (vaccineUpdateDto.ManufacturerId != null && !_unitOfWork.IsValid<Manufacturer>(vaccineUpdateDto.ManufacturerId))
+				throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy manufacturer id");
+
+			_mapper.Map(vaccineUpdateDto, vaccine);
+			_authenticationService.UpdateAudits(vaccine, false);
+
+
+			await _unitOfWork.GetRepository<Vaccine>().UpdateAsync(vaccine);
+            await _unitOfWork.SaveAsync();
+		}
+
+		public async Task<BasePaginatedList<VaccineViewDto>> GetVaccines(int pageNumber, int pageSize)
+        {
+
+            IQueryable<Vaccine> query = _unitOfWork.GetRepository<Vaccine>().Entities.Where(v => v.DeletedBy ==null);
+
+
+
+            BasePaginatedList<Vaccine> resultQuery = (pageNumber <= 0 || pageSize <= 0)
+                ? await _unitOfWork.GetRepository<Vaccine>().GetPaging(query, 1, query.Count())
+                : await _unitOfWork.GetRepository<Vaccine>().GetPaging(query, pageNumber, pageSize);
+
+
+            List<VaccineViewDto> responseItems = resultQuery.Items.Select(_mapper.Map<VaccineViewDto>).ToList();
+
+            return new BasePaginatedList<VaccineViewDto>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
         }
 
-        public async Task<bool> UpdateVaccineAsync(VaccineUpdateDto vaccineUpdateDto)
-        {
-            if (vaccineUpdateDto == null)
-                return false;
-
-            var vaccineRepo = _unitOfWork.GetRepository<Vaccine>();
-            var vaccine = await vaccineRepo.GetByIdAsync(vaccineUpdateDto.Id);
+		public async Task<VaccineViewDto> GetVaccineById(string id)
+		{
+			Vaccine? vaccine = await _unitOfWork.GetRepository<Vaccine>().Entities.Where(v => v.Id == id && v.DeletedBy == null).FirstOrDefaultAsync();
 
             if (vaccine == null)
-                return false;
+				throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy vaccine id");
 
-            vaccine.Name = vaccineUpdateDto.Name;
-            vaccine.Price = vaccineUpdateDto.Price;
-            vaccine.Description = vaccineUpdateDto.Description;
-            vaccine.StartRecommendedAge = vaccineUpdateDto.StartRecommendedAge;
-            vaccine.EndRecommendedAge = vaccineUpdateDto.EndRecommendedAge;
-            vaccine.Sequence = vaccineUpdateDto.Sequence;
-            vaccine.Dosage = vaccineUpdateDto.Dosage;
-            vaccine.DosageInterval = vaccineUpdateDto.DosageInterval;
-            vaccine.CategoryId = vaccineUpdateDto.CategoryId;
-            vaccine.ManufacturerId = vaccineUpdateDto.ManufacturerId;
-
-            vaccineRepo.Update(vaccine);
-            return await _unitOfWork.SaveAsync() > 0;
-        }
-
-        public async Task<BasePaginatedList<Vaccine>> GetVaccinesAsync(int pageNumber, int pageSize)
-        {
-            IQueryable<Vaccine> query = _unitOfWork.GetRepository<Vaccine>().Entities;
-
-            if (pageNumber <= 0 || pageSize <= 0)
-            {
-                var allItems = await query.ToListAsync();
-                return new BasePaginatedList<Vaccine>(allItems, allItems.Count, 1, allItems.Count);
-            }
-
-            var resultQuery = await _unitOfWork.GetRepository<Vaccine>().GetPaging(query, pageNumber, pageSize);
-
-            return new BasePaginatedList<Vaccine>(resultQuery.Items, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
-        }
-
-        public async Task<Vaccine?> CreateVaccineAsync(Vaccine vaccine)
-        {
-            if (vaccine == null)
-                return null; 
-
-            await _unitOfWork.GetRepository<Vaccine>().InsertAsync(vaccine);
-            var isSaved = await _unitOfWork.SaveAsync() > 0;
-
-            return isSaved ? vaccine : null;
-        }
-
-    }
+			return _mapper.Map<VaccineViewDto>(vaccine);
+		}
+	}
 }

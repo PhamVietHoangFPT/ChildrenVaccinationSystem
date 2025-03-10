@@ -1,4 +1,4 @@
-﻿using ChildrenVaccinationSystem.Contract.Repositories.DTOs;
+﻿using ChildrenVaccinationSystem.Contract.Repositories.Dtos.VaccineDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Entities;
 using ChildrenVaccinationSystem.Core.Base;
 using System;
@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 
 namespace ChildrenVaccinationSystem.Contract.Services
 {
-    public interface IVaccineService
+	public interface IVaccineService
     {
-        Task<BasePaginatedList<Vaccine>> GetVaccinesAsync(int pageNumber, int pageSize);
+        Task<BasePaginatedList<VaccineViewDto>> GetVaccines(int pageNumber, int pageSize);
+        Task<VaccineViewDto> GetVaccineById(string id);
 
-        Task<bool> CreateVaccineAsync(VaccineCreateDto vaccineCreateDto);
+        Task CreateVaccine(VaccineCreateDto vaccineCreateDto);
 
-        Task<bool> UpdateVaccineAsync(VaccineUpdateDto vaccineUpdateDto);
-        Task<bool> DeleteVaccineAsync(string id);
-        Task<Vaccine?> CreateVaccineAsync(Vaccine vaccine);
+        Task UpdateVaccine(string id, VaccineUpdateDto vaccineUpdateDto);
+        Task DeleteVaccine(string id);
     }
 }

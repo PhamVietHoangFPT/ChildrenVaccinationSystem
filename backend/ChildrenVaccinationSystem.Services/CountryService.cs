@@ -1,4 +1,7 @@
-﻿using ChildrenVaccinationSystem.Contract.Repositories.Entities;
+﻿using AutoMapper;
+using ChildrenVaccinationSystem.Contract.Repositories.Dtos;
+using ChildrenVaccinationSystem.Contract.Repositories.Dtos.CountryDtos;
+using ChildrenVaccinationSystem.Contract.Repositories.Entities;
 using ChildrenVaccinationSystem.Contract.Repositories.IUOW;
 using ChildrenVaccinationSystem.Contract.Services;
 using ChildrenVaccinationSystem.Core.Base;
@@ -9,26 +12,30 @@ namespace ChildrenVaccinationSystem.Services
 	public class CountryService : ICountryService
 	{
 		private readonly IUnitOfWork _unitOfWork;
+		private readonly IMapper _mapper;
 
-		public CountryService(IUnitOfWork unitOfWork)
+		public CountryService(IUnitOfWork unitOfWork, IMapper mapper)
 		{
 			_unitOfWork = unitOfWork;
+			_mapper = mapper;
 		}
 
-		public async Task<BasePaginatedList<Country>> GetCountriesAsync(int pageNumber, int pageSize)
+		public async Task<BasePaginatedList<CountryViewDto>> GetCountries(int pageNumber, int pageSize)
 		{
-			IQueryable<Country> query = _unitOfWork.GetRepository<Country>().Entities;
-			// If either pageNumber or pageSize is <= 0, retrieve all data
-			if (pageNumber <= 0 || pageSize <= 0)
-			{
-				var allItems = await query.ToListAsync(); // Fetch all records
-				return new BasePaginatedList<Country>(allItems, allItems.Count, 1, allItems.Count);
-			}
+			IQueryable<Country> query = _unitOfWork.GetRepository<Country>().Entities.Where(c => c.DeletedBy == null);
 
-			// Otherwise, apply pagination
-			var resultQuery = await _unitOfWork.GetRepository<Country>().GetPaging(query, pageNumber, pageSize);
+			BasePaginatedList<Country> resultQuery = (pageNumber <= 0 || pageSize <= 0)
+				? await _unitOfWork.GetRepository<Country>().GetPaging(query, 1, query.Count())
+				: await _unitOfWork.GetRepository<Country>().GetPaging(query, pageNumber, pageSize);
 
-			return new BasePaginatedList<Country>(resultQuery.Items, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
+			List<CountryViewDto> responseItems = resultQuery.Items.Select(_mapper.Map<CountryViewDto>).ToList();
+
+			return new BasePaginatedList<CountryViewDto>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
+		}
+
+		public Task<BasePaginatedList<CountryViewDto>> SearchCountries(int pageNumber, int pageSize)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

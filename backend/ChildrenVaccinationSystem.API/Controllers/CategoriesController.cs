@@ -6,16 +6,16 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ChildrenVaccinationSystem.API.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class CategoriesController : ControllerBase
-    {
-        private readonly ICategoryService _categoryService;
+	[Route("api/[controller]")]
+	[ApiController]
+	public class CategoriesController : ControllerBase
+	{
+		private readonly ICategoryService _categoryService;
 
-        public CategoriesController(ICategoryService categoryService)
-        {
-            _categoryService = categoryService;
-        }
+		public CategoriesController(ICategoryService categoryService) 
+		{
+			_categoryService = categoryService;
+		}
 
         [HttpGet]
         public async Task<IActionResult> GetCategories(int pageNumber = -1, int pageSize = -1)
@@ -82,5 +82,5 @@ namespace ChildrenVaccinationSystem.API.Controllers
             ));
         }
 
-    }
+	}
 }

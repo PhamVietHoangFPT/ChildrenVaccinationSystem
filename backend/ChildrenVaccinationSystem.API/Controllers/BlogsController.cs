@@ -13,10 +13,10 @@ namespace ChildrenVaccinationSystem.API.Controllers
 	{
 		private readonly IBlogService _blogService;
 
-		public BlogsController(IBlogService blogService)
-        {
-            _blogService = blogService;
-        }
+		public BlogsController(IBlogService blogService) 
+		{
+			_blogService = blogService;
+		}
 
         [HttpGet]
         public async Task<IActionResult> GetBlogs(int pageNumber = -1, int pageSize = -1)
@@ -42,7 +42,7 @@ namespace ChildrenVaccinationSystem.API.Controllers
                 message: "Lấy blog theo id thành công",
                 data: blogs
             ));
-        }
+	}
 
         [HttpPost]
         public async Task<IActionResult> AddBlog(BlogCreateDto blogDto)

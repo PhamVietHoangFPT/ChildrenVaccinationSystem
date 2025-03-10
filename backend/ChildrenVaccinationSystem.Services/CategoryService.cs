@@ -25,12 +25,12 @@ namespace ChildrenVaccinationSystem.Services
 		{
 			_unitOfWork = unitOfWork;
 			_mapper = mapper;
-            _authenticationService = authenticationService;
-        }
+			_authenticationService = authenticationService;
+		}
 
 
 		public async Task CreateCategory(CategoryCreateDto categoryCreateDto)
-        {
+		{
             if (!_unitOfWork.IsValid<Category>(categoryCreateDto.Name))
                 throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy tên Category");
 
@@ -41,10 +41,10 @@ namespace ChildrenVaccinationSystem.Services
 
             await _unitOfWork.GetRepository<Category>().InsertAsync(category);
             await _unitOfWork.SaveAsync();
-        }
+		}
 
         public async Task DeleteCategory(string id)
-        {
+		{
             Category? category = await _unitOfWork.GetRepository<Category>().Entities
                 .Where(c => c.Id == id && c.DeletedBy == null)
                 .FirstOrDefaultAsync();
@@ -54,11 +54,11 @@ namespace ChildrenVaccinationSystem.Services
 
             _authenticationService.UpdateAudits(category, false, true);
             await _unitOfWork.SaveAsync();
-        }
+		}
 
 
         public async Task<BasePaginatedList<CategoryViewDto>> GetCategories(int pageNumber, int pageSize)
-        {
+		{
             IQueryable<Category> query = _unitOfWork.GetRepository<Category>().Entities.Where(c => c.DeletedBy == null);
 
             BasePaginatedList<Category> resultQuery = (pageNumber <= 0 || pageSize <= 0)
@@ -68,11 +68,11 @@ namespace ChildrenVaccinationSystem.Services
             List<CategoryViewDto> responseItems = resultQuery.Items.Select(_mapper.Map<CategoryViewDto>).ToList();
 
             return new BasePaginatedList<CategoryViewDto>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
-        }
+		}
 
 
         public async Task<CategoryViewDto> GetCategoryById(string id)
-        {
+		{
             Category? category = await _unitOfWork.GetRepository<Category>().Entities
                 .Where(c => c.Id == id && c.DeletedBy == null)
                 .FirstOrDefaultAsync();
@@ -81,10 +81,10 @@ namespace ChildrenVaccinationSystem.Services
                 throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy category id");
 
             return _mapper.Map<CategoryViewDto>(category);
-        }
+		}
 
 		public async Task UpdateCategory(string id, CategoryUpdateDto categoryUpdateDto)
-        {
+		{
             Category? category = await _unitOfWork.GetRepository<Category>().Entities
                 .Where(c => c.Id == id && c.DeletedBy == null)
                 .FirstOrDefaultAsync();
@@ -100,7 +100,7 @@ namespace ChildrenVaccinationSystem.Services
 
             await _unitOfWork.GetRepository<Category>().UpdateAsync(category);
             await _unitOfWork.SaveAsync();
-        }
+		}
 
-    }
+	}
 }

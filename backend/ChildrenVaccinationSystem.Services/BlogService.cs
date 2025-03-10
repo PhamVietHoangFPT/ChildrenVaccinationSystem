@@ -31,7 +31,7 @@ namespace ChildrenVaccinationSystem.Services
 		}
 
 		public async Task CreateBlog(BlogCreateDto blogCreateDto)
-        {
+		{
             if (!_unitOfWork.IsValid<Blog>(blogCreateDto.Title))
                 throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy category id");
 
@@ -45,11 +45,11 @@ namespace ChildrenVaccinationSystem.Services
 
             await _unitOfWork.GetRepository<Blog>().InsertAsync(blog);
             await _unitOfWork.SaveAsync();
-        }
+		}
 
 
         public async Task DeleteBlog(string id)
-        {
+		{
             Blog? blog = await _unitOfWork.GetRepository<Blog>().Entities
                 .Where(b => b.Id == id && b.DeletedBy == null)
                 .FirstOrDefaultAsync();
@@ -59,21 +59,21 @@ namespace ChildrenVaccinationSystem.Services
 
             _authenticationService.UpdateAudits(blog, false, true);
             await _unitOfWork.SaveAsync();
-        }
+		}
 
 
         public async Task<BlogViewDto> GetBlogById(string id)
-        {
+		{
             Blog? blog = await _unitOfWork.GetRepository<Blog>().Entities.Where(v => v.Id == id && v.DeletedBy == null).FirstOrDefaultAsync();
 
             if (blog == null)
                 throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy vaccine id");
 
             return _mapper.Map<BlogViewDto>(blog);
-        }
+		}
 
         public async Task<BasePaginatedList<BlogViewDto>> GetBlogs(int pageNumber, int pageSize)
-        {
+		{
             IQueryable<Blog> query = _unitOfWork.GetRepository<Blog>().Entities.Where(b => b.DeletedBy == null);
 
             BasePaginatedList<Blog> resultQuery = (pageNumber <= 0 || pageSize <= 0)
@@ -83,11 +83,11 @@ namespace ChildrenVaccinationSystem.Services
             List<BlogViewDto> responseItems = resultQuery.Items.Select(_mapper.Map<BlogViewDto>).ToList();
 
             return new BasePaginatedList<BlogViewDto>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
-        }
+		}
 
 
         public async Task UpdateBlog(string id, BlogUpdateDto blogUpdateDto)
-        {
+		{
             Blog? blog = await _unitOfWork.GetRepository<Blog>().Entities
                 .Where(b => b.Id == id && b.DeletedBy == null)
                 .FirstOrDefaultAsync();
@@ -106,8 +106,8 @@ namespace ChildrenVaccinationSystem.Services
 
             await _unitOfWork.GetRepository<Blog>().UpdateAsync(blog);
             await _unitOfWork.SaveAsync();
-        }
+		}
 
 
-    }
+	}
 }

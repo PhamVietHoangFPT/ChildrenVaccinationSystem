@@ -14,21 +14,21 @@ using System.Threading.Tasks;
 
 namespace ChildrenVaccinationSystem.Services
 {
-    public class ManufacturerService : IManufacturerService
-    {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
-        private readonly IAccountService _authenticationService;
+	public class ManufacturerService : IManufacturerService
+	{
+		private readonly IUnitOfWork _unitOfWork;
+		private readonly IMapper _mapper;
+		private readonly IAccountService _authenticationService;
 
-        public ManufacturerService(IUnitOfWork unitOfWork, IMapper mapper, IAccountService authenticationService)
-        {
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
-            _authenticationService = authenticationService;
-        }
+		public ManufacturerService(IUnitOfWork unitOfWork, IMapper mapper, IAccountService authenticationService)
+		{
+			_unitOfWork = unitOfWork;
+			_mapper = mapper;
+			_authenticationService = authenticationService;
+		}
 
         public async Task CreateManufacturer(ManufacturerCreateDto manufacturerCreateDto)
-        {
+		{
             if (!_unitOfWork.IsValid<Category>(manufacturerCreateDto.CountryId))
                 throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy category id");
 
@@ -38,10 +38,10 @@ namespace ChildrenVaccinationSystem.Services
 
             await _unitOfWork.GetRepository<Manufacturer>().InsertAsync(manufacturer);
             await _unitOfWork.SaveAsync();
-        }
+		}
 
         public async Task DeleteManufacturer(string id)
-        {
+		{
             Manufacturer? manufacturer = await _unitOfWork.GetRepository<Manufacturer>().Entities
                 .Where(m => m.Id == id && m.DeletedBy == null)
                 .FirstOrDefaultAsync();
@@ -51,20 +51,20 @@ namespace ChildrenVaccinationSystem.Services
 
             _authenticationService.UpdateAudits(manufacturer, false, true);
             await _unitOfWork.SaveAsync();
-        }
+		}
 
         public async Task<ManufacturerViewDto> GetManufacturerById(string id)
-        {
+		{
             Manufacturer? manufacturer = await _unitOfWork.GetRepository<Manufacturer>().Entities.Where(v => v.Id == id && v.DeletedBy == null).FirstOrDefaultAsync();
 
             if (manufacturer == null)
                 throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy vaccine id");
 
             return _mapper.Map<ManufacturerViewDto>(manufacturer);
-        }
+		}
 
         public async Task<BasePaginatedList<ManufacturerViewDto>> GetManufacturers(int pageNumber, int pageSize)
-        {
+		{
             IQueryable<Manufacturer> query = _unitOfWork.GetRepository<Manufacturer>().Entities
                 .Where(m => m.DeletedBy == null);
 
@@ -75,10 +75,10 @@ namespace ChildrenVaccinationSystem.Services
             List<ManufacturerViewDto> responseItems = resultQuery.Items.Select(_mapper.Map<ManufacturerViewDto>).ToList();
 
             return new BasePaginatedList<ManufacturerViewDto>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
-        }
+		}
 
         public async Task UpdateManufacturer(string id, ManufacturerUpdateDto manufacturerUpdateDto)
-        {
+		{
             Manufacturer? manufacturer = await _unitOfWork.GetRepository<Manufacturer>().Entities.Where(v => v.Id == id && v.DeletedBy == null).FirstOrDefaultAsync();
 
             if (manufacturer == null)
@@ -96,6 +96,6 @@ namespace ChildrenVaccinationSystem.Services
 
             await _unitOfWork.GetRepository<Manufacturer>().UpdateAsync(manufacturer);
             await _unitOfWork.SaveAsync();
-        }
-    }
+		}
+	}
 }

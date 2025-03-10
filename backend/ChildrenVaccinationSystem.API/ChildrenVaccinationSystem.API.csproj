@@ -23,11 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
-<<<<<<< Updated upstream
     <None Include="wwwroot\images\7co.jpg" />
-=======
     <None Include="wwwroot\images\Untitled.png" />
->>>>>>> Stashed changes
   </ItemGroup>
 
 </Project>

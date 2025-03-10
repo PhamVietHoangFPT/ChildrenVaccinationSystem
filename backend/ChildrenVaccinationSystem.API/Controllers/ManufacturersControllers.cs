@@ -14,8 +14,8 @@ namespace ChildrenVaccinationSystem.API.Controllers
 		private readonly IManufacturerService _manufacturerService;
 
 		public Manufacturers(IManufacturerService manufacturerService)
-        {
-            _manufacturerService = manufacturerService;
+		{
+			_manufacturerService = manufacturerService;
 		}
 
         [HttpGet]
@@ -82,5 +82,5 @@ namespace ChildrenVaccinationSystem.API.Controllers
                 data: null
             ));
         }
-    }
+	}
 }

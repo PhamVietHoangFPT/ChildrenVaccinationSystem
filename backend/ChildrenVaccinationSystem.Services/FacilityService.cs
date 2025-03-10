@@ -27,7 +27,7 @@ namespace ChildrenVaccinationSystem.Services
 		}
 
 		public async Task CreateFacility(FacilityCreateDto facilityCreateDto)
-        {
+		{
             if (!_unitOfWork.IsValid<Facility>(facilityCreateDto.Name))
                 throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy tên facility");
 
@@ -41,11 +41,11 @@ namespace ChildrenVaccinationSystem.Services
 
             await _unitOfWork.GetRepository<Facility>().InsertAsync(facility);
             await _unitOfWork.SaveAsync();
-        }
+		}
 
 
         public async Task DeleteFacility(string id)
-        {
+		{
             Facility? facility = await _unitOfWork.GetRepository<Facility>().Entities
                 .Where(f => f.Id == id && f.DeletedBy == null)
                 .FirstOrDefaultAsync();
@@ -55,11 +55,11 @@ namespace ChildrenVaccinationSystem.Services
 
             _authenticationService.UpdateAudits(facility, false, true);
             await _unitOfWork.SaveAsync();
-        }
+		}
 
 
         public async Task<BasePaginatedList<FacilityViewDto>> GetFacilities(int pageNumber, int pageSize)
-        {
+		{
             IQueryable<Facility> query = _unitOfWork.GetRepository<Facility>().Entities.Where(f => f.DeletedBy == null);
 
             BasePaginatedList<Facility> resultQuery = (pageNumber <= 0 || pageSize <= 0)
@@ -69,11 +69,11 @@ namespace ChildrenVaccinationSystem.Services
             List<FacilityViewDto> responseItems = resultQuery.Items.Select(_mapper.Map<FacilityViewDto>).ToList();
 
             return new BasePaginatedList<FacilityViewDto>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
-        }
+		}
 
 
         public async Task<FacilityViewDto> GetFacilityById(string id)
-        {
+		{
             Facility? facility = await _unitOfWork.GetRepository<Facility>().Entities
                 .Where(f => f.Id == id && f.DeletedBy == null)
                 .FirstOrDefaultAsync();
@@ -82,11 +82,11 @@ namespace ChildrenVaccinationSystem.Services
                 throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy facility id");
 
             return _mapper.Map<FacilityViewDto>(facility);
-        }
+		}
 
 
         public async Task UpdateFacility(string id, FacilityUpdateDto facilityUpdateDto)
-        {
+		{
             Facility? facility = await _unitOfWork.GetRepository<Facility>().Entities
                 .Where(f => f.Id == id && f.DeletedBy == null)
                 .FirstOrDefaultAsync();
@@ -105,7 +105,7 @@ namespace ChildrenVaccinationSystem.Services
 
             await _unitOfWork.GetRepository<Facility>().UpdateAsync(facility);
             await _unitOfWork.SaveAsync();
-        }
+		}
 
-    }
+	}
 }

@@ -5,9 +5,7 @@ const baseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_ENDPOINT + '/',
   prepareHeaders: (headers) => {
     // By default, if we have a token in the store, let's use that for authenticated requests
-    const token = (
-      Cookies.get('userToken') || '' 
-    )
+    const token = Cookies.get('userToken') || ''
     if (token) {
       headers.set('Authorization', `Bearer ${token}`)
     }

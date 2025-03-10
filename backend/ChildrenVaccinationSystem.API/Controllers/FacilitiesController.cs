@@ -8,10 +8,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ChildrenVaccinationSystem.API.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class FacilitiesController : ControllerBase
-    {
+	[Route("api/[controller]")]
+	[ApiController]
+	public class FacilitiesController : ControllerBase
+	{
         private IFacilityService _facilityService;
         public FacilitiesController(IFacilityService facilityService)
         {
@@ -59,7 +59,7 @@ namespace ChildrenVaccinationSystem.API.Controllers
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateFacility(string id, FacilityUpdateDto facilityDto)
-        {
+		{
             await _facilityService.UpdateFacility(id, facilityDto);
 
             return Ok(new BaseResponse<object>(
@@ -68,7 +68,7 @@ namespace ChildrenVaccinationSystem.API.Controllers
                 message: "Cập nhật Facility thành công",
                 data: null
             ));
-        }
+		}
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteFacility(string id)
@@ -82,5 +82,5 @@ namespace ChildrenVaccinationSystem.API.Controllers
                 data: null
             ));
         }
-    }
+	}
 }
