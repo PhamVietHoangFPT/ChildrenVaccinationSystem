@@ -1,6 +1,6 @@
 import { Form, Input, Button, notification } from 'antd'
 import { useState } from 'react'
-import { useLoginMutation } from '../../features/auth/authApi'
+import { useLoginMutation } from '../../features/auth/authAPI'
 
 import { useNavigate } from 'react-router-dom'
 
