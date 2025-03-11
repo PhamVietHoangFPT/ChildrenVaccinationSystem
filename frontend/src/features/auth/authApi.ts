@@ -1,6 +1,6 @@
 import { apiSlice } from '../../apis/apiSlice'
 import { login, logout } from './authSlice'
-export const authApi = apiSlice.injectEndpoints({
+export const authAPI = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation<
       { data: string },
@@ -48,4 +48,4 @@ export const authApi = apiSlice.injectEndpoints({
 })
 
 export const { useLoginMutation, useLogoutMutation, useRegisterMutation } =
-  authApi
+  authAPI
