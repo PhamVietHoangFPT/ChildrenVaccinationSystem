@@ -1,4 +1,4 @@
-import { useRegisterMutation } from '../../features/auth/authApi'
+import { useRegisterMutation } from '../../features/auth/authAPI'
 import { Formik, Field } from 'formik'
 import * as Yup from 'yup'
 import { Input, Button, Form as AntdForm, notification } from 'antd'

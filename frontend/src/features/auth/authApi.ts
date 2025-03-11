@@ -7,7 +7,7 @@ export const authApi = apiSlice.injectEndpoints({
       { email: string; password: string; phoneNumber: string }
     >({
       query: (credentials) => ({
-        url: '/authentication/login',
+        url: '/accounts/login',
         method: 'POST',
         body: credentials,
       }),
@@ -39,7 +39,7 @@ export const authApi = apiSlice.injectEndpoints({
       }
     >({
       query: (credentials) => ({
-        url: '/authentication/register',
+        url: '/accounts/register',
         method: 'POST',
         body: credentials,
       }),

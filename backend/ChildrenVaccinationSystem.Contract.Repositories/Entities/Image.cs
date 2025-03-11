@@ -1,9 +1,11 @@
 ﻿using ChildrenVaccinationSystem.Core.Base;
+using System.ComponentModel.DataAnnotations;
 
 namespace ChildrenVaccinationSystem.Contract.Repositories.Entities
 {
-	public class Image : BaseEntity
+	public class Image
 	{
+		[Key]
 		public string ImageSource { get; set; } = default!;
 
 		public string? BlogId { get; set; }

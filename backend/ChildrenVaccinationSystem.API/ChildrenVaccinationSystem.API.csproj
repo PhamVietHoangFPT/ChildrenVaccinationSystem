@@ -22,4 +22,8 @@
     <ProjectReference Include="..\ChildrenVaccinationSystem.Services\ChildrenVaccinationSystem.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
 </Project>
