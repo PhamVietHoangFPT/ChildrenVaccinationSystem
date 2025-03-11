@@ -64,14 +64,20 @@ const routes: LayoutRoute[] = [
       {
         path: '/manager/staff',
         component: ManagerStaffList,
+        exact: true,
+        role: ['Manager'],
       },
       {
         path: '/manager/view',
         component: ManagerCustomerList,
+        exact: true,
+        role: ['Manager'],
       },
       {
         path: '/manager/vaccine',
         component: ManagerVaccineList,
+        exact: true,
+        role: ['Manager'],
       },
     ],
   },
