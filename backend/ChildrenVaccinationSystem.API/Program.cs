@@ -39,8 +39,6 @@ namespace ChildrenVaccinationSystem.API
 
 			app.UseHttpsRedirection();
 
-			app.UseMiddleware<ExceptionMiddleware>();
-
 			app.UseAuthorization();
 
             app.MapControllers();

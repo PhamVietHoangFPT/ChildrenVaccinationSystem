@@ -14,10 +14,11 @@ namespace ChildrenVaccinationSystem.Contract.Services
 		Task VerifyResetPasswordToken(string token);
 		void UpdateAudits(BaseEntity entity, bool isCreating, bool isDeleting = false);
 		string GetCurrentAccountId();
-		void AuthorizeManager();
-		void AuthorizeStaff();
-		void AuthorizeDoctor();
-		void AuthorizeVaccinator();
-		void AuthorizeCustomer();
+		string GetCurrentRole();
+		bool AuthorizeManager();
+		bool AuthorizeStaff();
+		bool AuthorizeDoctor();
+		bool AuthorizeVaccinator();
+		bool AuthorizeCustomer();
 	}
 }
