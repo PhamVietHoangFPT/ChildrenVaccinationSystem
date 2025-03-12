@@ -4,7 +4,8 @@ import { Vaccines } from '../../types/vaccine'
 import { Col, Pagination, Row } from 'antd'
 import { LoadingOutlined } from '@ant-design/icons'
 import { Card, Typography, Space, Button } from 'antd'
-const { Title, Text, Paragraph } = Typography
+import { useNavigate } from 'react-router-dom'
+const { Title, Text } = Typography
 interface VaccineListResponse {
   data: {
     data: {
@@ -18,7 +19,8 @@ interface VaccineListResponse {
 
 export default function AllVaccinesCustomer() {
   const [pageNumber, setPageNumber] = useState(1)
-  const [pageSize, setPageSize] = useState(10)
+  const [pageSize, setPageSize] = useState(12)
+  const navigate = useNavigate()
   const { data, isLoading } = useGetVaccineListQuery<VaccineListResponse>({
     pageNumber: pageNumber,
     pageSize: pageSize,
@@ -79,14 +81,11 @@ export default function AllVaccinesCustomer() {
                 }}
               >
                 <Title level={4}>{vaccine.name}</Title>
-                <Paragraph style={{ flexGrow: 1 }}>
-                  {vaccine.description}
-                </Paragraph>
                 <Space direction='vertical' size='middle'>
-                  <Text strong>Giá: ${vaccine.price}</Text>
+                  <Text strong>Giá: {vaccine.price?.toLocaleString()} VND</Text>
                   <Text>
-                    Độ tuổi khuyến nghị: {vaccine.startRecommendAge} -{' '}
-                    {vaccine.endRecommendAge} tuổi
+                    Độ tuổi khuyến nghị: {vaccine.startRecommendedAge} -{' '}
+                    {vaccine.endRecommendedAge} tuổi
                   </Text>
                   <Text>Trình tự: {vaccine.sequence}</Text>
                   <Text>Liều lượng: {vaccine.dosage}</Text>
@@ -94,7 +93,12 @@ export default function AllVaccinesCustomer() {
                     Khoảng cách giữa các liều: {vaccine.dosageInterval} tháng
                   </Text>
 
-                  <Button type='primary'>Xem chi tiết</Button>
+                  <Button
+                    type='primary'
+                    onClick={() => navigate(`/vaccines/${vaccine.id}`)}
+                  >
+                    Xem chi tiết
+                  </Button>
                 </Space>
               </div>
             </Card>
@@ -102,16 +106,19 @@ export default function AllVaccinesCustomer() {
         ))}
       </Row>
       <Pagination
-        defaultCurrent={pageNumber}
-        defaultPageSize={pageSize}
-        pageSizeOptions={['10', '20', '30']}
+        current={pageNumber}
+        pageSize={pageSize}
         total={data?.data.totalItems}
+        pageSizeOptions={['12', '24', '36']}
+        showSizeChanger={true}
         style={{ textAlign: 'center' }}
         align='center'
         onChange={(page, size) => {
           setPageNumber(page)
-          console.log(size)
           setPageSize(size)
+        }}
+        locale={{
+          items_per_page: 'vaccines / trang',
         }}
       />
     </>
