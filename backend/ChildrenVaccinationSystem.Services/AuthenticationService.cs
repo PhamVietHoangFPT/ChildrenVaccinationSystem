@@ -130,7 +130,7 @@ namespace ChildrenVaccinationSystem.Services
 		{
 			// Retrieve the JWT token from the Authorization header
 			var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-			var currentUserId = GetUserIdFromTokenHeader(token);
+			var currentUserId = GetAccountIdFromTokenHeader(token);
 
 			// If creating a new entity, set the CreatedBy field
 			if (isCreating)
@@ -154,7 +154,7 @@ namespace ChildrenVaccinationSystem.Services
 			}
 		}
 
-		public string GetUserIdFromTokenHeader(string? token)
+		public string GetAccountIdFromTokenHeader(string? token)
 		{
 			// Check if the token is null or empty
 			if (string.IsNullOrEmpty(token))
@@ -179,6 +179,13 @@ namespace ChildrenVaccinationSystem.Services
 			}
 
 			return string.Empty;
+		}
+
+		public string GetCurrentAccountId()
+		{
+			var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+
+			return GetAccountIdFromTokenHeader(token);
 		}
 
 
@@ -264,5 +271,64 @@ namespace ChildrenVaccinationSystem.Services
 			return new JwtSecurityTokenHandler().WriteToken(token);
 		}
 
+		public void AuthorizeManager()
+		{
+			string accountId = GetCurrentAccountId();
+
+			Account? account = _unitOfWork.GetRepository<Account>().Entities.Where(a => a.Id == accountId && a.Role == RoleEnum.Manager && a.DeletedBy == null).FirstOrDefault();
+
+			if (account == null) 
+			{
+				throw new ErrorException(401, "unauthorized", "Không có quyền truy cập");
+			}
+		}
+
+		public void AuthorizeStaff()
+		{
+			string accountId = GetCurrentAccountId();
+
+			Account? account = _unitOfWork.GetRepository<Account>().Entities.Where(a => a.Id == accountId && a.Role == RoleEnum.Staff && a.DeletedBy == null).FirstOrDefault();
+
+			if (account == null)
+			{
+				throw new ErrorException(401, "unauthorized", "Không có quyền truy cập");
+			}
+		}
+
+		public void AuthorizeDoctor()
+		{
+			string accountId = GetCurrentAccountId();
+
+			Account? account = _unitOfWork.GetRepository<Account>().Entities.Where(a => a.Id == accountId && a.Role == RoleEnum.Doctor && a.DeletedBy == null).FirstOrDefault();
+
+			if (account == null)
+			{
+				throw new ErrorException(401, "unauthorized", "Không có quyền truy cập");
+			}
+		}
+
+		public void AuthorizeVaccinator()
+		{
+			string accountId = GetCurrentAccountId();
+
+			Account? account = _unitOfWork.GetRepository<Account>().Entities.Where(a => a.Id == accountId && a.Role == RoleEnum.Vaccinator && a.DeletedBy == null).FirstOrDefault();
+
+			if (account == null)
+			{
+				throw new ErrorException(401, "unauthorized", "Không có quyền truy cập");
+			}
+		}
+
+		public void AuthorizeCustomer()
+		{
+			string accountId = GetCurrentAccountId();
+
+			Account? account = _unitOfWork.GetRepository<Account>().Entities.Where(a => a.Id == accountId && a.Role == RoleEnum.Customer && a.DeletedBy == null).FirstOrDefault();
+
+			if (account == null)
+			{
+				throw new ErrorException(401, "unauthorized", "Không có quyền truy cập");
+			}
+		}
 	}
 }

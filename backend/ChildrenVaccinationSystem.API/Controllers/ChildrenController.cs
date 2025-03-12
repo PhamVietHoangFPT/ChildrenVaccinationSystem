@@ -7,12 +7,11 @@ namespace ChildrenVaccinationSystem.API.Controllers
 	[ApiController]
 	public class ChildrenController : ControllerBase
 	{
-		private readonly IChildService _childrenService;
-		public ChildrenController(IChildService childrenService)
+		private readonly IChildService _childService;
+
+		public ChildrenController(IChildService childService)
 		{
-			_childrenService = childrenService;
+			_childService = childService;
 		}
-
-
 	}
 }

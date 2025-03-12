@@ -16,8 +16,8 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Dtos.VaccineDtos
 		public int? Sequence { get; set; }
 		public double? Dosage { get; set; }
 		public int? DosageInterval { get; set; }
-		public SimpleViewDto Category { get; set; } = default!;
-		public SimpleViewDto Manufacturer { get; set; } = default!;
+		public CategoryViewDto Category { get; set; } = default!;
+		public ManufacturerViewDto Manufacturer { get; set; } = default!;
 		public ICollection<ImageViewDto>? Images { get; set; }
 		public ICollection<VaccineInventoryViewDto>? VaccineInventories { get; set; }
 	}
