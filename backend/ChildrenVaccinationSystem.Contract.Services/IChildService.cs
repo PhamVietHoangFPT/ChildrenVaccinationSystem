@@ -11,10 +11,10 @@ namespace ChildrenVaccinationSystem.Contract.Services
 {
 	public interface IChildService
 	{
-		Task<BasePaginatedList<ChildViewDto>> GetMyChildren(int pageNumber, int pageSize);
+		Task<BasePaginatedList<ChildViewDto>> GetChildrenByParentId(string parentId, int pageNumber, int pageSize);
 		Task<BasePaginatedList<ChildViewDto>> GetChildren(int pageNumber, int pageSize);
-		Task<ChildViewDto> GetChildByCode(string id);
-		Task AddChildProfile(ChildCreateDto childCreateDto);
+		Task<ChildViewDto> GetChildById(string id);
+		Task AddChildProfile(string parentId, ChildCreateDto childCreateDto);
 		Task UpdateChildProfile(string id, ChildUpdateDto childUpdateDto);
 	}
 }

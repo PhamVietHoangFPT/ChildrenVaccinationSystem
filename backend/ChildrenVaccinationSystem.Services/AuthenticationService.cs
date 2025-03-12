@@ -36,7 +36,7 @@ namespace ChildrenVaccinationSystem.Services
 			_emailService = emailService;
 		}
 
-		
+
 
 		public Task ForgotPassword(string email, string userName)
 		{
@@ -108,7 +108,7 @@ namespace ChildrenVaccinationSystem.Services
 
 			Account? account = await _unitOfWork.GetRepository<Account>().Entities.Where(a => a.VerificationToken == token).FirstOrDefaultAsync();
 
-			if (account == null) 
+			if (account == null)
 			{
 				throw new ErrorException(502, "bad_gateway", "Token is not valid or is expired");
 			}
@@ -171,21 +171,86 @@ namespace ChildrenVaccinationSystem.Services
 			}
 
 			// Extract claims from the principal
-			var userIdClaim = principal.Claims.FirstOrDefault(c => c.Type == "Id");
+			var accountIdClaim = principal.Claims.FirstOrDefault(c => c.Type == "Id");
 
-			if (userIdClaim != null && Guid.TryParse(userIdClaim.Value, out Guid parsedUserID))
+			if (accountIdClaim != null && Guid.TryParse(accountIdClaim.Value, out Guid parsedAccountId))
 			{
-				return parsedUserID.ToString();
+				return parsedAccountId.ToString();
 			}
 
 			return string.Empty;
 		}
-
 		public string GetCurrentAccountId()
 		{
 			var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
 			return GetAccountIdFromTokenHeader(token);
+		}
+
+		public string GetRoleFromTokenHeader(string? token)
+		{
+			// Check if the token is null or empty
+			if (string.IsNullOrEmpty(token))
+			{
+				return string.Empty; // Handle null or empty token gracefully
+			}
+
+			// Decode the JWT token and extract claims
+			var principal = DecodeJwtToken(token);
+
+			if (principal == null)
+			{
+				return string.Empty; // Handle null principal gracefully
+			}
+
+			// Extract claims from the principal
+			var roleClaim = principal.Claims.FirstOrDefault(c => c.Type == "Role");
+
+			if (roleClaim != null && Guid.TryParse(roleClaim.Value, out Guid parsedRole))
+			{
+				return parsedRole.ToString();
+			}
+
+			return string.Empty;
+		}
+		public static string GetUserRoleFromHttpContext(HttpContext httpContext)
+		{
+			try
+			{
+				string? authorizationHeader = httpContext.Request.Headers["Authorization"];
+
+				string jwtToken = authorizationHeader!["Bearer ".Length..].Trim();
+
+				var tokenHandler = new JwtSecurityTokenHandler();
+
+				var token = tokenHandler.ReadJwtToken(jwtToken);
+				var roleClaim = token.Claims.FirstOrDefault(claim => claim.Type == "Role");
+				return roleClaim!.Value;
+			}
+			catch (ErrorException ex)
+			{
+				var errorResponse = new
+				{
+					data = "An unexpected error occurred.",
+					message = ex.Message,
+					statusCode = StatusCodes.Status401Unauthorized,
+					code = "Unauthorized!"
+				};
+
+				var jsonResponse = System.Text.Json.JsonSerializer.Serialize(errorResponse);
+
+				httpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
+				httpContext.Response.ContentType = "application/json";
+				httpContext.Response.WriteAsync(jsonResponse).Wait();
+
+				throw; // Re-throw the exception to maintain the error flow
+			}
+		}
+		public string GetCurrentRole()
+		{
+			var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+
+			return GetRoleFromTokenHeader(token);
 		}
 
 
@@ -271,19 +336,20 @@ namespace ChildrenVaccinationSystem.Services
 			return new JwtSecurityTokenHandler().WriteToken(token);
 		}
 
-		public void AuthorizeManager()
+		public bool AuthorizeManager()
 		{
 			string accountId = GetCurrentAccountId();
 
 			Account? account = _unitOfWork.GetRepository<Account>().Entities.Where(a => a.Id == accountId && a.Role == RoleEnum.Manager && a.DeletedBy == null).FirstOrDefault();
 
-			if (account == null) 
+			if (account == null)
 			{
-				throw new ErrorException(401, "unauthorized", "Không có quyền truy cập");
+				return false;
 			}
+			return true;
 		}
 
-		public void AuthorizeStaff()
+		public bool AuthorizeStaff()
 		{
 			string accountId = GetCurrentAccountId();
 
@@ -291,11 +357,12 @@ namespace ChildrenVaccinationSystem.Services
 
 			if (account == null)
 			{
-				throw new ErrorException(401, "unauthorized", "Không có quyền truy cập");
+				return false;
 			}
+			return true;
 		}
 
-		public void AuthorizeDoctor()
+		public bool AuthorizeDoctor()
 		{
 			string accountId = GetCurrentAccountId();
 
@@ -303,11 +370,12 @@ namespace ChildrenVaccinationSystem.Services
 
 			if (account == null)
 			{
-				throw new ErrorException(401, "unauthorized", "Không có quyền truy cập");
+				return false;
 			}
+			return true;
 		}
 
-		public void AuthorizeVaccinator()
+		public bool AuthorizeVaccinator()
 		{
 			string accountId = GetCurrentAccountId();
 
@@ -315,11 +383,12 @@ namespace ChildrenVaccinationSystem.Services
 
 			if (account == null)
 			{
-				throw new ErrorException(401, "unauthorized", "Không có quyền truy cập");
+				return false;
 			}
+			return true;
 		}
 
-		public void AuthorizeCustomer()
+		public bool AuthorizeCustomer()
 		{
 			string accountId = GetCurrentAccountId();
 
@@ -327,8 +396,9 @@ namespace ChildrenVaccinationSystem.Services
 
 			if (account == null)
 			{
-				throw new ErrorException(401, "unauthorized", "Không có quyền truy cập");
+				return false;
 			}
+			return true;
 		}
 	}
 }

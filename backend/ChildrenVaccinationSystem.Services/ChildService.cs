@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static ChildrenVaccinationSystem.Core.Base.BaseException;
 
 namespace ChildrenVaccinationSystem.Services
 {
@@ -27,15 +28,26 @@ namespace ChildrenVaccinationSystem.Services
 			_authenticationService = authenticationService;
 		}
 
-		public async Task AddChildProfile(ChildCreateDto childCreateDto)
+		public async Task AddChildProfile(string parentId, ChildCreateDto childCreateDto)
 		{
-			_authenticationService.AuthorizeCustomer();
+			if (!(_authenticationService.AuthorizeCustomer() |
+				   _authenticationService.AuthorizeManager() |
+				   _authenticationService.AuthorizeStaff()))
+			{
+				throw new ErrorException(403, "unauthorized", "You don't have permission");
+			}
+
+			if (!_unitOfWork.IsValid<Account>(parentId))
+			{
+				throw new ErrorException(404, "not_found", "Không tìm thấy parent id");
+			}
 
 			Child child = new Child();
 
 			_mapper.Map(childCreateDto, child);
 			child.ChildCode = GenerateChildCode();
 			_authenticationService.UpdateAudits(child, true);
+			child.AccountId = parentId;
 
 			await _unitOfWork.GetRepository<Child>().InsertAsync(child);
 			await _unitOfWork.SaveAsync();
@@ -58,12 +70,12 @@ namespace ChildrenVaccinationSystem.Services
 			return $"C-{newCode:D6}";
 		}
 
-		public async Task<ChildViewDto> GetChildByCode(string childCode)
+		public async Task<ChildViewDto> GetChildById(string id)
 		{
-			Child? child = await _unitOfWork.GetRepository<Child>().Entities.Where(c => c.ChildCode == childCode && c.DeletedBy == null).FirstOrDefaultAsync();
+			Child? child = await _unitOfWork.GetRepository<Child>().Entities.Where(c => c.Id == id && c.DeletedBy == null).FirstOrDefaultAsync();
 
 			if (child == null)
-				throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy child id");
+				throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy child code");
 
 			return _mapper.Map<ChildViewDto>(child);
 		}
@@ -71,6 +83,7 @@ namespace ChildrenVaccinationSystem.Services
 		public async Task<BasePaginatedList<ChildViewDto>> GetChildren(int pageNumber, int pageSize)
 		{
 			IQueryable<Child> query = _unitOfWork.GetRepository<Child>().Entities.Where(c => c.DeletedBy == null);
+
 
 			BasePaginatedList<Child> resultQuery = (pageNumber <= 0 || pageSize <= 0)
 				? await _unitOfWork.GetRepository<Child>().GetPaging(query, 1, query.Count())
@@ -81,11 +94,14 @@ namespace ChildrenVaccinationSystem.Services
 			return new BasePaginatedList<ChildViewDto>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
 		}
 
-		public async Task<BasePaginatedList<ChildViewDto>> GetMyChildren(int pageNumber, int pageSize)
+		public async Task<BasePaginatedList<ChildViewDto>> GetChildrenByParentId(string parentId, int pageNumber, int pageSize)
 		{
-			string accountId = _authenticationService.GetCurrentAccountId();
+			if(!_unitOfWork.IsValid<Account>(parentId))
+			{
+				throw new ErrorException(404, "not_found", "Không tìm thấy parent id");
+			}
 
-			IQueryable<Child> query = _unitOfWork.GetRepository<Child>().Entities.Where(c => c.AccountId == accountId && c.DeletedBy == null);
+			IQueryable<Child> query = _unitOfWork.GetRepository<Child>().Entities.Where(c => c.AccountId == parentId && c.DeletedBy == null);
 
 			BasePaginatedList<Child> resultQuery = (pageNumber <= 0 || pageSize <= 0)
 				? await _unitOfWork.GetRepository<Child>().GetPaging(query, 1, query.Count())
@@ -98,6 +114,18 @@ namespace ChildrenVaccinationSystem.Services
 
 		public async Task UpdateChildProfile(string id, ChildUpdateDto childUpdateDto)
 		{
+			Child? child = await _unitOfWork.GetRepository<Child>().Entities
+				.Where(c => c.Id == id && c.DeletedBy == null)
+				.FirstOrDefaultAsync();
+
+			if (child == null)
+				throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy child id");
+
+			_mapper.Map(childUpdateDto, child);
+			_authenticationService.UpdateAudits(child, false);
+
+			await _unitOfWork.GetRepository<Child>().UpdateAsync(child);
+			await _unitOfWork.SaveAsync();
 
 		}
 	}
