@@ -137,7 +137,12 @@ export default function VaccineRegistrationCustomer() {
 
       {selectedFacility && (
         <>
-          <Table dataSource={vaccines.data.items} columns={columns} />
+          <Table
+            dataSource={vaccines.data.items}
+            columns={columns}
+            pagination={false}
+            style={{ marginBottom: '16px' }}
+          />
           <Pagination
             current={pageNumber}
             pageSize={pageSize}
