@@ -17,7 +17,8 @@ function MainLayout() {
       <Navbar />
       <Content
         style={{
-          margin: '24px',
+          padding: '50px',
+          paddingTop: '30px',
           overflow: 'initial',
           width: '100vw',
         }}

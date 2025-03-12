@@ -14,6 +14,18 @@ export const testApi = apiSlice.injectEndpoints({
       transformResponse: (res) => res,
       providesTags: ['vaccines'],
     }),
+    getVaccineListMiniMal: builder.query({
+      query: ({ pageNumber, pageSize }) => ({
+        url: '/vaccines/minimal',
+        method: 'GET',
+        params: {
+          pageNumber,
+          pageSize,
+        },
+      }),
+      transformResponse: (res) => res,
+      providesTags: ['vaccines'],
+    }),
     createVaccine: builder.mutation({
       query: (data) => ({
         url: '/vaccines',
@@ -53,6 +65,7 @@ export const testApi = apiSlice.injectEndpoints({
 
 export const {
   useGetVaccineListQuery,
+  useGetVaccineListMiniMalQuery,
   useCreateVaccineMutation,
   useGetVaccineDetailQuery,
   useUpdateVaccineMutation,
