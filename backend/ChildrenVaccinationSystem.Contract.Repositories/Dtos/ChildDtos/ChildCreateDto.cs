@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChildrenVaccinationSystem.Contract.Services
+namespace ChildrenVaccinationSystem.Contract.Repositories.Dtos.ChildDtos
 {
-	public interface IAccountService
+	public class ChildCreateDto
 	{
 	}
 }

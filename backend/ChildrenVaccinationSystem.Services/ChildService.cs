@@ -7,8 +7,4 @@ using System.Threading.Tasks;
 
 namespace ChildrenVaccinationSystem.Services
 {
-	public class AccountService : IAccountService
-	{
-
-	}
 }

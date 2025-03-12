@@ -5,13 +5,14 @@ namespace ChildrenVaccinationSystem.API.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class AccountsController : ControllerBase
+	public class ChildrenController : ControllerBase
 	{
-		private readonly IAccountService _accountService;
-
-		public AccountsController(IAccountService accountService) 
+		private readonly IChildService _childrenService;
+		public ChildrenController(IChildService childrenService)
 		{
-			_accountService = accountService;
+			_childrenService = childrenService;
 		}
+
+
 	}
 }
