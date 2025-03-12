@@ -2,12 +2,22 @@ import { Layout, Card, Typography, Row, Col, Button } from 'antd'
 import { LoginForm } from '../../components/Authentication/LoginForm'
 import Logo from '../../assets/Logo.png'
 import { useNavigate } from 'react-router-dom'
+import Cookies from 'js-cookie'
+import { useEffect } from 'react'
 
 const { Content } = Layout
 const { Title } = Typography
 
 export default function Login() {
   const navigate = useNavigate()
+  useEffect(() => {
+    const userData = Cookies.get('userData')
+      ? JSON.parse(Cookies.get('userData') as string)
+      : null
+    if (userData) {
+      navigate('/')
+    }
+  }, [navigate])
   return (
     <Layout
       style={{

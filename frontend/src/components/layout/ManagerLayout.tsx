@@ -9,17 +9,17 @@ const { Title, Text } = Typography
 
 export const ManagerLayout = () => {
   return (
-    <Layout style={{ minHeight: "100vh" }}>
+    <Layout style={{ minHeight: '100vh' }}>
       <SideBar />
       <Layout>
         <Header
           style={{
-            background: "#fff",
-            padding: "0 24px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+            background: '#fff',
+            padding: '0 24px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
             zIndex: 1,
           }}
         >
@@ -28,11 +28,11 @@ export const ManagerLayout = () => {
           </Title>
         </Header>
 
-        <Content style={{ margin: "24px" }}>
+        <Content style={{ margin: '24px' }}>
           <div
             style={{
               padding: 24,
-              background: "#fff",
+              background: '#fff',
               borderRadius: 6,
               minHeight: 280,
             }}
@@ -41,11 +41,12 @@ export const ManagerLayout = () => {
           </div>
         </Content>
 
-        <Footer style={{ textAlign: "center", padding: "12px 50px" }}>
-          <Text type="secondary">© 2025 VacciTrack Admin Portal. All rights reserved.</Text>
+        <Footer style={{ textAlign: 'center', padding: '12px 50px' }}>
+          <Text type='secondary'>
+            © 2025 VacciTrack Admin Portal. All rights reserved.
+          </Text>
         </Footer>
       </Layout>
     </Layout>
   )
 }
-
