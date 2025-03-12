@@ -4,10 +4,11 @@ import {
   LoginOutlined,
   UserOutlined,
   LogoutOutlined,
-  SettingOutlined,
-  AppstoreOutlined,
+  CalendarOutlined,
   InfoCircleOutlined,
 } from '@ant-design/icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSyringe } from '@fortawesome/free-solid-svg-icons'
 import type { MenuProps } from 'antd'
 import { Menu, Layout } from 'antd'
 const { Header } = Layout
@@ -40,6 +41,18 @@ const Navbar: React.FC = () => {
         url: '/',
       },
       {
+        key: 'vaccines',
+        icon: <FontAwesomeIcon icon={faSyringe} />,
+        label: 'Vắc xin',
+        url: '/vaccines',
+      },
+      {
+        key: 'appointments',
+        icon: <CalendarOutlined />,
+        label: 'Lịch hẹn',
+        url: '/vaccineRegistration',
+      },
+      {
         key: 'about',
         icon: <InfoCircleOutlined />,
         label: 'Về chúng tôi',
@@ -53,35 +66,6 @@ const Navbar: React.FC = () => {
             key: 'service2',
             label: 'About us 2',
             url: '/abouts/abouts2',
-          },
-        ],
-      },
-      {
-        key: 'blogs',
-        icon: <AppstoreOutlined />,
-        label: 'Cẩm nang',
-        children: [
-          {
-            key: 'blogs1',
-            label: 'Dịch vụ 1',
-            url: '/services/service1',
-          },
-          {
-            key: 'blogs2',
-            label: 'Dịch vụ 2',
-            url: '/services/service2',
-          },
-        ],
-      },
-      {
-        key: 'settings',
-        icon: <SettingOutlined />,
-        label: 'Cài đặt',
-        children: [
-          {
-            key: 'security',
-            label: 'Bảo mật',
-            url: '/settings/security',
           },
         ],
       },

@@ -47,6 +47,11 @@ const authSlice = createSlice({
         expires: expirationDate,
       })
       Cookies.set('userToken', token, { expires: expirationDate })
+      if (state.userData.Role === 'Customer') {
+        window.location.href = '/'
+      } else {
+        window.location.href = `/${state.userData.Role.toLowerCase()}`
+      }
     },
     logout: (state) => {
       state.userData = null

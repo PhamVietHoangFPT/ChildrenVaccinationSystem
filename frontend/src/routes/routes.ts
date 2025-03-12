@@ -2,16 +2,19 @@ import LoginRegisterLayout from '../components/layout/LoginRegisterLayout'
 import MainLayout from '../components/layout/MainLayout'
 import { ManagerLayout } from '../components/layout/ManagerLayout'
 import StaffLayout from '../components/layout/StaffLayout'
-import CustomerList from '../Pages/Home/Customer/CustomerList'
+import ManagerCustomerList from '../Pages/Home/Customer/CustomerListManager'
 import Homepage from '../Pages/Home/Home'
-import StaffList from '../Pages/Home/Staff/StaffList'
-import VaccineList from '../Pages/Home/Vaccine/VaccineList'
+import ManagerStaffList from '../Pages/Home/Staff/StaffListManager'
+import ManagerVaccineList from '../Pages/Home/Vaccine/VaccineListManager'
 import Login from '../Pages/Login/Login'
 import ManagerHomePage from '../Pages/Manager/ManagerHomePage'
 import ProfilePage from '../Pages/Profile/ProfilePage'
 import Register from '../Pages/Register/Register'
 import StaffHomePage from '../Pages/Staff/StaffDefault/StaffHomePage'
 import { LayoutRoute } from '../types/routes'
+import AllVaccinesCustomer from '../Pages/Vaccines/AllVaccinesCustomer'
+import VaccineDetailsCustomer from '../Pages/Vaccines/VaccineDetailsCustomer'
+import VaccineRegistrationCustomer from '../Pages/Vaccines/VaccineRegistrationCustomer'
 
 const routes: LayoutRoute[] = [
   {
@@ -25,7 +28,19 @@ const routes: LayoutRoute[] = [
       {
         path: '/profile',
         component: ProfilePage,
-      }
+      },
+      {
+        path: '/vaccines',
+        component: AllVaccinesCustomer,
+      },
+      {
+        path: '/vaccines/:vaccineID',
+        component: VaccineDetailsCustomer,
+      },
+      {
+        path: '/vaccineRegistration',
+        component: VaccineRegistrationCustomer,
+      },
     ],
   },
   {
@@ -63,15 +78,21 @@ const routes: LayoutRoute[] = [
       },
       {
         path: '/manager/staff',
-        component: StaffList,
+        component: ManagerStaffList,
+        exact: true,
+        role: ['Manager'],
       },
       {
         path: '/manager/view',
-        component: CustomerList,
+        component: ManagerCustomerList,
+        exact: true,
+        role: ['Manager'],
       },
       {
         path: '/manager/vaccine',
-        component: VaccineList,
+        component: ManagerVaccineList,
+        exact: true,
+        role: ['Manager'],
       },
     ],
   },

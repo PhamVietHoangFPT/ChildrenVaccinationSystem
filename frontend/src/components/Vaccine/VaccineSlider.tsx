@@ -35,7 +35,12 @@ export const VaccineSlider: FC<VaccineSliderProps> = ({ vaccines }) => {
             }}
             cover={
               <img
-                src={vaccine.imageUrl || '/placeholder.svg'}
+                src={
+                  vaccine.images && vaccine.images.length > 0
+                    ? import.meta.env.VITE_IMAGE_ENDPOINT +
+                      vaccine.images[0].imageSource
+                    : '/placeholder.svg'
+                }
                 alt={vaccine.name}
                 style={{
                   width: '100%',
