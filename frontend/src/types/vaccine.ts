@@ -1,7 +1,9 @@
 export interface Vaccines {
-  id: number
+  id: string
   name: string
-  imageUrl?: string
+  images?: {
+    imageSource: string
+  }[]
   description?: string
   price?: number
   startRecommendAge?: number

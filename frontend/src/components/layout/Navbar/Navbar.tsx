@@ -8,6 +8,8 @@ import {
   AppstoreOutlined,
   InfoCircleOutlined,
 } from '@ant-design/icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSyringe } from '@fortawesome/free-solid-svg-icons'
 import type { MenuProps } from 'antd'
 import { Menu, Layout } from 'antd'
 const { Header } = Layout
@@ -38,6 +40,12 @@ const Navbar: React.FC = () => {
         icon: <HomeOutlined />,
         label: 'Trang chủ',
         url: '/',
+      },
+      {
+        key: 'vaccines',
+        icon: <FontAwesomeIcon icon={faSyringe} />,
+        label: 'Vắc xin',
+        url: '/vaccines',
       },
       {
         key: 'about',
