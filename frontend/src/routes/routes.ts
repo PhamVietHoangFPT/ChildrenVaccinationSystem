@@ -12,6 +12,7 @@ import ProfilePage from '../Pages/Profile/ProfilePage'
 import Register from '../Pages/Register/Register'
 import StaffHomePage from '../Pages/Staff/StaffDefault/StaffHomePage'
 import { LayoutRoute } from '../types/routes'
+import AllVaccinesCustomer from '../Pages/Vaccines/AllVaccinesCustomer'
 
 const routes: LayoutRoute[] = [
   {
@@ -25,7 +26,11 @@ const routes: LayoutRoute[] = [
       {
         path: '/profile',
         component: ProfilePage,
-      }
+      },
+      {
+        path: '/vaccines',
+        component: AllVaccinesCustomer,
+      },
     ],
   },
   {
@@ -64,14 +69,17 @@ const routes: LayoutRoute[] = [
       {
         path: '/manager/staff',
         component: StaffList,
+        role: ['Manager'],
       },
       {
         path: '/manager/view',
         component: CustomerList,
+        role: ['Manager'],
       },
       {
         path: '/manager/vaccine',
         component: VaccineList,
+        role: ['Manager'],
       },
     ],
   },

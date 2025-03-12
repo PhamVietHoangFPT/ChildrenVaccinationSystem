@@ -1,5 +1,3 @@
 export default function StaffList() {
-  return (
-    <div>StaffList</div>
-  )
+  return <div>StaffList</div>
 }

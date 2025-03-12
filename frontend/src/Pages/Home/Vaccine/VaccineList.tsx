@@ -1,5 +1,3 @@
 export default function VaccineList() {
-  return (
-    <div>VaccineList</div>
-  )
+  return <div>VaccineList</div>
 }

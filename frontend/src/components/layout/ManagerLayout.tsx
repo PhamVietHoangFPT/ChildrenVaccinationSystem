@@ -1,18 +1,17 @@
 // import { useState } from "react"
-import { Outlet } from "react-router-dom"
+import { Outlet } from 'react-router-dom'
 // import { Layout, Typography, Space, Badge, Avatar, Dropdown, Button, Menu } from "antd"
-import { Layout, Typography} from "antd"
-import {
-  // BellOutlined,
-  // QuestionCircleOutlined,
-  // UserOutlined,
-  // SettingOutlined,
-  // LogoutOutlined,
-  // DownOutlined,
-  // WarningOutlined,
-  // InfoCircleOutlined,
-} from "@ant-design/icons"
-import { SideBar } from "./SideBar/SideBarManager"
+import { Layout, Typography } from 'antd'
+import {} from // BellOutlined,
+// QuestionCircleOutlined,
+// UserOutlined,
+// SettingOutlined,
+// LogoutOutlined,
+// DownOutlined,
+// WarningOutlined,
+// InfoCircleOutlined,
+'@ant-design/icons'
+import { SideBar } from './SideBar/SideBarManager'
 
 const { Header, Content, Footer } = Layout
 const { Title, Text } = Typography
@@ -109,17 +108,17 @@ export const ManagerLayout = () => {
   // )
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
+    <Layout style={{ minHeight: '100vh' }}>
       <SideBar />
       <Layout>
         <Header
           style={{
-            background: "#fff",
-            padding: "0 24px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+            background: '#fff',
+            padding: '0 24px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
             zIndex: 1,
           }}
         >
@@ -136,7 +135,7 @@ export const ManagerLayout = () => {
 
             <Button type="text" icon={<QuestionCircleOutlined style={{ fontSize: 18 }} />} /> */}
 
-            {/* <Dropdown overlay={userMenu} trigger={["click"]} placement="bottomRight" arrow>
+          {/* <Dropdown overlay={userMenu} trigger={["click"]} placement="bottomRight" arrow>
               <Space style={{ cursor: "pointer" }}>
                 <Avatar icon={<UserOutlined />} />
                 <DownOutlined style={{ fontSize: 12 }} />
@@ -145,11 +144,11 @@ export const ManagerLayout = () => {
           {/* </Space> */}
         </Header>
 
-        <Content style={{ margin: "24px" }}>
+        <Content style={{ margin: '24px' }}>
           <div
             style={{
               padding: 24,
-              background: "#fff",
+              background: '#fff',
               borderRadius: 6,
               minHeight: 280,
             }}
@@ -158,11 +157,12 @@ export const ManagerLayout = () => {
           </div>
         </Content>
 
-        <Footer style={{ textAlign: "center", padding: "12px 50px" }}>
-          <Text type="secondary">© 2025 VacciTrack Admin Portal. All rights reserved.</Text>
+        <Footer style={{ textAlign: 'center', padding: '12px 50px' }}>
+          <Text type='secondary'>
+            © 2025 VacciTrack Admin Portal. All rights reserved.
+          </Text>
         </Footer>
       </Layout>
     </Layout>
   )
 }
-
