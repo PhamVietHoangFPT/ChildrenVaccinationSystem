@@ -8,14 +8,9 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   HomeOutlined,
-  // CalendarOutlined,
   TeamOutlined,
-  // ExperimentOutlined,
   MedicineBoxOutlined,
-  // FileTextOutlined,
-  // BarChartOutlined,
-  // SettingOutlined,
-} from '@ant-design/icons'
+} from "@ant-design/icons"
 
 const { Sider } = Layout
 const { Search } = Input
@@ -75,113 +70,6 @@ export const SideBar = () => {
       label: 'Manage Vaccines',
       onClick: () => navigate('/manager/vaccine'),
     },
-    // {
-    //   key: "manager/view",
-    //   icon: <CalendarOutlined />,
-    //   label: "View all customers",
-    //   children: [
-    //     {
-    //       key: "appointments/schedule",
-    //       label: "Schedule",
-    //       onClick: () => navigate("/appointments/schedule"),
-    //     },
-    //     {
-    //       key: "appointments/calendar",
-    //       label: "Calendar View",
-    //       onClick: () => navigate("/appointments/calendar"),
-    //     },
-    //   ],
-    // },
-    // {
-    //   key: "patients",
-    //   icon: <TeamOutlined />,
-    //   label: "Patients",
-    //   children: [
-    //     {
-    //       key: "patients/all",
-    //       label: "All Patients",
-    //       onClick: () => navigate("/patients/all"),
-    //     },
-    //     {
-    //       key: "patients/register",
-    //       label: "Registration",
-    //       onClick: () => navigate("/patients/register"),
-    //     },
-    //     {
-    //       key: "patients/records",
-    //       label: "Vaccination Records",
-    //       onClick: () => navigate("/patients/records"),
-    //     },
-    //   ],
-    // },
-    // {
-    //   key: "inventory",
-    //   icon: <ExperimentOutlined />,
-    //   label: "Vaccine Inventory",
-    //   children: [
-    //     {
-    //       key: "inventory/stock",
-    //       label: "Stock Status",
-    //       onClick: () => navigate("/inventory/stock"),
-    //     },
-    //     {
-    //       key: "inventory/orders",
-    //       label: "Manage Orders",
-    //       onClick: () => navigate("/inventory/orders"),
-    //     },
-    //   ],
-    // },
-    // {
-    //   key: "vaccinations",
-    //   icon: <MedicineBoxOutlined />,
-    //   label: "Vaccinations",
-    //   children: [
-    //     {
-    //       key: "vaccinations/administer",
-    //       label: "Administer Vaccine",
-    //       onClick: () => navigate("/vaccinations/administer"),
-    //     },
-    //     {
-    //       key: "vaccinations/history",
-    //       label: "Vaccination History",
-    //       onClick: () => navigate("/vaccinations/history"),
-    //     },
-    //   ],
-    // },
-    // {
-    //   key: "reports",
-    //   icon: <BarChartOutlined />,
-    //   label: "Reports",
-    //   children: [
-    //     {
-    //       key: "reports/analytics",
-    //       label: "Analytics",
-    //       onClick: () => navigate("/reports/analytics"),
-    //     },
-    //     {
-    //       key: "reports/daily",
-    //       label: "Daily Summary",
-    //       onClick: () => navigate("/reports/daily"),
-    //     },
-    //     {
-    //       key: "reports/trends",
-    //       label: "Vaccination Trends",
-    //       onClick: () => navigate("/reports/trends"),
-    //     },
-    //   ],
-    // },
-    // {
-    //   key: "documents",
-    //   icon: <FileTextOutlined />,
-    //   label: "Documents",
-    //   onClick: () => navigate("/documents"),
-    // },
-    // {
-    //   key: "settings",
-    //   icon: <SettingOutlined />,
-    //   label: "Settings",
-    //   onClick: () => navigate("/settings"),
-    // },
   ]
 
   return (
