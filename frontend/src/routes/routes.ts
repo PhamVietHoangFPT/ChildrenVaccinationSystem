@@ -2,10 +2,10 @@ import LoginRegisterLayout from '../components/layout/LoginRegisterLayout'
 import MainLayout from '../components/layout/MainLayout'
 import { ManagerLayout } from '../components/layout/ManagerLayout'
 import StaffLayout from '../components/layout/StaffLayout'
-import CustomerList from '../Pages/Home/Customer/CustomerList'
+import ManagerCustomerList from '../Pages/Home/Customer/CustomerList'
 import Homepage from '../Pages/Home/Home'
-import StaffList from '../Pages/Home/Staff/StaffList'
-import VaccineList from '../Pages/Home/Vaccine/VaccineList'
+import ManagerStaffList from '../Pages/Home/Staff/StaffList'
+import ManagerVaccineList from '../Pages/Home/Vaccine/VaccineList'
 import Login from '../Pages/Login/Login'
 import ManagerHomePage from '../Pages/Manager/ManagerHomePage'
 import ProfilePage from '../Pages/Profile/ProfilePage'
@@ -63,15 +63,21 @@ const routes: LayoutRoute[] = [
       },
       {
         path: '/manager/staff',
-        component: StaffList,
+        component: ManagerStaffList,
+        exact: true,
+        role: ['Manager'],
       },
       {
         path: '/manager/view',
-        component: CustomerList,
+        component: ManagerCustomerList,
+        exact: true,
+        role: ['Manager'],
       },
       {
         path: '/manager/vaccine',
-        component: VaccineList,
+        component: ManagerVaccineList,
+        exact: true,
+        role: ['Manager'],
       },
     ],
   },
