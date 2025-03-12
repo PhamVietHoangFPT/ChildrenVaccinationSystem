@@ -19,9 +19,9 @@ namespace ChildrenVaccinationSystem.Services
 	{
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IMapper _mapper;
-		private readonly IAccountService _authenticationService;
+		private readonly IAuthenticationService _authenticationService;
 
-		public CategoryService(IUnitOfWork unitOfWork, IMapper mapper, IAccountService authenticationService)
+		public CategoryService(IUnitOfWork unitOfWork, IMapper mapper, IAuthenticationService authenticationService)
 		{
 			_unitOfWork = unitOfWork;
 			_mapper = mapper;

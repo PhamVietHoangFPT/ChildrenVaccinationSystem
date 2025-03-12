@@ -48,6 +48,13 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Mapper
 				));
 
 			CreateMap<Child, ChildViewDto>();
+			CreateMap<ChildCreateDto, Child>();
+			CreateMap<ChildUpdateDto, Child>()
+				.ForAllMembers(opt => opt.Condition(
+				(src, dest, srcMember) => srcMember != null &&
+										  (srcMember is not string || !string.IsNullOrWhiteSpace(srcMember.ToString()))
+				));
+
 
 			CreateMap<Country, CountryViewDto>();
 
@@ -74,7 +81,6 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Mapper
 			CreateMap<PackageItem, PackageItemViewDto>();
 
 			CreateMap<Vaccination, VaccinationViewDto>();
-			CreateMap<Vaccination, SimpleViewDto>();
 
 			CreateMap<VaccinationDetail, VaccinationDetailViewDto>();
 
