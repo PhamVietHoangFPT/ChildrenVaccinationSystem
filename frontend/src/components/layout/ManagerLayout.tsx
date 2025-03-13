@@ -1,40 +1,39 @@
-import { Outlet, useNavigate } from "react-router-dom"
-import { Layout, Typography} from "antd"
-import {
-} from "@ant-design/icons"
-import { SideBar } from "./SideBar/SideBarManager"
-import Cookies from "js-cookie"
-import { useEffect } from "react"
+import { Outlet, useNavigate } from 'react-router-dom'
+import { Layout, Typography } from 'antd'
+import {} from '@ant-design/icons'
+import { SideBar } from './SideBar/SideBarManager'
+import Cookies from 'js-cookie'
+import { useEffect } from 'react'
 
 const { Header, Content, Footer } = Layout
 const { Title, Text } = Typography
 
 export const ManagerLayout = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   useEffect(() => {
     // Get userData from cookies and parse it
-    const userDataString = Cookies.get("userData");
+    const userDataString = Cookies.get('userData')
 
     if (!userDataString) {
-      navigate("/");
-      return;
+      navigate('/')
+      return
     }
 
-    let userData;
+    let userData
     try {
-      userData = JSON.parse(userDataString);
+      userData = JSON.parse(userDataString)
     } catch (error) {
-      console.error("Failed to parse userData from cookies:", error);
-      navigate("/");
-      return;
+      console.error('Failed to parse userData from cookies:', error)
+      navigate('/')
+      return
     }
 
-    if (userData.Role !== "Manager") {
-      navigate("/");
+    if (userData.Role !== 'Manager') {
+      navigate('/')
     }
-  }, [navigate]);
-  
+  }, [navigate])
+
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <SideBar />

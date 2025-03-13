@@ -9,7 +9,6 @@ import {
   SearchOutlined,
   TeamOutlined,
   SmileOutlined,
-  UserOutlined,
 } from '@ant-design/icons'
 import { MenuProps, Layout } from 'antd'
 import { Menu } from 'antd'
@@ -19,10 +18,7 @@ import Cookies from 'js-cookie'
 const { Sider } = Layout
 
 type MenuItem = Required<MenuProps>['items'][number]
-//get userData from cookies
-const userData = Cookies.get('userData')
-  ? JSON.parse(Cookies.get('userData') as string)
-  : null
+
 // Define the shape of your custom menu items
 interface CustomMenuItem {
   key: string
@@ -30,7 +26,7 @@ interface CustomMenuItem {
   icon?: React.ReactNode
   url?: string
   children?: CustomMenuItem[]
-  danger? :boolean
+  danger?: boolean
 }
 
 const SideBarStaff: React.FC = () => {
@@ -47,32 +43,17 @@ const SideBarStaff: React.FC = () => {
     setCurrent(path)
   }, [location.pathname])
 
+  const userData = Cookies.get('userData')
+    ? JSON.parse(Cookies.get('userData') as string)
+    : null
   // Define menu items with useMemo for performance
   const items = useMemo((): CustomMenuItem[] => {
     return [
       {
         key: 'sub0',
         label: `Welcome, ${userData.Name}`,
-        icon: <UserOutlined />,
-      },
-      {
-        key: 'sub2',
-        label: 'Customer`s Profile',
-        icon: <TeamOutlined />,
-        children: [
-          {
-            key: '4',
-            label: 'Update Customer Profile',
-            icon: <FormOutlined />,
-            url: '/staff',
-          },
-          {
-            key: 'sub3',
-            label: 'Children`s Profile',
-            icon: <SmileOutlined />,
-            url:''
-          },
-        ],
+        icon: <SmileOutlined />,
+        url: '/staff',
       },
       {
         key: 'sub1',
@@ -90,6 +71,25 @@ const SideBarStaff: React.FC = () => {
             label: 'Register Vaccination ',
             icon: <FormOutlined />,
             url: '/staff',
+          },
+        ],
+      },
+      {
+        key: 'sub2',
+        label: 'Customer`s Profile',
+        icon: <TeamOutlined />,
+        children: [
+          {
+            key: '4',
+            label: 'Update Customer Profile',
+            icon: <FormOutlined />,
+            url: '/option5',
+          },
+          {
+            key: 'sub3',
+            label: 'Children`s Profile',
+            icon: <SmileOutlined />,
+            url: '',
           },
         ],
       },
@@ -117,7 +117,7 @@ const SideBarStaff: React.FC = () => {
         label: 'Log Out',
         icon: <LogoutOutlined />,
         url: '/logout',
-        danger :true
+        danger: true,
       },
     ]
   }, [])
@@ -146,7 +146,6 @@ const SideBarStaff: React.FC = () => {
       }
     }
   }
-
 
   return (
     <Sider

@@ -1,19 +1,19 @@
-import React from 'react';
-import { Table, Button, Modal, message } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
-import { EyeOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import React from 'react'
+import { Table, Button, Modal, message } from 'antd'
+import type { ColumnsType } from 'antd/es/table'
+import { EyeOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
 
 export interface Vaccine {
-  id: number;
-  name: string;
-  imageUrl?: string;
-  description?: string;
-  price?: number;
-  startRecommendAge?: number;
-  endRecommendAge?: number;
-  sequence?: number;
-  dosage?: string;
-  dosageInterval?: number;
+  id: number
+  name: string
+  imageUrl?: string
+  description?: string
+  price?: number
+  startRecommendAge?: number
+  endRecommendAge?: number
+  sequence?: number
+  dosage?: string
+  dosageInterval?: number
 }
 
 const vaccineData: Vaccine[] = [
@@ -26,7 +26,7 @@ const vaccineData: Vaccine[] = [
     sequence: 1,
     dosage: '0.5ml',
     dosageInterval: 30,
-    description: 'Protects against virus A'
+    description: 'Protects against virus A',
   },
   {
     id: 2,
@@ -37,7 +37,7 @@ const vaccineData: Vaccine[] = [
     sequence: 2,
     dosage: '1ml',
     dosageInterval: 60,
-    description: 'Prevents disease B'
+    description: 'Prevents disease B',
   },
   {
     id: 3,
@@ -48,9 +48,9 @@ const vaccineData: Vaccine[] = [
     sequence: 3,
     dosage: '0.25ml',
     dosageInterval: 15,
-    description: 'Effective against infection C'
+    description: 'Effective against infection C',
   },
-];
+]
 
 const ManagerVaccineList: React.FC = () => {
   const handleView = (record: Vaccine) => {
@@ -69,25 +69,39 @@ const ManagerVaccineList: React.FC = () => {
               <strong>Price:</strong> ${record.price}
             </p>
           )}
-          {record.startRecommendAge !== undefined && record.endRecommendAge !== undefined && (
+          {record.startRecommendAge !== undefined &&
+            record.endRecommendAge !== undefined && (
+              <p>
+                <strong>Recommended Age:</strong> {record.startRecommendAge} -{' '}
+                {record.endRecommendAge} years
+              </p>
+            )}
+          {record.dosage && (
             <p>
-              <strong>Recommended Age:</strong> {record.startRecommendAge} - {record.endRecommendAge} years
+              <strong>Dosage:</strong> {record.dosage}
             </p>
           )}
-          {record.dosage && <p><strong>Dosage:</strong> {record.dosage}</p>}
-          {record.dosageInterval && <p><strong>Dosage Interval:</strong> {record.dosageInterval} days</p>}
-          {record.description && <p><strong>Description:</strong> {record.description}</p>}
+          {record.dosageInterval && (
+            <p>
+              <strong>Dosage Interval:</strong> {record.dosageInterval} days
+            </p>
+          )}
+          {record.description && (
+            <p>
+              <strong>Description:</strong> {record.description}
+            </p>
+          )}
         </div>
       ),
-    });
-  };
+    })
+  }
 
   const handleEdit = (record: Vaccine) => {
     Modal.warning({
       title: 'Edit Vaccine',
       content: `You clicked to edit ${record.name}. (Simulated action)`,
-    });
-  };
+    })
+  }
 
   const handleDelete = (record: Vaccine) => {
     Modal.confirm({
@@ -97,10 +111,10 @@ const ManagerVaccineList: React.FC = () => {
       okType: 'danger',
       cancelText: 'Cancel',
       onOk() {
-        message.success(`${record.name} has been deleted.`);
+        message.success(`${record.name} has been deleted.`)
       },
-    });
-  };
+    })
+  }
 
   const columns: ColumnsType<Vaccine> = [
     {
@@ -130,7 +144,7 @@ const ManagerVaccineList: React.FC = () => {
       render: (_, record) => (
         <>
           <Button
-            type="primary"
+            type='primary'
             icon={<EyeOutlined />}
             onClick={() => handleView(record)}
             style={{ marginRight: 8 }}
@@ -145,7 +159,7 @@ const ManagerVaccineList: React.FC = () => {
             Edit
           </Button>
           <Button
-            type="primary"
+            type='primary'
             danger
             icon={<DeleteOutlined />}
             onClick={() => handleDelete(record)}
@@ -155,14 +169,14 @@ const ManagerVaccineList: React.FC = () => {
         </>
       ),
     },
-  ];
+  ]
 
   return (
     <div style={{ padding: 24 }}>
       <h2>Vaccine List</h2>
-      <Table dataSource={vaccineData} columns={columns} rowKey="id" />
+      <Table dataSource={vaccineData} columns={columns} rowKey='id' />
     </div>
-  );
-};
+  )
+}
 
-export default ManagerVaccineList;
+export default ManagerVaccineList
