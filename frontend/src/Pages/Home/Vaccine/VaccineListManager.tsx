@@ -102,7 +102,7 @@ const ManagerVaccineList: React.FC = () => {
     <div style={{ padding: 24 }}>
       <h2>Vaccine List</h2>
 
-      <div style={{ marginBottom: 16, display: "flex", gap: 8 }}>
+      <div style={{ marginBottom: 16, display: "flex", justifyContent: "space-between", gap: 8 }}>
         <Input
           placeholder="Search by vaccine name"
           prefix={<SearchOutlined />}
@@ -110,6 +110,10 @@ const ManagerVaccineList: React.FC = () => {
           onChange={(e) => setSearchText(e.target.value)}
           style={{ width: 300 }}
         />
+
+        <Button type="primary" onClick={() => navigate("/manager/vaccine/create")}>
+          Create Vaccine
+        </Button>
 
       </div>
       <Table

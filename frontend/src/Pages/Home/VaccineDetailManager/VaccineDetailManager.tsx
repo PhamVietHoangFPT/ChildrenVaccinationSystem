@@ -28,12 +28,11 @@ const VaccineDetail: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [form] = Form.useForm();
 
-  // Fetch vaccine detail on mount
   useEffect(() => {
     axios
       .get(`https://childrenvaccinationswd2025-hwdzb7evepg7d4bv.eastasia-01.azurewebsites.net/api/vaccines/${id}`)
       .then((response) => {
-        setVaccine(response.data.data); // assuming response.data.data contains the vaccine object
+        setVaccine(response.data.data); 
         form.setFieldsValue(response.data.data);
         setLoading(false);
       })
@@ -45,7 +44,6 @@ const VaccineDetail: React.FC = () => {
 
   const handleSave = async (values: any) => {
     try {
-      // Call update API (assumed to be PUT)
       await axios.put(
         `https://childrenvaccinationswd2025-hwdzb7evepg7d4bv.eastasia-01.azurewebsites.net/api/vaccines/${id}`,
         values
@@ -97,11 +95,9 @@ const VaccineDetail: React.FC = () => {
         onFinish={handleSave}
         initialValues={vaccine}
       >
-        {/* ID Field (Read-only) */}
         <Form.Item label="ID" name="id">
           <Input disabled />
         </Form.Item>
-        {/* Name Field */}
         <Form.Item
           label="Name"
           name="name"
@@ -109,7 +105,6 @@ const VaccineDetail: React.FC = () => {
         >
           <Input />
         </Form.Item>
-        {/* Price Field */}
         <Form.Item
           label="Price"
           name="price"
@@ -117,7 +112,6 @@ const VaccineDetail: React.FC = () => {
         >
           <Input type="number" />
         </Form.Item>
-        {/* Recommended Age */}
         <Form.Item
           label="Recommended Age"
           style={{ marginBottom: 0 }}
@@ -138,7 +132,6 @@ const VaccineDetail: React.FC = () => {
             <Input placeholder="End Age" type="number" />
           </Form.Item>
         </Form.Item>
-        {/* Dosage Field */}
         <Form.Item
           label="Dosage"
           name="dosage"
@@ -146,22 +139,12 @@ const VaccineDetail: React.FC = () => {
         >
           <Input />
         </Form.Item>
-        {/* Category Name Field (Read-only, if desired) */}
         <Form.Item label="Category" name={["category", "name"]}>
           <Input disabled />
         </Form.Item>
-        {/* Manufacturer Name Field (Read-only, if desired) */}
         <Form.Item label="Manufacturer" name={["manufacturer", "name"]}>
           <Input disabled />
         </Form.Item>
-        {/* Description */}
-        {/* <Form.Item
-          label="Description"
-          name="description"
-          rules={[{ required: true, message: "Please enter the description" }]}
-        >
-          <Input.TextArea rows={3} />
-        </Form.Item> */}
 
         <Form.Item>
           <div style={{ display: "flex", gap: "16px" }}>
