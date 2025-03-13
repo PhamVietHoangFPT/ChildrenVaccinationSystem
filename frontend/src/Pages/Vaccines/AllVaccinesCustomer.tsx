@@ -18,9 +18,9 @@ interface VaccineListResponse {
 }
 
 export default function AllVaccinesCustomer() {
+  const navigate = useNavigate()
   const [pageNumber, setPageNumber] = useState(1)
   const [pageSize, setPageSize] = useState(12)
-  const navigate = useNavigate()
   const { data, isLoading } = useGetVaccineListQuery<VaccineListResponse>({
     pageNumber: pageNumber,
     pageSize: pageSize,
@@ -66,6 +66,8 @@ export default function AllVaccinesCustomer() {
                   }
                   alt={vaccine.name}
                   style={{
+                    width: '100%',
+                    height: '200px',
                     objectFit: 'cover',
                     borderTopLeftRadius: '12px',
                     borderTopRightRadius: '12px',
