@@ -111,7 +111,7 @@ export default function VaccineDetailsCustomer() {
         {Array.isArray(vaccine.vaccineInventories) &&
           vaccine.vaccineInventories.map((inventory: any, index: number) => (
             <Option key={index} value={inventory.facility.id}>
-              Cơ sở {inventory.facility.id}
+              Cơ sở {inventory.facility.name} - {inventory.facility.address}
             </Option>
           ))}
       </Select>

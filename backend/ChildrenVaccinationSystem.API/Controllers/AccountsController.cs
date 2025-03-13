@@ -60,5 +60,19 @@ namespace ChildrenVaccinationSystem.API.Controllers
 			));
 		}
 
+
+		[HttpGet("customer")]
+		public async Task<IActionResult> IsValidForEmailReset(int pageNumber = -1, int pageSize = -1)
+		{
+			BasePaginatedList<AccountViewDto> accounts = await _accountService.GetCustomerAccounts(pageNumber, pageSize);
+
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Lấy thông tin ba/mẹ thành công",
+				data: accounts
+			));
+		}
+
 	}
 }
