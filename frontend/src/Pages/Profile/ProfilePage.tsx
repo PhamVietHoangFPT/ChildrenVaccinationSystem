@@ -1,10 +1,11 @@
-import { Layout, Card, Descriptions, Button, message, Spin } from 'antd'
+import { Layout, Card, Descriptions, message, Spin } from 'antd'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Cookies from 'js-cookie'
 import { useGetChildrenListQuery } from '../../features/children/childrenAPI'
 
 const { Content } = Layout
+import { Children } from '../../types/children'
 
 interface UserData {
   Id: string
@@ -14,26 +15,15 @@ interface UserData {
   Address: string
 }
 
-interface ChildrenData {
-  id: string
-  name: string
-  childCode: string
-  dateOfBirth: string
-  height: number | null
-  weight: number | null
-  gender: boolean
-  medicalNote: string
-  vaccinations: Array<string>
-}
-
 interface ChildrenDataResponse {
   data: {
     data: {
-      items: ChildrenData[]
+      items: Children[]
       totalItems: number
       totalPages: number
     }
   }
+  isLoading: boolean
 }
 
 export default function ProfilePage() {
@@ -56,8 +46,9 @@ export default function ProfilePage() {
       } else {
         navigate('/login')
       }
-    } catch (error) {
-      message.error('Lỗi khi lấy dữ liệu người dùng!')
+    } catch (error: any) {
+      message.error(error)
+      message.error('Vui lòng đăng nhập để xem thông tin cá nhân')
       navigate('/login')
     }
   }, [navigate])
@@ -97,17 +88,20 @@ export default function ProfilePage() {
         {isLoading ? (
           <Spin size='large' />
         ) : (
-          childrenResponse?.data?.data?.items?.map((child) => (
+          childrenResponse?.data?.items?.map((child) => (
             <Card
               key={child.id}
-              title={`👶 ${child.name} (${child.childCode})`}
+              title={`👶 ${child.name}`}
               bordered
               style={{ marginBottom: 16, borderRadius: 12 }}
             >
               <Descriptions column={1}>
                 <Descriptions.Item label='Ngày sinh'>
-                  {child.dateOfBirth}
+                  {child.dateOfBirth
+                    ? new Date(child.dateOfBirth).toLocaleDateString('vi-VN')
+                    : 'Không có'}
                 </Descriptions.Item>
+
                 <Descriptions.Item label='Chiều cao'>
                   {child.height ? `${child.height} cm` : 'Chưa có'}
                 </Descriptions.Item>

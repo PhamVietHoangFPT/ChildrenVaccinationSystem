@@ -44,7 +44,7 @@ const Navbar: React.FC = () => {
         key: 'vaccines',
         icon: <FontAwesomeIcon icon={faSyringe} />,
         label: 'Vắc xin',
-        url: '/vaccines',
+        url: '/vaccines?pageNumber=1',
       },
       {
         key: 'appointments',
