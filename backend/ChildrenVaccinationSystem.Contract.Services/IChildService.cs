@@ -16,5 +16,6 @@ namespace ChildrenVaccinationSystem.Contract.Services
 		Task<ChildViewDto> GetChildById(string id);
 		Task AddChildProfile(string parentId, ChildCreateDto childCreateDto);
 		Task UpdateChildProfile(string id, ChildUpdateDto childUpdateDto);
+		string GenerateChildCode();
 	}
 }
