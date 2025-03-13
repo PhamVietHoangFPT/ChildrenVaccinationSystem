@@ -20,9 +20,9 @@
 		public BasePaginatedList(IReadOnlyCollection<T> items, int count, int pageNumber, int pageSize)
 		{
 			TotalItems = count;
-			CurrentPage = pageNumber;
+			CurrentPage = (pageSize > 0 && count > 0) ? pageNumber : 0;
 			PageSize = pageSize;
-			TotalPages = (int)Math.Ceiling(count / (double)pageSize);
+			TotalPages = (pageSize > 0 && count > 0) ? (int)Math.Ceiling(count / (double)pageSize) : 0;
 			Items = items;
 		}
 
