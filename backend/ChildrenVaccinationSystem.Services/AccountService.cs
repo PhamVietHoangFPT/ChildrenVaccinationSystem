@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
 using ChildrenVaccinationSystem.Contract.Repositories.Dtos.AccountDtos;
+using ChildrenVaccinationSystem.Contract.Repositories.Dtos.CategoryDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Dtos.ChildDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Entities;
 using ChildrenVaccinationSystem.Contract.Repositories.IUOW;
 using ChildrenVaccinationSystem.Contract.Services;
+using ChildrenVaccinationSystem.Core.Base;
+using ChildrenVaccinationSystem.Core.Enum;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -83,6 +86,19 @@ namespace ChildrenVaccinationSystem.Services
 				throw new ErrorException(400, "bad_request", "Không thể cập nhật tài khoản! Chưa đủ 6 tháng từ lần cập nhật trước.");
 			}
 
+		}
+
+		public async Task<BasePaginatedList<AccountViewDto>> GetCustomerAccounts(int pageNumber, int pageSize)
+		{
+			IQueryable<Account> query = _unitOfWork.GetRepository<Account>().Entities.Where(a => a.Role == RoleEnum.Customer && a.DeletedBy == null);
+
+			BasePaginatedList<Account> resultQuery = (pageNumber <= 0 || pageSize <= 0)
+				? await _unitOfWork.GetRepository<Account>().GetPaging(query, 1, query.Count())
+				: await _unitOfWork.GetRepository<Account>().GetPaging(query, pageNumber, pageSize);
+
+			List<AccountViewDto> responseItems = resultQuery.Items.Select(_mapper.Map<AccountViewDto>).ToList();
+
+			return new BasePaginatedList<AccountViewDto>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
 		}
 	}
 }
