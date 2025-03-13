@@ -14,7 +14,7 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Entities
 		public bool? Gender { get; set; }
 		public RoleEnum Role { get; set; }
 		public string? VerificationToken { get; set; }
-
+		public DateTimeOffset EmailLastUpdatedTime { get; set; }
 		public virtual ICollection<Child>? Children { get; set; }
 		public virtual ICollection<Vaccination>? DoctorVaccinations { get; set; }
 		public virtual ICollection<Vaccination>? VaccinatorVaccinations { get; set; }

@@ -28,15 +28,9 @@ namespace ChildrenVaccinationSystem.Services
 			_authenticationService = authenticationService;
 		}
 
+		//This is for staff-only
 		public async Task AddChildProfile(string parentId, ChildCreateDto childCreateDto)
 		{
-			if (!(_authenticationService.AuthorizeCustomer() |
-				   _authenticationService.AuthorizeManager() |
-				   _authenticationService.AuthorizeStaff()))
-			{
-				throw new ErrorException(403, "unauthorized", "You don't have permission");
-			}
-
 			if (!_unitOfWork.IsValid<Account>(parentId))
 			{
 				throw new ErrorException(404, "not_found", "Không tìm thấy parent id");

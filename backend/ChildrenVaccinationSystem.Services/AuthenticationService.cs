@@ -89,7 +89,7 @@ namespace ChildrenVaccinationSystem.Services
 
 			newCustomer.CreatedBy = newCustomer.Id;
 			newCustomer.LastUpdatedBy = newCustomer.Id;
-
+			newCustomer.EmailLastUpdatedTime = newCustomer.CreatedTime;
 			// Save account to the database
 			await _unitOfWork.GetRepository<Account>().InsertAsync(newCustomer);
 			await _unitOfWork.SaveAsync();

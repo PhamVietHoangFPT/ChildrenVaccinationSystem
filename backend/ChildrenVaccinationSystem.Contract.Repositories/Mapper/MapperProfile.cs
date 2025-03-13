@@ -29,6 +29,7 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Mapper
 						.IncludeAllDerived();
 
 			CreateMap<Account, AccountViewDto>();
+			CreateMap<AccountUpdateDto, Account>();
 
 			CreateMap<Blog, BlogViewDto>();
 			CreateMap<BlogCreateDto, Blog>();
