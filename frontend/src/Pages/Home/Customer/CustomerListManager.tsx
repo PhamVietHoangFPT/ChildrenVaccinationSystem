@@ -1,20 +1,20 @@
-import React from 'react';
-import { Table, Button, Modal, message } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
-import { EyeOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import React from 'react'
+import { Table, Button, Modal, message } from 'antd'
+import type { ColumnsType } from 'antd/es/table'
+import { EyeOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
 
 interface Customer {
-  id: number;
-  name: string;
-  email: string;
-  phone: string;
+  id: number
+  name: string
+  email: string
+  phone: string
 }
 
 const data: Customer[] = [
   { id: 1, name: 'Nguyễn Văn A', email: 'a@example.com', phone: '0123456789' },
   { id: 2, name: 'Trần Thị B', email: 'b@example.com', phone: '0987654321' },
   { id: 3, name: 'Lê Văn C', email: 'c@example.com', phone: '0123987654' },
-];
+]
 
 const ManagerCustomerList: React.FC = () => {
   const handleView = (record: Customer) => {
@@ -36,15 +36,15 @@ const ManagerCustomerList: React.FC = () => {
           </p>
         </div>
       ),
-    });
-  };
+    })
+  }
 
   const handleEdit = (record: Customer) => {
     Modal.warning({
       title: 'Edit Customer',
       content: `You clicked to edit ${record.name}. (Simulated action)`,
-    });
-  };
+    })
+  }
 
   const handleDelete = (record: Customer) => {
     Modal.confirm({
@@ -54,10 +54,10 @@ const ManagerCustomerList: React.FC = () => {
       okType: 'danger',
       cancelText: 'Cancel',
       onOk() {
-        message.success(`${record.name} has been deleted.`);
+        message.success(`${record.name} has been deleted.`)
       },
-    });
-  };
+    })
+  }
 
   const columns: ColumnsType<Customer> = [
     {
@@ -86,7 +86,7 @@ const ManagerCustomerList: React.FC = () => {
       render: (_, record) => (
         <>
           <Button
-            type="primary"
+            type='primary'
             icon={<EyeOutlined />}
             onClick={() => handleView(record)}
             style={{ marginRight: 8 }}
@@ -94,7 +94,7 @@ const ManagerCustomerList: React.FC = () => {
             View
           </Button>
           <Button
-            type="default"
+            type='default'
             icon={<EditOutlined />}
             onClick={() => handleEdit(record)}
             style={{ marginRight: 8 }}
@@ -102,7 +102,7 @@ const ManagerCustomerList: React.FC = () => {
             Edit
           </Button>
           <Button
-            type="primary"
+            type='primary'
             danger
             icon={<DeleteOutlined />}
             onClick={() => handleDelete(record)}
@@ -112,14 +112,14 @@ const ManagerCustomerList: React.FC = () => {
         </>
       ),
     },
-  ];
+  ]
 
   return (
     <div style={{ padding: 24 }}>
       <h2>Customer List</h2>
-      <Table dataSource={data} columns={columns} rowKey="id" />
+      <Table dataSource={data} columns={columns} rowKey='id' />
     </div>
-  );
-};
+  )
+}
 
-export default ManagerCustomerList;
+export default ManagerCustomerList
