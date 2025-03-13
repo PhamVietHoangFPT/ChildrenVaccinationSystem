@@ -63,7 +63,8 @@ export default function VaccineRegistrationCustomer() {
     {
       title: 'Nhà sản xuất',
       key: 'manufacturer',
-      render: (record: any) => record.manufacturer.name,
+      render: (record: any) =>
+        record.manufacturer.name + ' - ' + record.manufacturer.country.name,
       width: 150,
     },
     {
@@ -92,8 +93,9 @@ export default function VaccineRegistrationCustomer() {
       render: (record: any) => (
         <Button
           onClick={() => {
-            setSelectedVaccines([...selectedVaccines, record.name])
+            setSelectedVaccines([...selectedVaccines, record])
           }}
+          disabled={selectedVaccines.includes(record)}
         >
           Chọn
         </Button>
@@ -204,7 +206,8 @@ export default function VaccineRegistrationCustomer() {
                   style={{ minHeight: 350 }}
                 >
                   <p>
-                    <strong>Nguồn gốc:</strong> {vaccine.manufacturer.name}
+                    <strong>Nguồn gốc:</strong> {vaccine.manufacturer.name} -{' '}
+                    {vaccine.manufacturer.country.name}
                   </p>
                   <p>
                     <TagOutlined /> <strong>Giá:</strong>{' '}
