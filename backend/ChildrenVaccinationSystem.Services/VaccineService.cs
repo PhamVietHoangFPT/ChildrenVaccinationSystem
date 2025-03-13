@@ -106,11 +106,12 @@ namespace ChildrenVaccinationSystem.Services
 				v.Id,
 				v.Name,
 				Category = new { v.Category.Name},
-				Manufacturer = new { v.Manufacturer.Name },
+				Manufacturer = new { v.Manufacturer.Name, Country = new { v.Manufacturer.Country.Name } },
 				v.Price,
 				v.StartRecommendedAge,
 				v.EndRecommendedAge,
-				v.Dosage
+				v.Dosage,
+				v.DosageInterval
 			}).ToList();
 
 			return new BasePaginatedList<object>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);

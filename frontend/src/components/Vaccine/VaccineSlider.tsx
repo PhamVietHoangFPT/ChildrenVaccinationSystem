@@ -44,7 +44,7 @@ export const VaccineSlider: FC<VaccineSliderProps> = ({ vaccines }) => {
                 alt={vaccine.name}
                 style={{
                   width: '100%',
-                  height: '200px', // Đảm bảo ảnh có cùng kích thước
+                  height: '200px',
                   objectFit: 'cover',
                   borderTopLeftRadius: '12px',
                   borderTopRightRadius: '12px',

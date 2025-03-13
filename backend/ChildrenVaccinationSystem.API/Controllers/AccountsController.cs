@@ -62,9 +62,9 @@ namespace ChildrenVaccinationSystem.API.Controllers
 
 
 		[HttpGet("customer")]
-		public async Task<IActionResult> IsValidForEmailReset(int pageNumber = -1, int pageSize = -1)
+		public async Task<IActionResult> GetCustomerAccounts(string? phoneNumber, int pageNumber = -1, int pageSize = -1)
 		{
-			BasePaginatedList<AccountViewDto> accounts = await _accountService.GetCustomerAccounts(pageNumber, pageSize);
+			BasePaginatedList<AccountViewDto> accounts = await _accountService.GetCustomerAccounts(phoneNumber, pageNumber, pageSize);
 
 			return Ok(new BaseResponse<object>(
 				statusCode: StatusCodeEnum.OK,
@@ -73,6 +73,20 @@ namespace ChildrenVaccinationSystem.API.Controllers
 				data: accounts
 			));
 		}
+
+		[HttpGet("customer/minimal")]
+		public async Task<IActionResult> GetCustomerAccountsMinimal(string? phoneNumber, int pageNumber = -1, int pageSize = -1)
+		{
+			BasePaginatedList<object> accounts = await _accountService.GetCustomerAccountsMinimal(phoneNumber, pageNumber, pageSize);
+
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Lấy thông tin ba/mẹ thành công",
+				data: accounts
+			));
+		}
+
 
 	}
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 import { useGetVaccineListQuery } from '../../features/vaccine/vaccineAPI'
 import { Typography, Button, Row, Col, Collapse, Space } from 'antd'
-import { CalendarOutlined } from '@ant-design/icons'
+import { CalendarOutlined, LoadingOutlined } from '@ant-design/icons'
 import Logo from '../../assets/Logo.png'
 import { Vaccines } from '../../types/vaccine'
 import { VaccineSlider } from '../Vaccine/VaccineSlider'
@@ -117,7 +117,15 @@ const Homepage: React.FC = () => {
             Popular Vaccines
           </Title>
           {isLoading ? (
-            <div>Loading...</div>
+            <LoadingOutlined
+              style={{
+                fontSize: '50px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '30vh',
+              }}
+            />
           ) : (
             <VaccineSlider vaccines={dataVaccine as Vaccines[]} />
           )}
