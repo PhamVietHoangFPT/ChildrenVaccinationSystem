@@ -62,8 +62,8 @@ export const VaccineSlider: FC<VaccineSliderProps> = ({ vaccines }) => {
               <Space direction='vertical' size='middle'>
                 <Text strong>Price: ${vaccine.price}</Text>
                 <Text>
-                  Recommended Age: {vaccine.startRecommendAge} -{' '}
-                  {vaccine.endRecommendAge} years
+                  Recommended Age: {vaccine.startRecommendedAge} -{' '}
+                  {vaccine.endRecommendedAge} years
                 </Text>
                 <Text>Sequence: {vaccine.sequence}</Text>
                 <Text>Dosage: {vaccine.dosage}</Text>
