@@ -16,6 +16,7 @@ interface VaccineListResponse {
     }
   }
   isLoading: boolean
+  isFetching: boolean
 }
 
 interface FacilitiesListResponse {
@@ -31,11 +32,14 @@ export default function VaccineRegistrationCustomer() {
   const [pageSize, setPageSize] = useState(12)
   const [selectedVaccines, setSelectedVaccines] = useState<string[]>([])
   const [selectedFacility, setSelectedFacility] = useState<string | null>(null)
-  const { data: vaccines, isLoading: vaccineLoading } =
-    useGetVaccineListMiniMalQuery<VaccineListResponse>({
-      pageSize: pageSize,
-      pageNumber: pageNumber,
-    })
+  const {
+    data: vaccines,
+    isFetching: vaccineFetching,
+    isLoading: vaccineLoading,
+  } = useGetVaccineListMiniMalQuery<VaccineListResponse>({
+    pageSize: pageSize,
+    pageNumber: pageNumber,
+  })
 
   const { data: facilities, isLoading: facilitiesLoading } =
     useGetFacilitiesListQuery<FacilitiesListResponse>({
@@ -48,33 +52,39 @@ export default function VaccineRegistrationCustomer() {
       title: 'Tên',
       dataIndex: 'name',
       key: 'name',
+      width: 120, // Cố định độ rộng
     },
     {
       title: 'Bệnh',
       key: 'category',
       render: (record: any) => record.category.name,
+      width: 350, // Cột này rộng hơn các cột khác
     },
     {
       title: 'Nhà sản xuất',
       key: 'manufacturer',
       render: (record: any) => record.manufacturer.name,
+      width: 150,
     },
     {
       title: 'Giá',
       key: 'price',
       render: (record: any) =>
         record.price.toLocaleString().toUpperCase() + ' VND',
+      width: 120,
     },
     {
       title: 'Độ tuổi khuyến nghị',
       key: 'recommendedAge',
       render: (record: any) =>
         `${record.startRecommendedAge} - ${record.endRecommendedAge}`,
+      width: 150,
     },
     {
       title: 'Liều lượng',
       key: 'dosage',
-      render: (record: any) => record.dosage + ' ' + 'ml',
+      render: (record: any) => record.dosage + ' ml',
+      width: 100,
     },
     {
       title: '',
@@ -82,13 +92,13 @@ export default function VaccineRegistrationCustomer() {
       render: (record: any) => (
         <Button
           onClick={() => {
-            setSelectedVaccines([...selectedVaccines, record])
+            setSelectedVaccines([...selectedVaccines, record.name])
           }}
-          disabled={selectedVaccines.includes(record)}
         >
           Chọn
         </Button>
       ),
+      width: 100,
     },
   ]
 
@@ -141,7 +151,9 @@ export default function VaccineRegistrationCustomer() {
             dataSource={vaccines.data.items}
             columns={columns}
             pagination={false}
+            loading={vaccineFetching}
             style={{ marginBottom: '16px' }}
+            tableLayout='fixed'
           />
           <Pagination
             current={pageNumber}
