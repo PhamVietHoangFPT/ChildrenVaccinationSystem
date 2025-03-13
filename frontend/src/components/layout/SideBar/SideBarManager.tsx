@@ -11,6 +11,7 @@ import {
   TeamOutlined,
   MedicineBoxOutlined,
 } from "@ant-design/icons"
+import Cookies from 'js-cookie'
 
 const { Sider } = Layout
 const { Search } = Input
@@ -180,6 +181,11 @@ export const SideBar = () => {
             type='primary'
             danger
             icon={<LogoutOutlined />}
+            onClick={() => {
+              Cookies.remove('userData')
+              Cookies.remove('userToken')
+              navigate('/')
+            }}
             style={{ width: collapsed ? '100%' : '100%' }}
             size={collapsed ? 'middle' : 'middle'}
           >
