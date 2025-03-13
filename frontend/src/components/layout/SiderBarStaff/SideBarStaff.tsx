@@ -8,8 +8,8 @@ import {
   CalendarOutlined,
   SearchOutlined,
   TeamOutlined,
+  UserAddOutlined,
   SmileOutlined,
-  UserOutlined,
 } from '@ant-design/icons'
 import { MenuProps, Layout } from 'antd'
 import { Menu } from 'antd'
@@ -19,10 +19,7 @@ import Cookies from 'js-cookie'
 const { Sider } = Layout
 
 type MenuItem = Required<MenuProps>['items'][number]
-//get userData from cookies
-const userData = Cookies.get('userData')
-  ? JSON.parse(Cookies.get('userData') as string)
-  : null
+
 // Define the shape of your custom menu items
 interface CustomMenuItem {
   key: string
@@ -30,7 +27,6 @@ interface CustomMenuItem {
   icon?: React.ReactNode
   url?: string
   children?: CustomMenuItem[]
-  danger? :boolean
 }
 
 const SideBarStaff: React.FC = () => {
@@ -51,9 +47,29 @@ const SideBarStaff: React.FC = () => {
   const items = useMemo((): CustomMenuItem[] => {
     return [
       {
-        key: 'sub0',
-        label: `Welcome, ${userData.Name}`,
-        icon: <UserOutlined />,
+        key: 'sub1',
+        label: 'Manage Record',
+        icon: <MailOutlined />,
+        children: [
+          {
+            key: '1',
+            label: 'Confirm Registration',
+            icon: <CheckCircleOutlined />,
+            url: '/staff',
+          },
+          {
+            key: '2',
+            label: 'Cancel Registration',
+            icon: <CloseCircleOutlined />,
+            url: '/option6',
+          },
+          {
+            key: '3',
+            label: 'Register Vaccination ',
+            icon: <FormOutlined />,
+            url: '/staff',
+          },
+        ],
       },
       {
         key: 'sub2',
@@ -64,32 +80,26 @@ const SideBarStaff: React.FC = () => {
             key: '4',
             label: 'Update Customer Profile',
             icon: <FormOutlined />,
-            url: '/staff',
+            url: '/option5',
           },
           {
             key: 'sub3',
             label: 'Children`s Profile',
             icon: <SmileOutlined />,
-            url:''
-          },
-        ],
-      },
-      {
-        key: 'sub1',
-        label: 'Manage Record',
-        icon: <MailOutlined />,
-        children: [
-          {
-            key: '1',
-            label: 'Vaccination Registration',
-            icon: <CheckCircleOutlined />,
-            url: '/staff',
-          },
-          {
-            key: '3',
-            label: 'Register Vaccination ',
-            icon: <FormOutlined />,
-            url: '/staff',
+            children: [
+              {
+                key: '5',
+                label: 'Update Children',
+                icon: <FormOutlined />,
+                url: '',
+              },
+              {
+                key: '6',
+                label: 'Add Children',
+                icon: <UserAddOutlined />,
+                url: '',
+              },
+            ],
           },
         ],
       },
@@ -117,7 +127,6 @@ const SideBarStaff: React.FC = () => {
         label: 'Log Out',
         icon: <LogoutOutlined />,
         url: '/logout',
-        danger :true
       },
     ]
   }, [])
@@ -146,7 +155,6 @@ const SideBarStaff: React.FC = () => {
       }
     }
   }
-
 
   return (
     <Sider
