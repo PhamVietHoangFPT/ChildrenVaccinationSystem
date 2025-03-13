@@ -13,9 +13,11 @@ namespace ChildrenVaccinationSystem.Contract.Services
 {
 	public interface IAccountService
 	{
-		Task<BasePaginatedList<AccountViewDto>> GetCustomerAccounts(int pageNumber, int pageSize);
+		Task<BasePaginatedList<AccountViewDto>> GetCustomerAccounts(string? phoneNumber, int pageNumber, int pageSize);
+		Task<BasePaginatedList<object>> GetCustomerAccountsMinimal(string? phoneNumber, int pageNumber, int pageSize);
 		Task ForceUpdateAccountProfile(AccountForceUpdateDto accountForceUpdateDto);
 		Task IsValidForProfileUpdate();
 		Task IsValidForEmailReset();
+
 	}
 }

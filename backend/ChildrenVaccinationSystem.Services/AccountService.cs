@@ -88,9 +88,9 @@ namespace ChildrenVaccinationSystem.Services
 
 		}
 
-		public async Task<BasePaginatedList<AccountViewDto>> GetCustomerAccounts(int pageNumber, int pageSize)
+		public async Task<BasePaginatedList<AccountViewDto>> GetCustomerAccounts(string? phoneNumber, int pageNumber, int pageSize)
 		{
-			IQueryable<Account> query = _unitOfWork.GetRepository<Account>().Entities.Where(a => a.Role == RoleEnum.Customer && a.DeletedBy == null);
+			IQueryable<Account> query = _unitOfWork.GetRepository<Account>().Entities.Where(a => ((string.IsNullOrWhiteSpace(phoneNumber) || a.PhoneNumber == phoneNumber)) && a.Role == RoleEnum.Customer && a.DeletedBy == null);
 
 			BasePaginatedList<Account> resultQuery = (pageNumber <= 0 || pageSize <= 0)
 				? await _unitOfWork.GetRepository<Account>().GetPaging(query, 1, query.Count())
@@ -99,6 +99,25 @@ namespace ChildrenVaccinationSystem.Services
 			List<AccountViewDto> responseItems = resultQuery.Items.Select(_mapper.Map<AccountViewDto>).ToList();
 
 			return new BasePaginatedList<AccountViewDto>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
+		}
+
+		public async Task<BasePaginatedList<object>> GetCustomerAccountsMinimal(string? phoneNumber, int pageNumber, int pageSize)
+		{
+			IQueryable<Account> query = _unitOfWork.GetRepository<Account>().Entities.Where(a => ((string.IsNullOrWhiteSpace(phoneNumber) || a.PhoneNumber == phoneNumber)) && a.Role == RoleEnum.Customer && a.DeletedBy == null);
+
+			BasePaginatedList<Account> resultQuery = (pageNumber <= 0 || pageSize <= 0)
+				? await _unitOfWork.GetRepository<Account>().GetPaging(query, 1, query.Count())
+				: await _unitOfWork.GetRepository<Account>().GetPaging(query, pageNumber, pageSize);
+
+			var responseItems = resultQuery.Items.Select(v => new
+			{
+				v.Id,
+				v.Name,
+				v.PhoneNumber,
+				v.Email,
+				v.Gender
+			}).ToList();
+			return new BasePaginatedList<object>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
 		}
 	}
 }
