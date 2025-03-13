@@ -13,6 +13,7 @@ import Register from '../Pages/Register/Register'
 import StaffHomePage from '../Pages/Staff/StaffDefault/StaffHomePage'
 import { LayoutRoute } from '../types/routes'
 import AllVaccinesCustomer from '../Pages/Vaccines/AllVaccinesCustomer'
+import VaccineDetail from '../Pages/Home/VaccineDetailManager/VaccineDetailManager'
 
 const routes: LayoutRoute[] = [
   {
@@ -81,6 +82,12 @@ const routes: LayoutRoute[] = [
       {
         path: '/manager/vaccine',
         component: ManagerVaccineList,
+        exact: true,
+        role: ['Manager'],
+      },
+      {
+        path: '/manager/vaccine/:id',
+        component: VaccineDetail,
         exact: true,
         role: ['Manager'],
       },

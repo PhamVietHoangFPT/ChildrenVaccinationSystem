@@ -50,12 +50,6 @@ const ManagerVaccineList: React.FC = () => {
 
   const columns: ColumnsType<Vaccine> = [
     {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
-      width: 150,
-    },
-    {
       title: "Name",
       dataIndex: "name",
       key: "name",
@@ -96,7 +90,7 @@ const ManagerVaccineList: React.FC = () => {
         <Button
           type="primary"
           icon={<EyeOutlined />}
-          onClick={() => navigate(`manager/vaccine/${record.id}`)}
+          onClick={() => navigate(`/manager/vaccine/${record.id}`)}
         >
           Details
         </Button>
