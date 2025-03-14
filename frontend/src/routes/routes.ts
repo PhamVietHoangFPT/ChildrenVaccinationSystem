@@ -15,6 +15,7 @@ import { LayoutRoute } from '../types/routes'
 import AllVaccinesCustomer from '../Pages/Vaccines/AllVaccinesCustomer'
 import VaccineDetailsCustomer from '../Pages/Vaccines/VaccineDetailsCustomer'
 import VaccineRegistrationCustomer from '../Pages/Vaccines/VaccineRegistrationCustomer'
+import ForceUpdateAccount from '../Pages/Register/ForgeUpdateRegister'
 
 const routes: LayoutRoute[] = [
   {
@@ -40,6 +41,10 @@ const routes: LayoutRoute[] = [
       {
         path: '/vaccineRegistration',
         component: VaccineRegistrationCustomer,
+      },
+      {
+        path: '/forceUpdate',
+        component: ForceUpdateAccount,
       },
     ],
   },

@@ -31,7 +31,6 @@ const StaffHomePage: React.FC = () => {
     data: customers,
     isFetching: customerFetching,
     isLoading: customerLoading,
-
   } = useGetCustomerListQuery<CustomerListResponse>({
     pageNumber: currentPage,
     pageSize: pageSize,
@@ -41,7 +40,10 @@ const StaffHomePage: React.FC = () => {
   const totalCustomers = customers?.data?.totalItems ?? 0
 
   useEffect(() => {
-    setSearchParams({ page: currentPage.toString(), pageSize: pageSize.toString() })
+    setSearchParams({
+      page: currentPage.toString(),
+      pageSize: pageSize.toString(),
+    })
   }, [currentPage, pageSize, setSearchParams])
   if (customerLoading) {
     return (
@@ -61,7 +63,8 @@ const StaffHomePage: React.FC = () => {
       title: 'No.',
       dataIndex: 'index',
       key: 'index',
-      render: (_: any, __: any, index: number) => (currentPage - 1) * pageSize + index + 1,
+      render: (_: any, __: any, index: number) =>
+        (currentPage - 1) * pageSize + index + 1,
     },
     {
       title: 'Name',
