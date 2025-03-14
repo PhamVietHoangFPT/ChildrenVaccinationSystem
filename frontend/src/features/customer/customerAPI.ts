@@ -14,6 +14,20 @@ export const customerAPI = apiSlice.injectEndpoints({
       transformResponse: (res) => res,
       providesTags: ['customers'],
     }),
+    searchCustomer: builder.query({
+      query: ({ phoneNumber }) => ({
+        url: '/accounts/customer/minimal',
+        method: 'GET',
+        params: {
+          phoneNumber
+        },
+      }),
+      transformResponse: (res) => res,
+      providesTags: ['customers'],
+    }),
   }),
 })
-export const { useGetCustomerListQuery } = customerAPI
+export const {
+  useGetCustomerListQuery,
+  useSearchCustomerQuery
+} = customerAPI
