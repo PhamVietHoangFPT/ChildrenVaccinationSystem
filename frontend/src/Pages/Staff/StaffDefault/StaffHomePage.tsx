@@ -23,7 +23,7 @@ const StaffHomePage: React.FC = () => {
   // Default page = 1, pageSize = 7
   const initialPage = parseInt(searchParams.get('page') || '1', 10)
   const [currentPage, setCurrentPage] = useState(initialPage)
-  const pageSize = 1
+  const pageSize = 7
 
   const {
     data: customers,
@@ -33,7 +33,7 @@ const StaffHomePage: React.FC = () => {
     pageNumber: currentPage,
     pageSize: pageSize,
   })
-
+  
   const dataCustomer = customers?.data.items ?? []
   const totalCustomers = customers?.data?.totalItems ?? 0
 
