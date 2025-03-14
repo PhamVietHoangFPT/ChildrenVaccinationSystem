@@ -10,6 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Linq;
+using Org.BouncyCastle.Tls;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -38,10 +40,6 @@ namespace ChildrenVaccinationSystem.Services
 
 
 
-		public Task ForgotPassword(string email, string userName)
-		{
-			throw new NotImplementedException();
-		}
 
 
 		public async Task<string> Login(LoginDto loginDto)
@@ -98,11 +96,6 @@ namespace ChildrenVaccinationSystem.Services
 			await _emailService.SendVerificationEmail(registerDto.Email, newCustomer.VerificationToken);
 		}
 
-		public Task ResetPassword(string token, string newPassword)
-		{
-			throw new NotImplementedException();
-		}
-
 		public async Task<bool> VerifyAccount(string token)
 		{
 
@@ -119,12 +112,121 @@ namespace ChildrenVaccinationSystem.Services
 
 			return true;
 		}
-
-		public Task VerifyResetPasswordToken(string token)
+		public async Task ForgetPassword(string email)
 		{
-			throw new NotImplementedException();
+			Account? account = await _unitOfWork.GetRepository<Account>().Entities.Where(a => a.Email == email && a.DeletedBy == null).FirstOrDefaultAsync();
+
+			if (account == null)
+				throw new ErrorException(401, "unauthorized", "Không tìm thấy email trong hệ thống");
+
+			account.ResetPasswordToken = Guid.NewGuid().ToString();
+
+			await _unitOfWork.GetRepository<Account>().UpdateAsync(account);
+			await _unitOfWork.SaveAsync();
+			await _emailService.SendResetPasswordEmail(email, account.ResetPasswordToken);
 		}
 
+		public async Task VerifyResetPassowrd(string token)
+		{
+			Account? account = await _unitOfWork.GetRepository<Account>().Entities.Where(a => a.ResetPasswordToken == token).FirstOrDefaultAsync();
+
+			if (account == null)
+			{
+				throw new ErrorException(502, "bad_gateway", "Token is not valid or is expired");
+			}
+		}
+
+		public async Task ResetPassword(string newPassword)
+		{
+			string accountId = GetCurrentAccountId();
+
+			Account? account = await _unitOfWork.GetRepository<Account>().Entities
+				.Where(a => a.Id == accountId && a.DeletedBy == null).FirstOrDefaultAsync();
+			if (account == null)
+				throw new ErrorException(404, "not_found", "Không tìm thấy account id.");
+
+			if (account.ResetPasswordToken == null)
+				throw new ErrorException(401, "unauthorized", "Bạn không được thay đổi mật khẩu theo cách này");
+
+			var hashedPassword = BCrypt.Net.BCrypt.HashPassword(newPassword);
+			account.Password = hashedPassword;
+			account.ResetPasswordToken = null;
+			
+			await _unitOfWork.GetRepository<Account>().UpdateAsync(account);
+			await _unitOfWork.SaveAsync();
+		}
+
+		public async Task UpdatePassword(string password, string newPassword)
+		{
+			string accountId = GetCurrentAccountId();
+
+			Account? account = await _unitOfWork.GetRepository<Account>().Entities
+				.Where(a => a.Id == accountId && a.DeletedBy == null).FirstOrDefaultAsync();
+
+			if (account == null)
+				throw new ErrorException(401, "unauthorized", "Không tìm thấy account id.");
+
+			if (!BCrypt.Net.BCrypt.Verify(password, account.Password))
+			{
+				throw new ErrorException(401, "unauthorized", "Mật khẩu hiện tại không chính xác. Vui lòng thử lại.");
+			}
+
+			// Hash the password
+			var hashedPassword = BCrypt.Net.BCrypt.HashPassword(newPassword);
+
+			account.Password = hashedPassword;
+
+			await _unitOfWork.GetRepository<Account>().UpdateAsync(account);
+			await _unitOfWork.SaveAsync();
+		}
+
+		public async Task UpdateEmail(string newEmail)
+		{
+			string accountId = GetCurrentAccountId();
+
+			Account? account = await _unitOfWork.GetRepository<Account>().Entities
+				.Where(a => a.Id == accountId && a.DeletedBy == null).FirstOrDefaultAsync();
+
+			if (account == null)
+				throw new ErrorException(401, "unauthorized", "Không tìm thấy account id.");
+
+			var existingAccount = await _unitOfWork.GetRepository<Account>().Entities
+				.Where(a => a.Email == newEmail && a.DeletedBy == null)
+				.FirstOrDefaultAsync();
+			if (existingAccount != null)
+			{
+				throw new BaseException.ErrorException(409, "conflict", "Email này đã được sử dụng, vui lòng thử lại");
+			}
+
+			account.TempUpdateEmail = newEmail;
+			account.UpdateEmailOTP = new Random().Next(100000, 999999).ToString();
+
+			await _unitOfWork.GetRepository<Account>().UpdateAsync(account);
+			await _unitOfWork.SaveAsync();
+			await _emailService.SendUpdateEmailEmail(newEmail, account.UpdateEmailOTP);
+		}
+
+		public async Task ConfirmUpdateEmail(string otp)
+		{
+			string accountId = GetCurrentAccountId();
+
+			Account? account = await _unitOfWork.GetRepository<Account>().Entities
+				.Where(a => a.Id == accountId && a.DeletedBy == null).FirstOrDefaultAsync();
+
+			if (account == null)
+				throw new ErrorException(401, "unauthorized", "Không tìm thấy account id.");
+			
+			if (account.UpdateEmailOTP == null || account.TempUpdateEmail == null || account.UpdateEmailOTP != otp)
+					throw new ErrorException(401, "unauthorized", "Mã OTP không đúng hoặc hết hạn!");
+
+			account.UpdateEmailOTP = null;
+			account.Email = account.TempUpdateEmail;
+			account.TempUpdateEmail = null;
+			account.EmailLastUpdatedTime = CoreHelper.SystemTimeNow;
+
+			await _unitOfWork.GetRepository<Account>().UpdateAsync(account);
+			await _unitOfWork.SaveAsync();
+		}
 
 		public void UpdateAudits(BaseEntity entity, bool isCreating, bool isDeleting = false)
 		{
@@ -336,69 +438,5 @@ namespace ChildrenVaccinationSystem.Services
 			return new JwtSecurityTokenHandler().WriteToken(token);
 		}
 
-		public bool AuthorizeManager()
-		{
-			string accountId = GetCurrentAccountId();
-
-			Account? account = _unitOfWork.GetRepository<Account>().Entities.Where(a => a.Id == accountId && a.Role == RoleEnum.Manager && a.DeletedBy == null).FirstOrDefault();
-
-			if (account == null)
-			{
-				return false;
-			}
-			return true;
-		}
-
-		public bool AuthorizeStaff()
-		{
-			string accountId = GetCurrentAccountId();
-
-			Account? account = _unitOfWork.GetRepository<Account>().Entities.Where(a => a.Id == accountId && a.Role == RoleEnum.Staff && a.DeletedBy == null).FirstOrDefault();
-
-			if (account == null)
-			{
-				return false;
-			}
-			return true;
-		}
-
-		public bool AuthorizeDoctor()
-		{
-			string accountId = GetCurrentAccountId();
-
-			Account? account = _unitOfWork.GetRepository<Account>().Entities.Where(a => a.Id == accountId && a.Role == RoleEnum.Doctor && a.DeletedBy == null).FirstOrDefault();
-
-			if (account == null)
-			{
-				return false;
-			}
-			return true;
-		}
-
-		public bool AuthorizeVaccinator()
-		{
-			string accountId = GetCurrentAccountId();
-
-			Account? account = _unitOfWork.GetRepository<Account>().Entities.Where(a => a.Id == accountId && a.Role == RoleEnum.Vaccinator && a.DeletedBy == null).FirstOrDefault();
-
-			if (account == null)
-			{
-				return false;
-			}
-			return true;
-		}
-
-		public bool AuthorizeCustomer()
-		{
-			string accountId = GetCurrentAccountId();
-
-			Account? account = _unitOfWork.GetRepository<Account>().Entities.Where(a => a.Id == accountId && a.Role == RoleEnum.Customer && a.DeletedBy == null).FirstOrDefault();
-
-			if (account == null)
-			{
-				return false;
-			}
-			return true;
-		}
 	}
 }
