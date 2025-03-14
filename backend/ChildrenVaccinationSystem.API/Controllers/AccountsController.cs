@@ -88,5 +88,38 @@ namespace ChildrenVaccinationSystem.API.Controllers
 		}
 
 
+		[HttpGet("{id}")]
+		public async Task<IActionResult> GetCustomerAccountsMinimal(string id)
+		{
+			AccountViewDto account = await _accountService.GetAccountById(id);
+
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Lấy thông tin tài khoản thành công",
+				data: account
+			));
+		}
+
+		[HttpPost("image")]
+
+		public async Task<IActionResult> CreateImage([FromForm]ImageDto file)
+		{
+			string account = await _accountService.CreateImage(file.file);
+
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Lấy thông tin tài khoản thành công",
+				data: account
+			));
+		}
+
+
+	}
+
+	public class ImageDto
+	{
+		public IFormFile file {  get; set; }
 	}
 }

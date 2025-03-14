@@ -11,7 +11,7 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Dtos.AccountDtos
 		public string? PhoneNumber { get; set; }
 		public string? Address { get; set; }
 		public bool? Gender { get; set; }
-		public RoleEnum Role { get; set; }
+		public string? Role { get; set; }
 		public ICollection<ChildViewDto>? Children { get; set; }
 		public ICollection<SimpleViewDto>? DoctorVaccinations { get; set; }
 		public ICollection<SimpleViewDto>? VaccinatorVaccinations { get; set; }

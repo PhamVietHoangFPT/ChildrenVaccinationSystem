@@ -20,11 +20,22 @@ namespace ChildrenVaccinationSystem.API.Controllers
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> GetChildren(string? parentId = null, int pageNumber = -1, int pageSize = -1)
+		public async Task<IActionResult> GetChildren(string? parentId, string? name, string? parentPhoneNumber, int pageNumber = -1, int pageSize = -1)
 		{
-			BasePaginatedList<ChildViewDto> children = string.IsNullOrEmpty(parentId)
-				? await _childService.GetChildren(pageNumber, pageSize)
-				: await _childService.GetChildrenByParentId(parentId, pageNumber, pageSize);
+			BasePaginatedList<ChildViewDto> children = await _childService.GetChildren(parentId, name, parentPhoneNumber, pageNumber, pageSize);
+
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Lấy children thành công",
+				data: children
+			));
+		}
+
+		[HttpGet("minimal")]
+		public async Task<IActionResult> GetChildrenMinimal(string? parentId, string? name,string? parentPhoneNumber, int pageNumber = -1, int pageSize = -1)
+		{
+			BasePaginatedList<object> children = await _childService.GetChildrenMinimal(parentId, name, parentPhoneNumber, pageNumber, pageSize);
 
 			return Ok(new BaseResponse<object>(
 				statusCode: StatusCodeEnum.OK,

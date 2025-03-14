@@ -38,10 +38,6 @@ namespace ChildrenVaccinationSystem.Services
 			_emailService = emailService;
 		}
 
-
-
-
-
 		public async Task<string> Login(LoginDto loginDto)
 		{
 			Account? account = await _unitOfWork.GetRepository<Account>().Entities
