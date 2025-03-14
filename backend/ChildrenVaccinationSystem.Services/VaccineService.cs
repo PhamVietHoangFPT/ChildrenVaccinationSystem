@@ -4,8 +4,12 @@ using ChildrenVaccinationSystem.Contract.Repositories.Entities;
 using ChildrenVaccinationSystem.Contract.Repositories.IUOW;
 using ChildrenVaccinationSystem.Contract.Services;
 using ChildrenVaccinationSystem.Core.Base;
+using ChildrenVaccinationSystem.Core.Utils;
 using ChildrenVaccinationSystem.Repositories.UOW;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,16 +38,30 @@ namespace ChildrenVaccinationSystem.Services
 			if (!_unitOfWork.IsValid<Manufacturer>(vaccineCreateDto.ManufacturerId))
 				throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy manufacturer id");
 
-            Vaccine vaccine = new Vaccine();
+
+			Vaccine vaccine = new Vaccine();
 
             _mapper.Map(vaccineCreateDto, vaccine);
             _authenticationService.UpdateAudits(vaccine, true);
 
-            await _unitOfWork.GetRepository<Vaccine>().InsertAsync(vaccine);
-            await _unitOfWork.SaveAsync();
-        }
 
-        public async Task DeleteVaccine(string id)
+            await _unitOfWork.GetRepository<Vaccine>().InsertAsync(vaccine);
+
+            await _unitOfWork.SaveAsync();
+			if (vaccineCreateDto.ImageSource != null)
+			{
+				string imageSource = await CoreHelper.CreateImage(vaccineCreateDto.ImageSource);
+				Image image = new()
+				{
+					ImageSource = imageSource,
+					VaccineId = vaccine.Id
+				};
+				await _unitOfWork.GetRepository<Image>().InsertAsync(image);
+				await _unitOfWork.SaveAsync();
+			}
+		}
+
+		public async Task DeleteVaccine(string id)
         {
 			Vaccine? vaccine = await _unitOfWork.GetRepository<Vaccine>().Entities.Where(v => v.Id == id && v.DeletedBy == null).FirstOrDefaultAsync();
 
@@ -74,6 +92,27 @@ namespace ChildrenVaccinationSystem.Services
 
 			await _unitOfWork.GetRepository<Vaccine>().UpdateAsync(vaccine);
             await _unitOfWork.SaveAsync();
+
+			if (vaccineUpdateDto.ImageSource != null)
+			{
+				Image? image = await _unitOfWork.GetRepository<Image>().Entities.Where(i => i.VaccineId == vaccine.Id).FirstOrDefaultAsync();
+
+				if (image != null)
+				{
+					CoreHelper.DeleteImage(image.ImageSource);
+					await _unitOfWork.GetRepository<Image>().DeleteAsync(image);
+					await _unitOfWork.SaveAsync();
+				}
+
+				image = new()
+				{
+					ImageSource = await CoreHelper.CreateImage(vaccineUpdateDto.ImageSource),
+					VaccineId = vaccine.Id
+				};
+
+				await _unitOfWork.GetRepository<Image>().InsertAsync(image);
+				await _unitOfWork.SaveAsync();
+			}
 		}
 
 		public async Task<BasePaginatedList<VaccineViewDto>> GetVaccines(string? name, string? categoryName, string? manufacturerCountry, int pageNumber, int pageSize)

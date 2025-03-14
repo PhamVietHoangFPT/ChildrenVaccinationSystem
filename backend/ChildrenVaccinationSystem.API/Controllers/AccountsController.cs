@@ -1,6 +1,4 @@
 ﻿using ChildrenVaccinationSystem.Contract.Repositories.Dtos.AccountDtos;
-using ChildrenVaccinationSystem.Contract.Repositories.Dtos.ChildDtos;
-using ChildrenVaccinationSystem.Contract.Repositories.Entities;
 using ChildrenVaccinationSystem.Contract.Services;
 using ChildrenVaccinationSystem.Core.Base;
 using ChildrenVaccinationSystem.Core.Enum;
@@ -101,25 +99,6 @@ namespace ChildrenVaccinationSystem.API.Controllers
 			));
 		}
 
-		[HttpPost("image")]
 
-		public async Task<IActionResult> CreateImage([FromForm]ImageDto file)
-		{
-			string account = await _accountService.CreateImage(file.file);
-
-			return Ok(new BaseResponse<object>(
-				statusCode: StatusCodeEnum.OK,
-				code: StatusCodeEnum.OK.ToString(),
-				message: "Lấy thông tin tài khoản thành công",
-				data: account
-			));
-		}
-
-
-	}
-
-	public class ImageDto
-	{
-		public IFormFile file {  get; set; }
 	}
 }

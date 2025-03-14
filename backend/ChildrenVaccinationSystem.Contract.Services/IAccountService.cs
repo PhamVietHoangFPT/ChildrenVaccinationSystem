@@ -23,7 +23,5 @@ namespace ChildrenVaccinationSystem.Contract.Services
 		Task BgRemoveUnverifiedAccounts();
 		Task BgRemoveExpiredResetPasswordToken();
 		Task BgRemoveExpiredOTP();
-
-		Task<string> CreateImage(IFormFile file);
 	}
 }

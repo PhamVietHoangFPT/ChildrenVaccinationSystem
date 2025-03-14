@@ -7,7 +7,7 @@ namespace ChildrenVaccinationSystem.Core.Utils
 	{
 		public static DateTimeOffset SystemTimeNow => TimeHelper.ConvertToUtcPlus7(DateTimeOffset.Now);
 
-		public async Task CreateImage(IFormFile file)
+		public static async Task<string> CreateImage(IFormFile file)
 		{
 			if (file == null || file.Length == 0)
 			{
@@ -29,8 +29,29 @@ namespace ChildrenVaccinationSystem.Core.Utils
 			{
 				await file.CopyToAsync(stream);
 			}
+			return uniqueFileName;
 		}
 
-		
+		public static void DeleteImage(string fileName)
+		{
+			if (string.IsNullOrWhiteSpace(fileName))
+			{
+				throw new ArgumentException("Invalid file name.");
+			}
+
+			// Define the image path
+			string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
+
+			// Check if the file exists
+			if (File.Exists(filePath))
+			{
+				File.Delete(filePath);
+			}
+			else
+			{
+				throw new FileNotFoundException("File not found.");
+			}
+		}
+
 	}
 }
