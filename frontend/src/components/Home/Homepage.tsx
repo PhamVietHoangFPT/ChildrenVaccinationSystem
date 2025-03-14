@@ -29,7 +29,6 @@ const Homepage: React.FC = () => {
 
   const dataVaccine = data?.data.items ?? []
 
-  console.log(dataVaccine)
   const faqs: FAQ[] = [
     {
       question: 'Is vaccination safe?',

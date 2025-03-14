@@ -2,10 +2,24 @@ import { Outlet } from 'react-router-dom'
 import { Layout } from 'antd'
 import Navbar from './Navbar/Navbar'
 import AppHeader from './Header/Header'
-
+import Cookies from 'js-cookie'
+import { useNavigate } from 'react-router-dom'
 const { Content } = Layout
+import { useEffect } from 'react'
 
 function MainLayout() {
+  const navigate = useNavigate()
+
+  const userData = Cookies.get('userData')
+    ? JSON.parse(Cookies.get('userData') as string)
+    : null
+
+  useEffect(() => {
+    if (!userData?.PhoneNumber || !userData?.Address) {
+      navigate('/forceUpdate')
+    }
+  }, [userData, navigate])
+
   return (
     <Layout
       style={{
