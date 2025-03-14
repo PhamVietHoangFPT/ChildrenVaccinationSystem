@@ -15,6 +15,9 @@ import { LayoutRoute } from '../types/routes'
 import AllVaccinesCustomer from '../Pages/Vaccines/AllVaccinesCustomer'
 import VaccineDetail from '../Pages/Home/VaccineDetailManager/VaccineDetailManager'
 import CreateVaccine from '../Pages/Home/CreateVaccineManager/CreateVaccineManager'
+import { DoctorLayout } from '../components/layout/DoctorLayout'
+import DoctorHomePage from '../Pages/Doctor/DoctorHomePage'
+import CustomerListDoctor from '../Pages/Home/CustomerListDoctor/CustomerListDoctor'
 
 const routes: LayoutRoute[] = [
   {
@@ -99,6 +102,23 @@ const routes: LayoutRoute[] = [
         role: ['Manager'],
       },
     ],
+  },
+    {
+      layout: DoctorLayout,
+      data: [
+        {
+          path: '/doctor',
+          component: DoctorHomePage,
+          exact: true,
+          role: ['Doctor'],
+        },
+        {
+          path: '/doctor/view',
+          component: CustomerListDoctor,
+          exact: true,
+          role: ['Doctor'],
+        },
+      ],
   },
   // {
   //   layout: SimpleLayout,

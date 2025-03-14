@@ -7,9 +7,9 @@ import {
   LogoutOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  HomeOutlined,
   TeamOutlined,
   MedicineBoxOutlined,
+  HomeOutlined,
 } from "@ant-design/icons"
 import Cookies from 'js-cookie'
 
@@ -54,16 +54,16 @@ export const SideBarDoctor = () => {
   // Define the menu items
   const items = [
     {
-      key: 'doctor/staff',
-      icon: <HomeOutlined />,
-      label: 'Manage Staff',
-      onClick: () => navigate('/doctor/staff'),
-    },
-    {
       key: 'doctor/view',
       icon: <TeamOutlined />,
       label: 'View all customers',
       onClick: () => navigate('/doctor/view'),
+    },
+    {
+      key: 'doctor/staff',
+      icon: <HomeOutlined />,
+      label: 'Manage Staff',
+      onClick: () => navigate('/doctor/staff'),
     },
     {
       key: 'doctor/vaccine',
@@ -168,9 +168,9 @@ export const SideBarDoctor = () => {
           <Avatar icon={<UserOutlined />} />
           {!collapsed && (
             <div style={{ marginLeft: 12 }}>
-              <div style={{ fontWeight: 500, fontSize: 14 }}>Admin User</div>
+              <div style={{ fontWeight: 500, fontSize: 14 }}>Doctor User</div>
               <div style={{ fontSize: 12, color: 'rgba(0, 0, 0, 0.45)' }}>
-                admin@vaccitrack.com
+                doctor@vaccitrack.com
               </div>
             </div>
           )}
