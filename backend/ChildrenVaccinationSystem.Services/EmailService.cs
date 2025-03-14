@@ -67,8 +67,6 @@ namespace ChildrenVaccinationSystem.Services
 				IsBodyHtml = true
 			};
 
-
-
 			// Thêm người nhận
 			mailMessage.To.Add(email);
 
@@ -76,38 +74,103 @@ namespace ChildrenVaccinationSystem.Services
 			return client.SendMailAsync(mailMessage);
 		}
 
-		//public async Task SendVerificationEmailAsync(string email, string verificationToken)
-		//{
-		//	// Retrieve the web link from appsettings.json
-		//	string? webUrl = _configuration["WebUrl"];
-		//	if (string.IsNullOrWhiteSpace(webUrl))
-		//	{
-		//		throw new InvalidOperationException("WebLink is not configured.");
-		//	}
+		public Task SendResetPasswordEmail(string email, string resetToken)
+		{
+			var mail = "kidsvaccinecorp@gmail.com";
+			var pw = "swdg enlv vfrk rpdf";
 
-		//	string verificationUrl = $"{webUrl}/api/auth/verify-email?token={verificationToken}";
+			var client = new SmtpClient("smtp.gmail.com", 587)
+			{
+				EnableSsl = true,
+				Credentials = new NetworkCredential(mail, pw)
+			};
 
-		//	// Email subject and body
-		//	string subject = "Email Verification";
-		//string body = $@"
-		//	<div style='font-family: Arial, sans-serif; line-height: 1.5;'>
-		//		<h2 style='color: #4CAF50;'>Email Verification</h2>
-		//		<p>Dear user,</p>
-		//		<p>Please verify your email by clicking the button below:</p>
-		//		<a href='{verificationUrl}' 
-		//		   style='display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; 
-		//				  text-decoration: none; border-radius: 5px; font-weight: bold;'>
-		//		   Verify Email
-		//		</a>
-		//		<p>If the button does not work, copy and paste the following link into your browser:</p>
-		//		<p><a href='{verificationUrl}'>{verificationUrl}</a></p>
-		//		<p>Thank you!</p>
-		//	</div>";
+			var productDomain = _configuration["ProductDomain"];
+			string resetUrl = $"{productDomain}/api/authentication/verify-reset-password?token={resetToken}";
+
+			var message = $@"
+				<div style='font-family: Arial, sans-serif; line-height: 1.5;'>
+					<p>Chúng tôi nhận được yêu cầu khôi phục mật khẩu cho tài khoản của bạn tại <strong>Kids Vaccine</strong>. Nếu bạn đã yêu cầu điều này, vui lòng nhấn vào nút bên dưới để đặt lại mật khẩu:</p>
+
+					<p style='text-align: center;'>
+						<a href='{resetUrl}' 
+						   style='display: inline-block; padding: 10px 15px; background-color: #FF5733; color: white;
+								  text-decoration: none; border-radius: 5px; font-weight: bold;'>
+							🔑 Đặt lại mật khẩu
+						</a>
+					</p>
+
+					<p>Liên kết này sẽ hết hạn sau <strong>15 phút</strong>, vui lòng đặt lại mật khẩu sớm nhất có thể.</p>
+
+					<p>Nếu bạn không yêu cầu khôi phục mật khẩu, vui lòng bỏ qua email này.</p>
+
+					<p>Trân trọng,<br><strong>Bộ phận hỗ trợ KVC</strong></p>
+				</div>";
+
+			var mailMessage = new MailMessage
+			{
+				From = new MailAddress(mail),
+				Subject = "Xác minh tài khoản Kids Vaccine",
+				Body = message,
+				IsBodyHtml = true
+			};
+
+			// Thêm người nhận
+			mailMessage.To.Add(email);
+
+			// Gửi email
+			return client.SendMailAsync(mailMessage);
+
+		}
+
+		public Task SendUpdateEmailEmail(string newEmail, string otp)
+		{
+			var mail = "kidsvaccinecorp@gmail.com";
+			var pw = "swdg enlv vfrk rpdf";
+
+			var client = new SmtpClient("smtp.gmail.com", 587)
+			{
+				EnableSsl = true,
+				Credentials = new NetworkCredential(mail, pw)
+			};
+
+			var productDomain = _configuration["ProductDomain"];
+			string updateEmailUrl = $"{productDomain}/api/authentication/verify-reset-password?token={otp}";
+
+			var message = $@"
+				<div style='font-family: Arial, sans-serif; line-height: 1.5;'>
+					<p>Bạn đã yêu cầu thay đổi địa chỉ email cho tài khoản của mình tại <strong>Kids Vaccine</strong>.</p>
+
+					<p>Mã xác minh của bạn là:</p>
+
+					<p style='text-align: center; font-size: 24px; font-weight: bold; background-color: #f3f3f3; padding: 10px; 
+							  display: inline-block; border-radius: 5px;'>
+						{otp}
+					</p>
+
+					<p>Vui lòng nhập mã này trong vòng <strong>15 phút</strong> để hoàn tất quá trình thay đổi email.</p>
+
+					<p>Nếu bạn không yêu cầu thay đổi email, vui lòng bỏ qua email này.</p>
+
+					<p>Trân trọng,<br><strong>Bộ phận hỗ trợ KVC</strong></p>
+				</div>";
+			var mailMessage = new MailMessage
+			{
+				From = new MailAddress(mail),
+				Subject = "Xác minh tài khoản Kids Vaccine",
+				Body = message,
+				IsBodyHtml = true
+			};
+
+			// Thêm người nhận
+			mailMessage.To.Add(newEmail);
+
+			// Gửi email
+			return client.SendMailAsync(mailMessage);
+
+		}
 
 
-		//	// Send email using SendGrid
-		//	await SendEmailAsync(email, subject, body);
-		//}
 
 	}
 }

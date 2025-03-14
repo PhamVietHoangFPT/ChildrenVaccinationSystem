@@ -9,16 +9,14 @@ namespace ChildrenVaccinationSystem.Contract.Services
 		Task<string> Login(LoginDto loginDto);
 		Task Register(RegisterDto registerDto);
 		Task<bool> VerifyAccount(string token);
-		Task ForgotPassword(string email, string userName);
-		Task ResetPassword(string token, string newPassword);
-		Task VerifyResetPasswordToken(string token);
+		Task ForgetPassword(string email);
+		Task VerifyResetPassowrd(string token);
+		Task ResetPassword(string newPassword);
+		Task UpdatePassword(string password, string newPassword);
+		Task UpdateEmail(string newEmail);
+		Task ConfirmUpdateEmail(string otp);
 		void UpdateAudits(BaseEntity entity, bool isCreating, bool isDeleting = false);
 		string GetCurrentAccountId();
 		string GetCurrentRole();
-		bool AuthorizeManager();
-		bool AuthorizeStaff();
-		bool AuthorizeDoctor();
-		bool AuthorizeVaccinator();
-		bool AuthorizeCustomer();
 	}
 }
