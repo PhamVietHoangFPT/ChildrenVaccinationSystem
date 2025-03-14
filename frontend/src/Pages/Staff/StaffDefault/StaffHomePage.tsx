@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { Customer } from '../../../types/customer'
 import { useGetCustomerListQuery } from '../../../features/customer/customerAPI'
-import { Button, Table } from 'antd'
+import { Button, Input, Table } from 'antd'
 import { EditOutlined, LoadingOutlined } from '@ant-design/icons'
 
 interface CustomerListResponse {
@@ -22,16 +22,16 @@ const StaffHomePage: React.FC = () => {
 
   // Default page = 1, pageSize = 1
   const initialPage = parseInt(searchParams.get('page') || '1', 10)
-  const initialPageSize = parseInt(searchParams.get('pageSize') || '1', 10) // Set default to 1
-
+  const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(initialPage)
-  const [pageSize, setPageSize] = useState(initialPageSize)
+  const pageSize = 7
 
   const {
     data: customers,
     isFetching: customerFetching,
     isLoading: customerLoading,
   } = useGetCustomerListQuery<CustomerListResponse>({
+    phoneNumber: searchTerm || undefined,
     pageNumber: currentPage,
     pageSize: pageSize,
   })
@@ -42,9 +42,9 @@ const StaffHomePage: React.FC = () => {
   useEffect(() => {
     setSearchParams({
       page: currentPage.toString(),
-      pageSize: pageSize.toString(),
+      phoneNumber: searchTerm,
     })
-  }, [currentPage, pageSize, setSearchParams])
+  }, [currentPage, searchTerm, setSearchParams])
   if (customerLoading) {
     return (
       <LoadingOutlined
@@ -102,6 +102,12 @@ const StaffHomePage: React.FC = () => {
 
   return (
     <div style={{ padding: 20, background: '#fff', borderRadius: 8 }}>
+       <Input.Search
+        placeholder='Search by phone number'
+        allowClear
+        onSearch={(value) => setSearchTerm(value)}
+        style={{ marginBottom: 16, width: 300 }}
+      />
       <Table
         columns={columns}
         dataSource={dataCustomer.map((item, index) => ({
@@ -116,11 +122,8 @@ const StaffHomePage: React.FC = () => {
           current: currentPage,
           pageSize: pageSize,
           total: totalCustomers,
-          showSizeChanger: true,
-          pageSizeOptions: ['1', '5', '10', '20'],
-          onChange: (page, size) => {
+          onChange: (page) => {
             setCurrentPage(page)
-            setPageSize(size)
           },
         }}
       />
