@@ -76,10 +76,11 @@ namespace ChildrenVaccinationSystem.Services
             await _unitOfWork.SaveAsync();
 		}
 
-		public async Task<BasePaginatedList<VaccineViewDto>> GetVaccines(int pageNumber, int pageSize)
+		public async Task<BasePaginatedList<VaccineViewDto>> GetVaccines(string? name, string? categoryName, string? manufacturerCountry, int pageNumber, int pageSize)
         {
 
-            IQueryable<Vaccine> query = _unitOfWork.GetRepository<Vaccine>().Entities.Where(v => v.DeletedBy ==null);
+            IQueryable<Vaccine> query = _unitOfWork.GetRepository<Vaccine>().Entities
+				.Where(v => (string.IsNullOrWhiteSpace(name) || (v.Name.Contains(name))) && (string.IsNullOrWhiteSpace(categoryName) || (v.Category.Name.Contains(categoryName))) && (string.IsNullOrWhiteSpace(manufacturerCountry) || (v.Manufacturer.Country.Name.Contains(manufacturerCountry))) && v.DeletedBy == null);
 
 
 
@@ -93,9 +94,10 @@ namespace ChildrenVaccinationSystem.Services
             return new BasePaginatedList<VaccineViewDto>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
         }
 
-        public async Task<BasePaginatedList<object>> GetVaccinesMinimal(int pageNumber, int pageSize)
+        public async Task<BasePaginatedList<object>> GetVaccinesMinimal(string? name, string? categoryName, string? manufacturerCountry, int pageNumber, int pageSize)
         {
-			IQueryable<Vaccine> query = _unitOfWork.GetRepository<Vaccine>().Entities.Where(v => v.DeletedBy == null);
+			IQueryable<Vaccine> query = _unitOfWork.GetRepository<Vaccine>().Entities
+				.Where(v => (string.IsNullOrWhiteSpace(name) || (v.Name.Contains(name))) && (string.IsNullOrWhiteSpace(categoryName) || (v.Category.Name.Contains(categoryName))) && (string.IsNullOrWhiteSpace(manufacturerCountry) || (v.Manufacturer.Country.Name.Contains(manufacturerCountry))) && v.DeletedBy == null);
 
 			BasePaginatedList<Vaccine> resultQuery = (pageNumber <= 0 || pageSize <= 0)
 				? await _unitOfWork.GetRepository<Vaccine>().GetPaging(query, 1, query.Count())

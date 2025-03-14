@@ -11,9 +11,9 @@ namespace ChildrenVaccinationSystem.Contract.Services
 {
 	public interface IVaccineService
     {
-        Task<BasePaginatedList<VaccineViewDto>> GetVaccines(int pageNumber, int pageSize);
+        Task<BasePaginatedList<VaccineViewDto>> GetVaccines(string? name, string? categoryName, string? manufacturerCountry, int pageNumber, int pageSize);
         Task<VaccineViewDto> GetVaccineById(string id);
-        Task<BasePaginatedList<object>> GetVaccinesMinimal(int pageNumber, int pageSize);
+        Task<BasePaginatedList<object>> GetVaccinesMinimal(string? name, string? categoryName, string? manufacturerCountry, int pageNumber, int pageSize);
 
 		Task CreateVaccine(VaccineCreateDto vaccineCreateDto);
 
