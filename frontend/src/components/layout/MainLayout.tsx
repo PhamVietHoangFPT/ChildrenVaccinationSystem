@@ -15,8 +15,10 @@ function MainLayout() {
     : null
 
   useEffect(() => {
-    if (!userData?.PhoneNumber || !userData?.Address) {
-      navigate('/forceUpdate')
+    if (userData) {
+      if (!userData?.PhoneNumber || !userData?.Address) {
+        navigate('/forceUpdate')
+      }
     }
   }, [userData, navigate])
 
