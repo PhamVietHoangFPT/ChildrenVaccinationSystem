@@ -84,7 +84,7 @@ const SideBarStaff: React.FC = () => {
             key: '4',
             label: 'Update Customer Profile',
             icon: <FormOutlined />,
-            url: '/staff',
+            url: '/staff/customer-account',
           },
           {
             key: 'sub3',
