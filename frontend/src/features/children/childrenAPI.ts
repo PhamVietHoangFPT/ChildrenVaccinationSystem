@@ -33,15 +33,18 @@ export const childrenApi = apiSlice.injectEndpoints({
       transformResponse: (res) => res,
       invalidatesTags: ['children'],
     }),
-    // createChildren: build.mutation({
-    //   query: (data) => ({
-    //     url: '/children',
-    //     method: 'POST',
-    //     body: data,
-    //   }),
-    //   transformResponse: (res) => res,
-    //   invalidatesTags: ['children'],
-    // }),
+    createChildren: builder.mutation({
+      query: ({data,parentId}) => ({
+        url: '/children',
+        method: 'POST',
+        body: data,
+        params:{
+          parentId
+        }
+      }),
+      transformResponse: (res) => res,
+      invalidatesTags: ['children'],
+    }),
     // getChildrenDetail: build.query({
     //   query: (id) => ({
     //     url: `/children/${id}`,
@@ -65,7 +68,8 @@ export const childrenApi = apiSlice.injectEndpoints({
 export const {
   useGetChildrenListQuery,
   useGetChildrenDetailQuery,
-  useUpdateChildrenMutation
+  useUpdateChildrenMutation,
+  useCreateChildrenMutation
   // useCreateChildrenMutation,
   // useGetChildrenDetailQuery,
   // useUpdateChildrenMutation,
