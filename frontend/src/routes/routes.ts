@@ -18,6 +18,10 @@ import CreateVaccine from '../Pages/Home/CreateVaccineManager/CreateVaccineManag
 import { DoctorLayout } from '../components/layout/DoctorLayout'
 import DoctorHomePage from '../Pages/Doctor/DoctorHomePage'
 import CustomerListDoctor from '../Pages/Home/CustomerListDoctor/CustomerListDoctor'
+import VaccineDetailsCustomer from '../Pages/Vaccines/VaccineDetailsCustomer'
+import VaccineRegistrationCustomer from '../Pages/Vaccines/VaccineRegistrationCustomer'
+import ForceUpdateAccount from '../Pages/Register/ForgeUpdateRegister'
+import ChildrenPage from '../Pages/Staff/ChildrenProfile/Children'
 
 const routes: LayoutRoute[] = [
   {
