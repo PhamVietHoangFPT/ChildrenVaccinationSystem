@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react'
 import { Children } from '../../../types/children';
 import { useSearchParams } from 'react-router-dom';
 import { useGetChildrenListQuery } from '../../../features/children/childrenAPI';
-import { EditOutlined, LoadingOutlined } from '@ant-design/icons';
+import { EditOutlined, LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Input, Table } from 'antd';
 import ChildrenDetailModal from '../../../components/Modal/ChildrenDetail';
+import AddChildrenModal from '../../../components/Modal/AddChildren';
 interface ChildrenListResponse {
     data: {
         data: {
@@ -27,9 +28,10 @@ const ChildrenPage: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(initialPage);
     const pageSize = 7;
     // Modal state
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(null);
-    
+    const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
+    const [isAddModalVisible, setIsAddModalVisible] = useState(false);
+    const [selectedChildId, setSelectedChildId] = useState<string | null>(null);
+
     // Fetch customer list
     const {
         data: children,
@@ -100,29 +102,32 @@ const ChildrenPage: React.FC = () => {
             render: (gender: boolean) => (gender ? 'Male' : 'Female'),
         },
         {
-             title: 'Update',
-             key: 'update',
-             render: (_: any, record: Children) => (
-               <Button
-                 type="primary"
-                 icon={<EditOutlined />}
-                 onClick={() => {
-                   setSelectedCustomerId(record.id); // Set the selected customer ID
-                   setIsModalVisible(true); // Show the modal
-                 }}
-               />
-             ),
-           },
+            title: 'Update',
+            key: 'update',
+            render: (_: any, record: Children) => (
+                <Button
+                    type="primary"
+                    icon={<EditOutlined />}
+                    onClick={() => {
+                        setSelectedChildId(record.id); // Set the selected customer ID
+                        setIsDetailModalVisible(true); // Show the modal
+                    }}
+                />
+            ),
+        },
     ];
 
 
 
     // Handle modal close
-    const handleModalClose = () => {
-        setIsModalVisible(false);
-        setSelectedCustomerId(null); // Reset selected customer
+    const handleDetailModalClose = () => {
+        setIsDetailModalVisible(false);
+        setSelectedChildId(null);
     };
 
+    const handleAddModalClose = () => {
+        setIsAddModalVisible(false);
+    };
     return (
         <div style={{ padding: 20, background: '#fff', borderRadius: 8 }}>
             <Input.Search
@@ -137,6 +142,13 @@ const ChildrenPage: React.FC = () => {
                 onSearch={(value) => setSearchNameTerm(value)}
                 style={{ marginBottom: 16, width: 300 }}
             />
+            <Button
+                    type="primary"
+                    icon={<PlusOutlined />}
+                    onClick={() => setIsAddModalVisible(true)}
+                >
+                    Thêm trẻ
+                </Button>
             <Table
                 columns={columns}
                 dataSource={dataChildren.map((item, index) => ({
@@ -157,9 +169,13 @@ const ChildrenPage: React.FC = () => {
                 }}
             />
             <ChildrenDetailModal
-                visible={isModalVisible}
-                id={selectedCustomerId}
-                onClose={handleModalClose}
+                visible={isDetailModalVisible}
+                id={selectedChildId}
+                onClose={handleDetailModalClose}
+            />
+            <AddChildrenModal
+                visible={isAddModalVisible}
+                onClose={handleAddModalClose}
             />
         </div>
     )

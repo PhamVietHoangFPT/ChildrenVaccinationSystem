@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { Modal, Button, Form, Typography, message, Input, InputNumber, Switch } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
@@ -183,4 +182,5 @@ const ChildrenDetailModal: React.FC<ChilrenDetailModalProps> = ({
     );
 };
 
-export default ChildrenDetailModal;
+export default ChildrenDetailModal; 
+
