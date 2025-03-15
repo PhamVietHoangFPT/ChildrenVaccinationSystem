@@ -42,7 +42,7 @@ namespace ChildrenVaccinationSystem.Services
 			Vaccine vaccine = new Vaccine();
 
             _mapper.Map(vaccineCreateDto, vaccine);
-            _authenticationService.UpdateAudits(vaccine, true);
+
 
 
             await _unitOfWork.GetRepository<Vaccine>().InsertAsync(vaccine);
