@@ -126,7 +126,7 @@ const StaffHomePage: React.FC = () => {
   return (
     <div style={{ padding: 20, background: '#fff', borderRadius: 8 }}>
       <Input.Search
-        placeholder="Search by phone number"
+        placeholder='Search by phone number'
         allowClear
         onSearch={(value) => setSearchTerm(value)}
         style={{ marginBottom: 16, width: 300 }}

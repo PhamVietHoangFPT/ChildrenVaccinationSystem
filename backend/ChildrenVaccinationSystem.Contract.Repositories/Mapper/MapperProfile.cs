@@ -28,8 +28,17 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Mapper
 						.ReverseMap()
 						.IncludeAllDerived();
 
+			CreateMap<Package, SimpleViewDto>();
+			CreateMap<Vaccine, SimpleViewDto>();
+
+
 			CreateMap<Account, AccountViewDto>();
 			CreateMap<AccountUpdateDto, Account>();
+			CreateMap<CustomerUpdateDto, Account>()
+				.ForAllMembers(opt => opt.Condition(
+				(src, dest, srcMember) => srcMember != null &&
+										  (srcMember is not string || !string.IsNullOrWhiteSpace(srcMember.ToString()))
+				));
 
 			CreateMap<Blog, BlogViewDto>();
 			CreateMap<BlogCreateDto, Blog>();
@@ -81,9 +90,10 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Mapper
 
 			CreateMap<PackageItem, PackageItemViewDto>();
 
+			CreateMap<VaccinationDetail, VaccinationDetailViewDto>();
+
 			CreateMap<Vaccination, VaccinationViewDto>();
 
-			CreateMap<VaccinationDetail, VaccinationDetailViewDto>();
 
 			CreateMap<Vaccine, VaccineViewDto>();
 			CreateMap<VaccineCreateDto, Vaccine>();
