@@ -25,7 +25,9 @@ export const apiSlice = createApi({
     'categories',
     'manufactures',
     'facilities',
-    'blogs'
+    'blogs',
+    'children',
+    'customers',
   ],
   endpoints: () => ({}),
 })

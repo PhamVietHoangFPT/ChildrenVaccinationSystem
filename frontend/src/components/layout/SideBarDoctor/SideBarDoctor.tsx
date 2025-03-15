@@ -7,16 +7,16 @@ import {
   LogoutOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  HomeOutlined,
   TeamOutlined,
   MedicineBoxOutlined,
-} from '@ant-design/icons'
+  HomeOutlined,
+} from "@ant-design/icons"
 import Cookies from 'js-cookie'
 
 const { Sider } = Layout
 const { Search } = Input
 
-export const SideBar = () => {
+export const SideBarDoctor = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const [collapsed, setCollapsed] = useState(false)
@@ -24,7 +24,7 @@ export const SideBar = () => {
   // Get the current selected keys based on the pathname
   const getSelectedKeys = () => {
     const pathname = location.pathname
-    if (pathname === '/manager') return ['manager']
+    if (pathname === '/doctor') return ['doctor']
 
     // Check if pathname includes any of these paths
     const paths = [
@@ -54,22 +54,22 @@ export const SideBar = () => {
   // Define the menu items
   const items = [
     {
-      key: 'manager/staff',
-      icon: <HomeOutlined />,
-      label: 'Manage Staff',
-      onClick: () => navigate('/manager/staff'),
-    },
-    {
-      key: 'manager/view',
+      key: 'doctor/view',
       icon: <TeamOutlined />,
       label: 'View all customers',
-      onClick: () => navigate('/manager/view'),
+      onClick: () => navigate('/doctor/view'),
     },
     {
-      key: 'manager/vaccine',
+      key: 'doctor/staff',
+      icon: <HomeOutlined />,
+      label: 'Manage Staff',
+      onClick: () => navigate('/doctor/staff'),
+    },
+    {
+      key: 'doctor/vaccine',
       icon: <MedicineBoxOutlined />,
       label: 'Manage Vaccines',
-      onClick: () => navigate('/manager/vaccine'),
+      onClick: () => navigate('/doctor/vaccine'),
     },
   ]
 
@@ -168,9 +168,9 @@ export const SideBar = () => {
           <Avatar icon={<UserOutlined />} />
           {!collapsed && (
             <div style={{ marginLeft: 12 }}>
-              <div style={{ fontWeight: 500, fontSize: 14 }}>Admin User</div>
+              <div style={{ fontWeight: 500, fontSize: 14 }}>Doctor User</div>
               <div style={{ fontSize: 12, color: 'rgba(0, 0, 0, 0.45)' }}>
-                admin@vaccitrack.com
+                doctor@vaccitrack.com
               </div>
             </div>
           )}

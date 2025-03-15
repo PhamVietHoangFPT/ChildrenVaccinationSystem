@@ -71,7 +71,6 @@ namespace ChildrenVaccinationSystem.API.Controllers
 				data: accounts
 			));
 		}
-
 		[HttpPost("customer/{id}")]
 		public async Task<IActionResult> UpdateCustomerAccount(string id, CustomerUpdateDto customerUpdateDto)
 		{
@@ -84,8 +83,6 @@ namespace ChildrenVaccinationSystem.API.Controllers
 				data: null
 			));
 		}
-
-
 		[HttpGet("customer/minimal")]
 		public async Task<IActionResult> GetCustomerAccountsMinimal(string? phoneNumber, int pageNumber = -1, int pageSize = -1)
 		{
@@ -98,7 +95,6 @@ namespace ChildrenVaccinationSystem.API.Controllers
 				data: accounts
 			));
 		}
-
 
 
 		[HttpGet("{id}")]

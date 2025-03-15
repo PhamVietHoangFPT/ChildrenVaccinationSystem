@@ -2,7 +2,6 @@
 using ChildrenVaccinationSystem.Contract.Repositories.Dtos.AccountDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Dtos.CategoryDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Dtos.ChildDtos;
-using ChildrenVaccinationSystem.Contract.Repositories.Dtos.VaccineDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Entities;
 using ChildrenVaccinationSystem.Contract.Repositories.IUOW;
 using ChildrenVaccinationSystem.Contract.Services;
@@ -187,6 +186,5 @@ namespace ChildrenVaccinationSystem.Services
 			}
 			await _unitOfWork.SaveAsync();
 		}
-
 	}
 }
