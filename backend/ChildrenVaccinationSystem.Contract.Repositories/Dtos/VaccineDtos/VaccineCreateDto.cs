@@ -1,4 +1,6 @@
-﻿namespace ChildrenVaccinationSystem.Contract.Repositories.Dtos.VaccineDtos
+﻿using Microsoft.AspNetCore.Http;
+
+namespace ChildrenVaccinationSystem.Contract.Repositories.Dtos.VaccineDtos
 {
 	public class VaccineCreateDto
 	{
@@ -12,6 +14,7 @@
 		public int? DosageInterval { get; set; }
 		public string CategoryId { get; set; } = default!;
 		public string ManufacturerId { get; set; } = default!;
+		public IFormFile? ImageSource {  get; set; } 
 
 	}
 }

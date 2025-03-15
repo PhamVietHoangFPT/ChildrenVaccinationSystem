@@ -46,12 +46,13 @@ const SideBarStaff: React.FC = () => {
   const userData = Cookies.get('userData')
     ? JSON.parse(Cookies.get('userData') as string)
     : null
+    
   // Define menu items with useMemo for performance
   const items = useMemo((): CustomMenuItem[] => {
     return [
       {
         key: 'sub0',
-        label: `Welcome, ${userData.Name}`,
+        label: `Welcome, ${userData?.Name}`,
         icon: <SmileOutlined />,
         url: '/staff',
       },
@@ -83,13 +84,13 @@ const SideBarStaff: React.FC = () => {
             key: '4',
             label: 'Update Customer Profile',
             icon: <FormOutlined />,
-            url: '/option5',
+            url: '/staff/customer-account',
           },
           {
             key: 'sub3',
             label: 'Children`s Profile',
             icon: <SmileOutlined />,
-            url: '',
+            url: '/staff/child-profile',
           },
         ],
       },

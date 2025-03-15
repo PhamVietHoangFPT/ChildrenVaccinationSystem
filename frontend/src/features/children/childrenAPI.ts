@@ -1,26 +1,22 @@
 import { apiSlice } from '../../apis/apiSlice'
 
 export const childrenApi = apiSlice.injectEndpoints({
-  endpoints: (build) => ({
-    getChildrenList: build.query({
-      query: (params) => ({
-        url: '/children',
+  endpoints: (builder) => ({
+    getChildrenList: builder.query({
+      query: ({ pageNumber, pageSize, parentPhoneNumber, name }) => ({
+        url: '/children/minimal',
         method: 'GET',
-        params,
+        params: {
+          parentPhoneNumber,
+          name,
+          pageNumber,
+          pageSize,
+        },
       }),
       transformResponse: (res) => res,
       providesTags: ['children'],
     }),
-    createChildren: build.mutation({
-      query: (data) => ({
-        url: '/children',
-        method: 'POST',
-        body: data,
-      }),
-      transformResponse: (res) => res,
-      invalidatesTags: ['children'],
-    }),
-    getChildrenDetail: build.query({
+    getChildrenDetail: builder.query({
       query: (id) => ({
         url: `/children/${id}`,
         method: 'GET',
@@ -28,7 +24,7 @@ export const childrenApi = apiSlice.injectEndpoints({
       transformResponse: (res) => res,
       providesTags: ['children'],
     }),
-    updateChildren: build.mutation({
+    updateChildren: builder.mutation({
       query: ({ data, id }) => ({
         url: `/children/${id}`,
         method: 'PUT',
@@ -37,21 +33,45 @@ export const childrenApi = apiSlice.injectEndpoints({
       transformResponse: (res) => res,
       invalidatesTags: ['children'],
     }),
-    deleteChildren: build.mutation({
-      query: (id) => ({
-        url: `/children/${id}`,
-        method: 'DELETE',
+    createChildren: builder.mutation({
+      query: ({data,parentId}) => ({
+        url: '/children',
+        method: 'POST',
+        body: data,
+        params:{
+          parentId
+        }
       }),
       transformResponse: (res) => res,
       invalidatesTags: ['children'],
     }),
+    // getChildrenDetail: build.query({
+    //   query: (id) => ({
+    //     url: `/children/${id}`,
+    //     method: 'GET',
+    //   }),
+    //   transformResponse: (res) => res,
+    //   providesTags: ['children'],
+    // }),
+
+    // deleteChildren: build.mutation({
+    //   query: (id) => ({
+    //     url: `/children/${id}`,
+    //     method: 'DELETE',
+    //   }),
+    //   transformResponse: (res) => res,
+    //   invalidatesTags: ['children'],
+    // }),
   }),
 })
 
 export const {
   useGetChildrenListQuery,
-  useCreateChildrenMutation,
   useGetChildrenDetailQuery,
   useUpdateChildrenMutation,
-  useDeleteChildrenMutation,
+  useCreateChildrenMutation
+  // useCreateChildrenMutation,
+  // useGetChildrenDetailQuery,
+  // useUpdateChildrenMutation,
+  // useDeleteChildrenMutation,
 } = childrenApi
