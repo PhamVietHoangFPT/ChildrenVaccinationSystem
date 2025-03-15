@@ -14,5 +14,6 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Dtos.ChildDtos
 		public double? Height { get; set; }
 		public double? Weight { get; set; }
 		public string? MedicalNote { get; set; }
+
 	}
 }
