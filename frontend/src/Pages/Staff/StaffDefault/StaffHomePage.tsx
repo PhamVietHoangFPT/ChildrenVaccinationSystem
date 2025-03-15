@@ -126,7 +126,11 @@ const StaffHomePage: React.FC = () => {
   return (
     <div style={{ padding: 20, background: '#fff', borderRadius: 8 }}>
       <Input.Search
+<<<<<<<<< Temporary merge branch 1
         placeholder="Search by phone number"
+=========
+        placeholder='Search by phone number'
+>>>>>>>>> Temporary merge branch 2
         allowClear
         onSearch={(value) => setSearchTerm(value)}
         style={{ marginBottom: 16, width: 300 }}

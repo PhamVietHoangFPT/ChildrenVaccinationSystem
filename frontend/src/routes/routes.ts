@@ -13,13 +13,8 @@ import Register from '../Pages/Register/Register'
 import StaffHomePage from '../Pages/Staff/StaffDefault/StaffHomePage'
 import { LayoutRoute } from '../types/routes'
 import AllVaccinesCustomer from '../Pages/Vaccines/AllVaccinesCustomer'
-import VaccineDetailsCustomer from '../Pages/Vaccines/VaccineDetailsCustomer'
-import VaccineRegistrationCustomer from '../Pages/Vaccines/VaccineRegistrationCustomer'
-import ForceUpdateAccount from '../Pages/Register/ForgeUpdateRegister'
-import ChildrenPage from '../Pages/Staff/ChildrenProfile/Children'
-import CustomerDetail from '../Pages/Staff/CustomerProfile/CustomerDetail'
-import VaccineDetail from '../Pages/Home/VaccineDetailManager/VaccineDetailManager'
-import CreateVaccine from '../Pages/Home/CreateVaccineManager/CreateVaccineManager'
+import VaccineDetail from '../Pages/Home/VaccineManager/VaccineDetailManager'
+import CreateVaccine from '../Pages/Home/VaccineManager/CreateVaccineManager'
 import { DoctorLayout } from '../components/layout/DoctorLayout'
 import DoctorHomePage from '../Pages/Doctor/DoctorHomePage'
 import CustomerListDoctor from '../Pages/Home/CustomerListDoctor/CustomerListDoctor'
@@ -71,12 +66,12 @@ const routes: LayoutRoute[] = [
         exact: true,
         role: ['Staff'],
       },
-      {
-        path: '/staff/customer-account/:customerId',
-        component: CustomerDetail,
-        exact: true,
-        role: ['Staff'],
-      },
+      // {
+      //   path: '/staff/customer-account/:customerId',
+      //   component: CustomerDetail,
+      //   exact: true,
+      //   role: ['Staff'],
+      // },
     ],
   },
   {
