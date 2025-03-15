@@ -3,6 +3,7 @@
 	public enum VaccinationStatusEnum
 	{
 		Pending,
+		Paid,
 		Consulting,
 		Queued,
 		Injecting,

@@ -84,7 +84,7 @@ namespace ChildrenVaccinationSystem.API
 			{
 				options.UseLazyLoadingProxies() // Enable lazy loading
 					   .UseSqlServer(configuration.GetConnectionString("MyCnn"), b =>
-						   b.MigrationsAssembly("ChildrenVaccinationSystem.API")); // Specify migrations assembly
+						 b.MigrationsAssembly("ChildrenVaccinationSystem.Repositories")); // Đổi API -> Repositories
 				options.ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
 			});
 		}

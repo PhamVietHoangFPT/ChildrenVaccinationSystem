@@ -19,7 +19,7 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Entities
 		public virtual Manufacturer Manufacturer { get; set; } = default!;
 		public virtual ICollection<Image>? Images { get; set; }
 		public virtual ICollection<PackageItem>? PackageItems { get; set; }
-		public virtual ICollection<VaccinationDetail>? VaccinationDetails { get; set; }
+		public virtual ICollection<Vaccination>? Vaccinations { get; set; }
 		public virtual ICollection<VaccineInventory>? VaccineInventories { get; set; }
 	}
 }

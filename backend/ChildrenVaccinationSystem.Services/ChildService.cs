@@ -127,7 +127,7 @@ namespace ChildrenVaccinationSystem.Services
 				.FirstOrDefaultAsync();
 
 			if (child == null)
-				throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy child id");
+				throw new ErrorException(404, "not_found", "Không tìm thấy child id");
 
 			_mapper.Map(childUpdateDto, child);
 			_authenticationService.UpdateAudits(child, false);

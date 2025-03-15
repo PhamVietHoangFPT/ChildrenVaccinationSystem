@@ -10,7 +10,6 @@ using ChildrenVaccinationSystem.Contract.Repositories.Dtos.ImageDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Dtos.ManufacturerDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Dtos.PackageDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Dtos.PackageItemDtos;
-using ChildrenVaccinationSystem.Contract.Repositories.Dtos.VaccinationDetailDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Dtos.VaccinationDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Dtos.VaccineDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Dtos.VaccineInventoryDtos;
@@ -27,10 +26,6 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Mapper
 			CreateMap(typeof(SimpleViewDto), typeof(BaseEntity))
 						.ReverseMap()
 						.IncludeAllDerived();
-
-			CreateMap<Package, SimpleViewDto>();
-			CreateMap<Vaccine, SimpleViewDto>();
-
 
 			CreateMap<Account, AccountViewDto>();
 			CreateMap<AccountUpdateDto, Account>();
@@ -89,8 +84,6 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Mapper
 			CreateMap<Package, PackageViewDto>();
 
 			CreateMap<PackageItem, PackageItemViewDto>();
-
-			CreateMap<VaccinationDetail, VaccinationDetailViewDto>();
 
 			CreateMap<Vaccination, VaccinationViewDto>();
 
