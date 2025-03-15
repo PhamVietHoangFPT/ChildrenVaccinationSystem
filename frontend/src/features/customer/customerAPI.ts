@@ -24,9 +24,6 @@ export const customerAPI = apiSlice.injectEndpoints({
       providesTags: ['customers'],
     }),
   }),
-
 })
-export const {
-  useGetCustomerListQuery,
-  useGetCustomerDetailQuery,
-} = customerAPI
+export const { useGetCustomerListQuery, useGetCustomerDetailQuery } =
+  customerAPI

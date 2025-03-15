@@ -24,7 +24,6 @@ import ForceUpdateAccount from '../Pages/Register/ForgeUpdateRegister'
 import ChildrenPage from '../Pages/Staff/ChildrenProfile/Children'
 import CustomerDetail from '../Pages/Staff/CustomerProfile/CustomerDetail'
 
-
 const routes: LayoutRoute[] = [
   {
     layout: MainLayout,
@@ -133,22 +132,22 @@ const routes: LayoutRoute[] = [
       },
     ],
   },
-    {
-      layout: DoctorLayout,
-      data: [
-        {
-          path: '/doctor',
-          component: DoctorHomePage,
-          exact: true,
-          role: ['Doctor'],
-        },
-        {
-          path: '/doctor/view',
-          component: CustomerListDoctor,
-          exact: true,
-          role: ['Doctor'],
-        },
-      ],
+  {
+    layout: DoctorLayout,
+    data: [
+      {
+        path: '/doctor',
+        component: DoctorHomePage,
+        exact: true,
+        role: ['Doctor'],
+      },
+      {
+        path: '/doctor/view',
+        component: CustomerListDoctor,
+        exact: true,
+        role: ['Doctor'],
+      },
+    ],
   },
   // {
   //   layout: SimpleLayout,

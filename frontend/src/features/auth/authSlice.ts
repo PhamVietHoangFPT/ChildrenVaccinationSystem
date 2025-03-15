@@ -49,10 +49,9 @@ const authSlice = createSlice({
       Cookies.set('userToken', token, { expires: expirationDate })
       if (state.userData.Role === 'Customer') {
         window.location.href = '/'
-      }else if(state.userData.Role === 'Staff'){
-         window.location.href = '/staff/customer-account'
-      }
-       else {
+      } else if (state.userData.Role === 'Staff') {
+        window.location.href = '/staff/customer-account'
+      } else {
         window.location.href = `/${state.userData.Role.toLowerCase()}`
       }
     },

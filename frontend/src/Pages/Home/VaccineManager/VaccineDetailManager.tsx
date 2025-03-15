@@ -16,7 +16,7 @@ import {
   useDeleteVaccineMutation,
 } from '../../../features/vaccine/vaccineAPI'
 
-import { useGetManufacturesListQuery } from '../../../features/manufactures/manufacturesAPI'
+import { useGetManufacturersListQuery } from '../../../features/manufactures/manufacturesAPI'
 import { useGetCategoriesListQuery } from '../../../features/categories/categoriesAPI'
 
 import { Vaccines } from '../../../types/vaccine'
@@ -31,7 +31,7 @@ interface VaccineListResponse {
   isLoading: boolean
 }
 
-interface ManufacturesListResponse {
+interface ManufacturersListResponse {
   data: {
     data: {
       items: Manufacturers[]
@@ -56,7 +56,7 @@ const VaccineDetail: React.FC = () => {
   const { data: data, isLoading } =
     useGetVaccineDetailQuery<VaccineListResponse>(id as string)
   const { data: manufacturers, isLoading: manufacturerLoading } =
-    useGetManufacturesListQuery<ManufacturesListResponse>({
+    useGetManufacturersListQuery<ManufacturersListResponse>({
       pageNumber: -1,
       pageSize: -1,
     })
