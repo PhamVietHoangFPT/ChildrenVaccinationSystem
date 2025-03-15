@@ -10,7 +10,6 @@ using ChildrenVaccinationSystem.Contract.Repositories.Dtos.ImageDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Dtos.ManufacturerDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Dtos.PackageDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Dtos.PackageItemDtos;
-using ChildrenVaccinationSystem.Contract.Repositories.Dtos.VaccinationDetailDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Dtos.VaccinationDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Dtos.VaccineDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Dtos.VaccineInventoryDtos;
@@ -30,6 +29,11 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Mapper
 
 			CreateMap<Account, AccountViewDto>();
 			CreateMap<AccountUpdateDto, Account>();
+			CreateMap<CustomerUpdateDto, Account>()
+				.ForAllMembers(opt => opt.Condition(
+				(src, dest, srcMember) => srcMember != null &&
+										  (srcMember is not string || !string.IsNullOrWhiteSpace(srcMember.ToString()))
+				));
 
 			CreateMap<Blog, BlogViewDto>();
 			CreateMap<BlogCreateDto, Blog>();
@@ -83,7 +87,6 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Mapper
 
 			CreateMap<Vaccination, VaccinationViewDto>();
 
-			CreateMap<VaccinationDetail, VaccinationDetailViewDto>();
 
 			CreateMap<Vaccine, VaccineViewDto>();
 			CreateMap<VaccineCreateDto, Vaccine>();

@@ -71,7 +71,18 @@ namespace ChildrenVaccinationSystem.API.Controllers
 				data: accounts
 			));
 		}
+		[HttpPost("customer/{id}")]
+		public async Task<IActionResult> UpdateCustomerAccount(string id, CustomerUpdateDto customerUpdateDto)
+		{
+			await _accountService.UpdateCustomerAccount(id, customerUpdateDto);
 
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Cập nhật thông tin ba/mẹ thành công",
+				data: null
+			));
+		}
 		[HttpGet("customer/minimal")]
 		public async Task<IActionResult> GetCustomerAccountsMinimal(string? phoneNumber, int pageNumber = -1, int pageSize = -1)
 		{
@@ -87,7 +98,7 @@ namespace ChildrenVaccinationSystem.API.Controllers
 
 
 		[HttpGet("{id}")]
-		public async Task<IActionResult> GetCustomerAccountsMinimal(string id)
+		public async Task<IActionResult> GetAccountById(string id)
 		{
 			AccountViewDto account = await _accountService.GetAccountById(id);
 
