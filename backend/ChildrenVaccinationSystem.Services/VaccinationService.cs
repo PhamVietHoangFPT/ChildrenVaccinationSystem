@@ -7,8 +7,12 @@ using ChildrenVaccinationSystem.Contract.Services;
 using ChildrenVaccinationSystem.Core.Base;
 using ChildrenVaccinationSystem.Core.Enum;
 using ChildrenVaccinationSystem.Core.Utils;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
+using Org.BouncyCastle.Utilities;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,12 +26,14 @@ namespace ChildrenVaccinationSystem.Services
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IMapper _mapper;
 		private readonly IAuthenticationService _authenticationService;
+		private readonly IVnPayService _vnPayService;
 
-		public VaccinationService(IUnitOfWork unitOfWork, IMapper mapper, IAuthenticationService authenticationService)
+		public VaccinationService(IUnitOfWork unitOfWork, IMapper mapper, IAuthenticationService authenticationService, IVnPayService vnPayService)
 		{
 			_unitOfWork = unitOfWork;
 			_mapper = mapper;
 			_authenticationService = authenticationService;
+			_vnPayService = vnPayService;
 		}
 
 
@@ -71,54 +77,87 @@ namespace ChildrenVaccinationSystem.Services
 		}
 
 
-		public async Task RegisterVaccination(VaccinationRegisterDto dto)
+		public async Task<string> RegisterVaccination(HttpContext context, VaccinationRegisterDto dto)
 		{
-			if ((dto.Vaccines == null || !dto.Vaccines.Any()) && (dto.Packages == null || !dto.Packages.Any()))
+			if ((dto.VaccineIds == null || !dto.VaccineIds.Any()) && (string.IsNullOrWhiteSpace(dto.PackageId)))
 			{
 				throw new ErrorException(400, "bad_request", "Vui lòng chọn vaccine");
 			}
 
-			List<string> vaccineIds = new List<string>();
-
-			if (dto.Vaccines != null && dto.Vaccines.Any())
+			if ((dto.VaccineIds != null && dto.VaccineIds.Any()) && !string.IsNullOrWhiteSpace(dto.PackageId))
 			{
-				vaccineIds = dto.Vaccines;
+				throw new ErrorException(400, "bad_request", "Bạn chỉ được lựa chọn vaccine/1 gói vaccine");
 			}
 
-			foreach (string vaccineId in vaccineIds)
+			double price = 0;
+
+			List<string> vaccineIds = new();
+			List<Vaccination> vaccinations = new();
+
+			if (dto.VaccineIds != null && dto.VaccineIds.Any())
 			{
-				Vaccine vaccine = (await _unitOfWork.GetRepository<Vaccine>().GetByIdAsync(vaccineId))!;
-
-				Vaccination vaccination = new()
+				Vaccine selecetedVaccine = (await _unitOfWork.GetRepository<Vaccine>().GetByIdAsync(dto.VaccineId))!;
+				if (dto.PaymentChoice == 1)
+					price = selecetedVaccine.Price;
+				vaccineIds = dto.VaccineIds;
+				foreach (string vaccineId in vaccineIds)
 				{
-					TotalPrice = (dto.PaymentChoice == 1 && dto.VaccineId == vaccine.Id) ? 0 : vaccine.Price,
-					VaccineId = vaccineId,
-					Note = "",
-					Status = (dto.PaymentChoice == 1 && dto.VaccineId == vaccine.Id) ? VaccinationStatusEnum.Paid : VaccinationStatusEnum.Pending,
-
-				};
-			}
-
-
-
-			if (dto.Packages != null && dto.Packages.Any())
-			{
-				List<Package> packages = new List<Package>();
-				foreach (string packageId in dto.Packages) 
-				{
-					Package package = (await _unitOfWork.GetRepository<Package>().GetByIdAsync(packageId))!;
-					foreach(PackageItem item in package.PackageItems!)
+					Vaccine vaccine = (await _unitOfWork.GetRepository<Vaccine>().GetByIdAsync(vaccineId))!;
+					for (int i = 0; i < vaccine.Sequence; i++)
 					{
-						if (vaccineIds.Contains(item.VaccineId))
+						if (dto.PaymentChoice == 2)
+							price += vaccine.Price;
+						Vaccination vaccination = new()
 						{
-							throw new ErrorException(400, "bad_request", "Các loại vaccine/gói vaccine của bạn đã bị trùng lặp, vui lòng lựa chọn lại");
-						}
-						vaccineIds.Add(item.VaccineId);
+							Price = vaccine.Price,
+							Schedule = dto.Schedule,
+							VaccineId = vaccineId,
+							Note = "",
+							Status = (dto.PaymentChoice == 2)
+										? VaccinationStatusEnum.Paid
+										: (i == 0 && dto.PaymentChoice == 1 && dto.VaccineId == vaccine.Id)
+											? VaccinationStatusEnum.Paid
+											: VaccinationStatusEnum.Pending,
+							ChildId = dto.ChildId
+						};
+						vaccinations.Add(vaccination);
 					}
 				}
 			}
 
+			if (!string.IsNullOrWhiteSpace(dto.PackageId))
+			{
+				Package package = (await _unitOfWork.GetRepository<Package>().GetByIdAsync(dto.PackageId))!;
+				price = package.Price;
+				foreach (var item in package.PackageItems!)
+				{
+					vaccineIds.Add(item.VaccineId);
+				}
+				foreach (string vaccineId in vaccineIds)
+				{
+					Vaccine vaccine = (await _unitOfWork.GetRepository<Vaccine>().GetByIdAsync(vaccineId))!;
 
+					for (int i = 0; i < vaccine.Sequence; i++)
+					{
+						Vaccination vaccination = new()
+						{
+							Price = (i == 0 && dto.VaccineId == vaccine.Id) ? price : 0, // Chỉ bản đầu tiên có giá, còn lại là 0
+							Schedule = dto.Schedule,
+							VaccineId = vaccineId,
+							Note = "",
+							Status = VaccinationStatusEnum.Paid,
+							ChildId = dto.ChildId
+						};
+						vaccinations.Add(vaccination);
+					}
+				}
+			}
+
+			//_unitOfWork.GetRepository<Vaccination>().InsertRange(vaccinations);
+			//await _unitOfWork.SaveAsync();
+			// Extracting a list of IDs
+
+			return _vnPayService.CreatePaymentUrl(context, vaccinations, price);
 		}
 	}
 }

@@ -14,7 +14,7 @@ namespace ChildrenVaccinationSystem.API.Controllers
 	{
 		private readonly IVaccinationService _vaccinationService;
 
-		public VaccinationsController(IVaccinationService vaccinationService) 
+		public VaccinationsController(IVaccinationService vaccinationService)
 		{
 			_vaccinationService = vaccinationService;
 		}
@@ -46,7 +46,23 @@ namespace ChildrenVaccinationSystem.API.Controllers
 			));
 		}
 
+		[HttpPost("register")]
+		public async Task<IActionResult> RegisterVaccination(VaccinationRegisterDto dto)
+		{
+			{
+				string price = await _vaccinationService.RegisterVaccination(HttpContext, dto);
 
 
+				return Ok(new BaseResponse<object>(
+					statusCode: StatusCodeEnum.OK,
+					code: StatusCodeEnum.OK.ToString(),
+					message: "Đăng ký mua vaccine thành công!",
+					data: price
+				));
+			}
+
+
+
+		}
 	}
 }
