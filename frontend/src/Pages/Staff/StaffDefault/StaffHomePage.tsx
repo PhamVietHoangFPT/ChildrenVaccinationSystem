@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { Customer } from '../../../types/customer'
 import { useGetCustomerListQuery } from '../../../features/customer/customerAPI'
-import { Button, Table } from 'antd'
+import { Button, Input, Table } from 'antd'
 import { EditOutlined, LoadingOutlined } from '@ant-design/icons'
 
 interface CustomerListResponse {
@@ -30,6 +30,7 @@ const StaffHomePage: React.FC = () => {
     isFetching: customerFetching,
     isLoading: customerLoading,
   } = useGetCustomerListQuery<CustomerListResponse>({
+    phoneNumber: searchTerm || undefined,
     pageNumber: currentPage,
     pageSize: pageSize,
   })
@@ -42,6 +43,7 @@ const StaffHomePage: React.FC = () => {
       page: currentPage.toString(),
     })
   }, [currentPage, setSearchParams])
+
   if (customerLoading) {
     return (
       <LoadingOutlined
@@ -96,9 +98,14 @@ const StaffHomePage: React.FC = () => {
       ),
     },
   ]
-
   return (
     <div style={{ padding: 20, background: '#fff', borderRadius: 8 }}>
+       <Input.Search
+        placeholder='Search by phone number'
+        allowClear
+        onSearch={(value) => setSearchTerm(value)}
+        style={{ marginBottom: 16, width: 300 }}
+      />
       <Table
         columns={columns}
         dataSource={dataCustomer.map((item, index) => ({
@@ -114,6 +121,7 @@ const StaffHomePage: React.FC = () => {
           pageSize: pageSize,
           total: totalCustomers,
           pageSizeOptions: ['1', '5', '10', '20'],
+
           onChange: (page) => {
             setCurrentPage(page)
           },

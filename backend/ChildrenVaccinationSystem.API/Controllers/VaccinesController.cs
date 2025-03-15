@@ -59,7 +59,7 @@ namespace ChildrenVaccinationSystem.API.Controllers
 		}
 
 		[HttpPost]
-        public async Task<IActionResult> AddVaccine(VaccineCreateDto vaccineDto)
+        public async Task<IActionResult> AddVaccine([FromForm]VaccineCreateDto vaccineDto)
         {
             await _vaccineService.CreateVaccine(vaccineDto);
 
@@ -73,7 +73,7 @@ namespace ChildrenVaccinationSystem.API.Controllers
 
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateVaccine(string id, VaccineUpdateDto vaccineDto)
+        public async Task<IActionResult> UpdateVaccine(string id, [FromForm]VaccineUpdateDto vaccineDto)
         {
 			await _vaccineService.UpdateVaccine(id, vaccineDto);
 

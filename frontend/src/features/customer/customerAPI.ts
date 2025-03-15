@@ -3,10 +3,11 @@ import { apiSlice } from '../../apis/apiSlice'
 export const customerAPI = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getCustomerList: builder.query({
-      query: ({ pageNumber, pageSize }) => ({
-        url: '/accounts/customer',
+      query: ({ pageNumber, pageSize, phoneNumber }) => ({
+        url: '/accounts/customer/minimal',
         method: 'GET',
         params: {
+          phoneNumber,
           pageNumber,
           pageSize,
         },

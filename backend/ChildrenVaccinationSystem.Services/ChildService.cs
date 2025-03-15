@@ -74,10 +74,15 @@ namespace ChildrenVaccinationSystem.Services
 			return _mapper.Map<ChildViewDto>(child);
 		}
 
-		public async Task<BasePaginatedList<ChildViewDto>> GetChildren(int pageNumber, int pageSize)
+		public async Task<BasePaginatedList<ChildViewDto>> GetChildren(string? parentId, string? name, string? parentPhoneNumber, int pageNumber, int pageSize)
 		{
-			IQueryable<Child> query = _unitOfWork.GetRepository<Child>().Entities.Where(c => c.DeletedBy == null);
+			IQueryable<Child> query = _unitOfWork.GetRepository<Child>().Entities
+				.Where(c => c.DeletedBy == null && (string.IsNullOrWhiteSpace(parentId) || c.AccountId == parentId) && (string.IsNullOrWhiteSpace(name) || c.Name.Contains(name)) && (string.IsNullOrWhiteSpace(parentPhoneNumber) || (!string.IsNullOrWhiteSpace(c.Account.PhoneNumber) && c.Account.PhoneNumber.StartsWith(parentPhoneNumber))));
 
+			if (!string.IsNullOrWhiteSpace(parentId) && !_unitOfWork.IsValid<Account>(parentId))
+			{
+				throw new ErrorException(404, "not_found", "Không tìm thấy parent id");
+			}
 
 			BasePaginatedList<Child> resultQuery = (pageNumber <= 0 || pageSize <= 0)
 				? await _unitOfWork.GetRepository<Child>().GetPaging(query, 1, query.Count())
@@ -88,22 +93,31 @@ namespace ChildrenVaccinationSystem.Services
 			return new BasePaginatedList<ChildViewDto>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
 		}
 
-		public async Task<BasePaginatedList<ChildViewDto>> GetChildrenByParentId(string parentId, int pageNumber, int pageSize)
+		public async Task<BasePaginatedList<object>> GetChildrenMinimal(string? parentId, string? name, string? parentPhoneNumber, int pageNumber, int pageSize)
 		{
-			if(!_unitOfWork.IsValid<Account>(parentId))
+			IQueryable<Child> query = _unitOfWork.GetRepository<Child>().Entities
+				.Where(c => c.DeletedBy == null && (string.IsNullOrWhiteSpace(parentId) || c.AccountId == parentId) && (string.IsNullOrWhiteSpace(name) || c.Name.Contains(name)) && (string.IsNullOrWhiteSpace(parentPhoneNumber) || (!string.IsNullOrWhiteSpace(c.Account.PhoneNumber) && c.Account.PhoneNumber.StartsWith(parentPhoneNumber))));
+
+			if (!string.IsNullOrWhiteSpace(parentId) && !_unitOfWork.IsValid<Account>(parentId))
 			{
 				throw new ErrorException(404, "not_found", "Không tìm thấy parent id");
 			}
-
-			IQueryable<Child> query = _unitOfWork.GetRepository<Child>().Entities.Where(c => c.AccountId == parentId && c.DeletedBy == null);
 
 			BasePaginatedList<Child> resultQuery = (pageNumber <= 0 || pageSize <= 0)
 				? await _unitOfWork.GetRepository<Child>().GetPaging(query, 1, query.Count())
 				: await _unitOfWork.GetRepository<Child>().GetPaging(query, pageNumber, pageSize);
 
-			List<ChildViewDto> responseItems = resultQuery.Items.Select(_mapper.Map<ChildViewDto>).ToList();
+			var responseItems = resultQuery.Items.Select(c => new
+			{
+				c.Id,
+				c.Name,
+				c.ChildCode,
+				c.DateOfBirth,
+				c.Gender,
+				c.MedicalNote
+			}).ToList();
 
-			return new BasePaginatedList<ChildViewDto>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
+			return new BasePaginatedList<object>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
 		}
 
 		public async Task UpdateChildProfile(string id, ChildUpdateDto childUpdateDto)

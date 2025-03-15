@@ -29,7 +29,7 @@ namespace ChildrenVaccinationSystem.API
 			services.AddDbContextInitializer();
 			services.AddCors();
 			services.AddHttpContextAccessor();
-     }
+		}
 
 		public static void ApplicationSetUp(this WebApplication app)
 		{
@@ -89,21 +89,21 @@ namespace ChildrenVaccinationSystem.API
 			});
 		}
 
-        public static void AddCors(this IServiceCollection services)
-        {
+		public static void AddCors(this IServiceCollection services)
+		{
 			services.AddCors(options =>
-            {
-                options.AddPolicy("AllowSpecificOrigins",
-                    policy =>
-                    {
-                        policy.AllowAnyOrigin()
-                              .AllowAnyMethod()
-                              .AllowAnyHeader();
-                    });
-            });
-        }
+			{
+				options.AddPolicy("AllowSpecificOrigins",
+					policy =>
+					{
+						policy.AllowAnyOrigin()
+							  .AllowAnyMethod()
+							  .AllowAnyHeader();
+					});
+			});
+		}
 
-        public static void AddAutoMapper(this IServiceCollection services)
+		public static void AddAutoMapper(this IServiceCollection services)
 		{
 			services.AddAutoMapper(typeof(MapperProfile));
 		}
@@ -115,17 +115,19 @@ namespace ChildrenVaccinationSystem.API
 
 		public static void AddServices(this IServiceCollection services)
 		{
+			services.AddHostedService<OurSystemBackgroundService>();
+
 			services.AddScoped<IAccountService, AccountService>();
 			services.AddScoped<IAuthenticationService, AuthenticationService>();
 			services.AddTransient<IEmailService, EmailService>();
 			services.AddScoped<ICountryService, CountryService>();
 			services.AddScoped<IChildService, ChildService>();
-            services.AddScoped<IVaccineService, VaccineService>();
-            services.AddScoped<IBlogService, BlogService>();
-            services.AddScoped<ICategoryService, CategoryService>();
-            services.AddScoped<IFacilityService, FacilityService>();
-            services.AddScoped<IManufacturerService, ManufacturerService>();
-        }
+			services.AddScoped<IVaccineService, VaccineService>();
+			services.AddScoped<IBlogService, BlogService>();
+			services.AddScoped<ICategoryService, CategoryService>();
+			services.AddScoped<IFacilityService, FacilityService>();
+			services.AddScoped<IManufacturerService, ManufacturerService>();
+		}
 
 		public static void AddRepositories(this IServiceCollection services)
 		{

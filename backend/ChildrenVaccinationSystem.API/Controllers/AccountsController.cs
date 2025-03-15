@@ -1,6 +1,4 @@
 ﻿using ChildrenVaccinationSystem.Contract.Repositories.Dtos.AccountDtos;
-using ChildrenVaccinationSystem.Contract.Repositories.Dtos.ChildDtos;
-using ChildrenVaccinationSystem.Contract.Repositories.Entities;
 using ChildrenVaccinationSystem.Contract.Services;
 using ChildrenVaccinationSystem.Core.Base;
 using ChildrenVaccinationSystem.Core.Enum;
@@ -84,6 +82,20 @@ namespace ChildrenVaccinationSystem.API.Controllers
 				code: StatusCodeEnum.OK.ToString(),
 				message: "Lấy thông tin ba/mẹ thành công",
 				data: accounts
+			));
+		}
+
+
+		[HttpGet("{id}")]
+		public async Task<IActionResult> GetCustomerAccountsMinimal(string id)
+		{
+			AccountViewDto account = await _accountService.GetAccountById(id);
+
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Lấy thông tin tài khoản thành công",
+				data: account
 			));
 		}
 

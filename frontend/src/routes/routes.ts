@@ -59,6 +59,12 @@ const routes: LayoutRoute[] = [
         exact: true,
         role: ['Staff'],
       },
+      {
+        path: '/staff/child-profile',
+        component: ChildrenPage,
+        exact: true,
+        role: ['Staff'],
+      },
     ],
   },
   {
