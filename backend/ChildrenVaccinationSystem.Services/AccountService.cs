@@ -2,6 +2,7 @@
 using ChildrenVaccinationSystem.Contract.Repositories.Dtos.AccountDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Dtos.CategoryDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Dtos.ChildDtos;
+using ChildrenVaccinationSystem.Contract.Repositories.Dtos.VaccineDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Entities;
 using ChildrenVaccinationSystem.Contract.Repositories.IUOW;
 using ChildrenVaccinationSystem.Contract.Services;
@@ -130,6 +131,20 @@ namespace ChildrenVaccinationSystem.Services
 			return _mapper.Map<AccountViewDto>(account);
 		}
 
+		public async Task UpdateCustomerAccount(string id, CustomerUpdateDto customerUpdateDto)
+		{
+			Account? account = await _unitOfWork.GetRepository<Account>().Entities.Where(a => a.Id == id && a.DeletedBy == null).FirstOrDefaultAsync();
+
+			if (account == null)
+				throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy account id");
+
+
+			_mapper.Map(customerUpdateDto, account);
+
+			await _unitOfWork.GetRepository<Account>().UpdateAsync(account);
+			await _unitOfWork.SaveAsync();
+
+		}
 
 		public async Task BgRemoveUnverifiedAccounts()
 		{
@@ -172,5 +187,6 @@ namespace ChildrenVaccinationSystem.Services
 			}
 			await _unitOfWork.SaveAsync();
 		}
+
 	}
 }
