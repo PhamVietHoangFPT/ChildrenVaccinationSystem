@@ -2,7 +2,7 @@
 {
 	public class VaccinationDetailViewDto
 	{
-		public SimpleViewDto Product{ get; set; } = default!;
-		public string Type { get; set; } = default!;
+		public SimpleViewDto? Vaccine { get; set; }
+		public SimpleViewDto? Package { get; set; }
 	}
 }
