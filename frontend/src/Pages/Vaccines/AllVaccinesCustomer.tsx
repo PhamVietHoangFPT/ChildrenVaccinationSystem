@@ -5,10 +5,10 @@ import { Col, Pagination, Row, Input, Select, Spin } from 'antd'
 import { LoadingOutlined } from '@ant-design/icons'
 import { Card, Typography, Space, Button } from 'antd'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { useGetManufacturersListQuery } from '../../features/manufactures/manufacturesAPI'
 import { useGetCategoriesListQuery } from '../../features/categories/categoriesAPI'
+import { useGetCountryManufacturerListQuery } from '../../features/countries/countriesAPI'
 import { Category } from '../../types/category'
-import { Manufacturers } from '../../types/manufacturer'
+import { Country } from '../../types/country'
 const { Title, Text } = Typography
 const { Option } = Select
 
@@ -23,10 +23,10 @@ interface VaccineListResponse {
   isFetching: boolean
 }
 
-interface ManufacturersListResponse {
+interface CountryManufacturersListResponse {
   data: {
     data: {
-      items: Manufacturers[]
+      items: Country[]
     }
   }
   isLoading: boolean
@@ -58,11 +58,13 @@ export default function AllVaccinesCustomer() {
   )
   const [pageSize, setPageSize] = useState(4)
 
-  const { data: manufacturers, isLoading: manufacturerLoading } =
-    useGetManufacturersListQuery<ManufacturersListResponse>({
-      pageNumber: -1,
-      pageSize: -1,
-    })
+  const {
+    data: manufacturerCountries,
+    isLoading: manufacturerCountriesLoading,
+  } = useGetCountryManufacturerListQuery<CountryManufacturersListResponse>({
+    pageNumber: -1,
+    pageSize: -1,
+  })
   const { data: categories, isLoading: categoriesLoading } =
     useGetCategoriesListQuery<CategoriesListResponse>({
       pageNumber: -1,
@@ -120,6 +122,7 @@ export default function AllVaccinesCustomer() {
               placeholder='Chọn danh mục'
               onChange={setCategoryName}
               defaultValue={''}
+              style={{ width: 200 }}
             >
               <Option value={''}>Tất cả danh mục</Option>
               {categories.data.items.map((cat) => (
@@ -130,17 +133,18 @@ export default function AllVaccinesCustomer() {
             </Select>
           )
         )}
-        {manufacturerLoading ? (
+        {manufacturerCountriesLoading ? (
           <Spin />
         ) : (
-          manufacturers && (
+          manufacturerCountries && (
             <Select
               placeholder='Select a manufacturer'
               onChange={setManufacturerCountry}
               defaultValue={''}
+              style={{ width: 200 }}
             >
               <Option value={''}>Tất cả các nước sản xuất</Option>
-              {manufacturers.data.items.map((man: any) => (
+              {manufacturerCountries.data.items.map((man: any) => (
                 <Option key={man.id} value={man.name}>
                   {man.name}
                 </Option>
