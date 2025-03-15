@@ -35,11 +35,16 @@ export const VaccineSlider: FC<VaccineSliderProps> = ({ vaccines }) => {
             }}
             cover={
               <img
-                src={vaccine.imageUrl || '/placeholder.svg'}
+                src={
+                  vaccine.images && vaccine.images.length > 0
+                    ? import.meta.env.VITE_IMAGE_ENDPOINT +
+                      vaccine.images[0].imageSource
+                    : '/placeholder.svg'
+                }
                 alt={vaccine.name}
                 style={{
                   width: '100%',
-                  height: '200px', // Đảm bảo ảnh có cùng kích thước
+                  height: '200px',
                   objectFit: 'cover',
                   borderTopLeftRadius: '12px',
                   borderTopRightRadius: '12px',
@@ -57,8 +62,8 @@ export const VaccineSlider: FC<VaccineSliderProps> = ({ vaccines }) => {
               <Space direction='vertical' size='middle'>
                 <Text strong>Price: ${vaccine.price}</Text>
                 <Text>
-                  Recommended Age: {vaccine.startRecommendAge} -{' '}
-                  {vaccine.endRecommendAge} years
+                  Recommended Age: {vaccine.startRecommendedAge} -{' '}
+                  {vaccine.endRecommendedAge} years
                 </Text>
                 <Text>Sequence: {vaccine.sequence}</Text>
                 <Text>Dosage: {vaccine.dosage}</Text>

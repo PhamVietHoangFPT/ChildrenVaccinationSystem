@@ -60,5 +60,80 @@ namespace ChildrenVaccinationSystem.API.Controllers
 			}
 			return Redirect(_configuration["VerifySuccessUrl"]!);
 		}
+
+		[HttpPost("forget-password")]
+		public async Task<IActionResult> Register(string email)
+		{
+			await _authenticationService.ForgetPassword(email);
+
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Khách hàng vui lòng kiểm tra email và làm theo hướng dẫn để khôi phục tài khoản",
+				data: null
+			));
+		}
+
+		[HttpGet("verify-reset-password")]
+		public async Task<IActionResult> VerifyResetPassowrd(string token)
+		{
+			await _authenticationService.VerifyResetPassowrd(token);
+
+			return Redirect(_configuration["VerifySuccessUrl"]!);
+		}
+
+		[HttpPost("reset-password")]
+		public async Task<IActionResult> ResetPassword(string newPassword)
+		{
+			await _authenticationService.ResetPassword(newPassword);
+
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Thay đổi mật khẩu thành công",
+				data: null
+			));
+		}
+
+
+		[HttpPost("update-password")]
+		public async Task<IActionResult> UpdatePassword(string password, string newPassword)
+		{
+			await _authenticationService.UpdatePassword(password, newPassword);
+
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Thay đổi mật khẩu thành công",
+				data: null
+			));
+		}
+
+		[HttpPost("update-email")]
+		public async Task<IActionResult> UpdateEmail(string newEmail)
+		{
+			await _authenticationService.UpdateEmail(newEmail);
+
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Khách hàng vui lòng kiểm tra email và làm theo hướng dẫn để xác thực email mới",
+				data: null
+			));
+		}
+
+		[HttpPost("confirm-update-email")]
+		public async Task<IActionResult> ConfirmUpdateEmail(string otp)
+		{
+			await _authenticationService.ConfirmUpdateEmail(otp);
+
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Cập nhật email mới thành công",
+				data: null
+			));
+		}
+
 	}
 }
