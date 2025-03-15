@@ -5,7 +5,7 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Entities
 {
 	public class Vaccination : BaseEntity
 	{
-		public double TotalPrice { get; set; }
+		public double Price { get; set; }
 		public DateOnly Schedule {  get; set; }
 		public string? Note { get; set; }
 		public VaccinationStatusEnum Status { get; set; }

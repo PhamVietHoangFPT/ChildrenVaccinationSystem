@@ -128,6 +128,9 @@ namespace ChildrenVaccinationSystem.API
 			services.AddScoped<IFacilityService, FacilityService>();
 			services.AddScoped<IManufacturerService, ManufacturerService>();
 			services.AddScoped<IVaccinationService, VaccinationService>();
+			services.AddScoped<IVnPayService, VnPayService>();
+
+			services.AddMemoryCache();
 		}
 
 		public static void AddRepositories(this IServiceCollection services)
