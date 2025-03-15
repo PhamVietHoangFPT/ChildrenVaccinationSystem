@@ -36,6 +36,18 @@ const routes: LayoutRoute[] = [
         path: '/vaccines',
         component: AllVaccinesCustomer,
       },
+      {
+        path: '/vaccines/:vaccineID',
+        component: VaccineDetailsCustomer,
+      },
+      {
+        path: '/vaccineRegistration',
+        component: VaccineRegistrationCustomer,
+      },
+      {
+        path: '/forceUpdate',
+        component: ForceUpdateAccount,
+      },
     ],
   },
   {

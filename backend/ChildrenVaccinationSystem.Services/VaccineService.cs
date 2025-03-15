@@ -17,9 +17,9 @@ namespace ChildrenVaccinationSystem.Services
     {
         private readonly IUnitOfWork _unitOfWork;
 		private readonly IMapper _mapper;
-        private readonly IAccountService _authenticationService;
+        private readonly IAuthenticationService _authenticationService;
 
-		public VaccineService(IUnitOfWork unitOfWork, IMapper mapper, IAccountService authenticationService)
+		public VaccineService(IUnitOfWork unitOfWork, IMapper mapper, IAuthenticationService authenticationService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -76,10 +76,11 @@ namespace ChildrenVaccinationSystem.Services
             await _unitOfWork.SaveAsync();
 		}
 
-		public async Task<BasePaginatedList<VaccineViewDto>> GetVaccines(int pageNumber, int pageSize)
+		public async Task<BasePaginatedList<VaccineViewDto>> GetVaccines(string? name, string? categoryName, string? manufacturerCountry, int pageNumber, int pageSize)
         {
 
-            IQueryable<Vaccine> query = _unitOfWork.GetRepository<Vaccine>().Entities.Where(v => v.DeletedBy ==null);
+            IQueryable<Vaccine> query = _unitOfWork.GetRepository<Vaccine>().Entities
+				.Where(v => (string.IsNullOrWhiteSpace(name) || (v.Name.Contains(name))) && (string.IsNullOrWhiteSpace(categoryName) || (v.Category.Name.Contains(categoryName))) && (string.IsNullOrWhiteSpace(manufacturerCountry) || (v.Manufacturer.Country.Name.Contains(manufacturerCountry))) && v.DeletedBy == null);
 
 
 
@@ -92,6 +93,31 @@ namespace ChildrenVaccinationSystem.Services
 
             return new BasePaginatedList<VaccineViewDto>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
         }
+
+        public async Task<BasePaginatedList<object>> GetVaccinesMinimal(string? name, string? categoryName, string? manufacturerCountry, int pageNumber, int pageSize)
+        {
+			IQueryable<Vaccine> query = _unitOfWork.GetRepository<Vaccine>().Entities
+				.Where(v => (string.IsNullOrWhiteSpace(name) || (v.Name.Contains(name))) && (string.IsNullOrWhiteSpace(categoryName) || (v.Category.Name.Contains(categoryName))) && (string.IsNullOrWhiteSpace(manufacturerCountry) || (v.Manufacturer.Country.Name.Contains(manufacturerCountry))) && v.DeletedBy == null);
+
+			BasePaginatedList<Vaccine> resultQuery = (pageNumber <= 0 || pageSize <= 0)
+				? await _unitOfWork.GetRepository<Vaccine>().GetPaging(query, 1, query.Count())
+				: await _unitOfWork.GetRepository<Vaccine>().GetPaging(query, pageNumber, pageSize);
+
+			var responseItems = resultQuery.Items.Select(v => new
+			{
+				v.Id,
+				v.Name,
+				Category = new { v.Category.Name},
+				Manufacturer = new { v.Manufacturer.Name, Country = new { v.Manufacturer.Country.Name } },
+				v.Price,
+				v.StartRecommendedAge,
+				v.EndRecommendedAge,
+				v.Dosage,
+				v.DosageInterval
+			}).ToList();
+
+			return new BasePaginatedList<object>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
+		}
 
 		public async Task<VaccineViewDto> GetVaccineById(string id)
 		{

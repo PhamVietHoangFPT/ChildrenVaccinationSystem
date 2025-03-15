@@ -8,7 +8,6 @@ import {
   CalendarOutlined,
   SearchOutlined,
   TeamOutlined,
-  UserAddOutlined,
   SmileOutlined,
 } from '@ant-design/icons'
 import { MenuProps, Layout } from 'antd'
@@ -27,6 +26,7 @@ interface CustomMenuItem {
   icon?: React.ReactNode
   url?: string
   children?: CustomMenuItem[]
+  danger?: boolean
 }
 
 const SideBarStaff: React.FC = () => {
@@ -43,9 +43,18 @@ const SideBarStaff: React.FC = () => {
     setCurrent(path)
   }, [location.pathname])
 
+  const userData = Cookies.get('userData')
+    ? JSON.parse(Cookies.get('userData') as string)
+    : null
   // Define menu items with useMemo for performance
   const items = useMemo((): CustomMenuItem[] => {
     return [
+      {
+        key: 'sub0',
+        label: `Welcome, ${userData.Name}`,
+        icon: <SmileOutlined />,
+        url: '/staff',
+      },
       {
         key: 'sub1',
         label: 'Manage Record',
@@ -53,15 +62,9 @@ const SideBarStaff: React.FC = () => {
         children: [
           {
             key: '1',
-            label: 'Confirm Registration',
+            label: 'Vaccination Registration',
             icon: <CheckCircleOutlined />,
             url: '/staff',
-          },
-          {
-            key: '2',
-            label: 'Cancel Registration',
-            icon: <CloseCircleOutlined />,
-            url: '/option6',
           },
           {
             key: '3',
@@ -86,20 +89,7 @@ const SideBarStaff: React.FC = () => {
             key: 'sub3',
             label: 'Children`s Profile',
             icon: <SmileOutlined />,
-            children: [
-              {
-                key: '5',
-                label: 'Update Children',
-                icon: <FormOutlined />,
-                url: '',
-              },
-              {
-                key: '6',
-                label: 'Add Children',
-                icon: <UserAddOutlined />,
-                url: '',
-              },
-            ],
+            url: '',
           },
         ],
       },
@@ -127,6 +117,7 @@ const SideBarStaff: React.FC = () => {
         label: 'Log Out',
         icon: <LogoutOutlined />,
         url: '/logout',
+        danger: true,
       },
     ]
   }, [])

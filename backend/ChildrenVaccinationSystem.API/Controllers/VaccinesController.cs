@@ -19,9 +19,9 @@ namespace ChildrenVaccinationSystem.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetVaccines(int pageNumber = -1, int pageSize = -1)
+        public async Task<IActionResult> GetVaccines(string? name, string? categoryName, string? manufacturerCountry, int pageNumber = -1, int pageSize = -1)
         {
-            BasePaginatedList<VaccineViewDto> vaccines = await _vaccineService.GetVaccines(pageNumber, pageSize);
+            BasePaginatedList<VaccineViewDto> vaccines = await _vaccineService.GetVaccines(name,categoryName, manufacturerCountry, pageNumber, pageSize);
 
             return Ok(new BaseResponse<object>(
                 statusCode: StatusCodeEnum.OK,
@@ -31,7 +31,21 @@ namespace ChildrenVaccinationSystem.API.Controllers
             ));
         }
 
-        [HttpGet("{id}")]
+		[HttpGet("minimal")]
+		public async Task<IActionResult> GetVaccinesMinimal(string? name, string? categoryName, string? manufacturerCountry, int pageNumber = -1, int pageSize = -1)
+		{
+			BasePaginatedList<object> vaccines = await _vaccineService.GetVaccinesMinimal(name, categoryName, manufacturerCountry, pageNumber, pageSize);
+
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Lấy vaccines thành công",
+				data: vaccines
+			));
+		}
+
+
+		[HttpGet("{id}")]
 		public async Task<IActionResult> GetVaccineById(string id)
 		{
 			VaccineViewDto vaccine = await _vaccineService.GetVaccineById(id);

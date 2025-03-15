@@ -1,17 +1,23 @@
 ﻿using ChildrenVaccinationSystem.Contract.Repositories.Dtos.AccountDtos;
-using ChildrenVaccinationSystem.Contract.Repositories.Entities;
+using ChildrenVaccinationSystem.Contract.Repositories.Dtos.CategoryDtos;
+using ChildrenVaccinationSystem.Contract.Repositories.Dtos.ChildDtos;
 using ChildrenVaccinationSystem.Core.Base;
+using ChildrenVaccinationSystem.Core.Enum;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace ChildrenVaccinationSystem.Contract.Services
 {
 	public interface IAccountService
 	{
-		Task<string> Login(LoginDto loginDto);
-		Task Register(RegisterDto registerDto);
-		Task<bool> VerifyAccount(string token);
-		Task ForgotPassword(string email, string userName);
-		Task ResetPassword(string token, string newPassword);
-		Task VerifyResetPasswordToken(string token);
-		void UpdateAudits(BaseEntity entity, bool isCreating, bool isDeleting = false);
+		Task<BasePaginatedList<AccountViewDto>> GetCustomerAccounts(string? phoneNumber, int pageNumber, int pageSize);
+		Task<BasePaginatedList<object>> GetCustomerAccountsMinimal(string? phoneNumber, int pageNumber, int pageSize);
+		Task ForceUpdateAccountProfile(AccountForceUpdateDto accountForceUpdateDto);
+		Task IsValidForProfileUpdate();
+		Task IsValidForEmailReset();
+
 	}
 }

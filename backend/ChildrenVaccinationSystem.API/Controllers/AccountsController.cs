@@ -1,4 +1,6 @@
 ﻿using ChildrenVaccinationSystem.Contract.Repositories.Dtos.AccountDtos;
+using ChildrenVaccinationSystem.Contract.Repositories.Dtos.ChildDtos;
+using ChildrenVaccinationSystem.Contract.Repositories.Entities;
 using ChildrenVaccinationSystem.Contract.Services;
 using ChildrenVaccinationSystem.Core.Base;
 using ChildrenVaccinationSystem.Core.Enum;
@@ -10,55 +12,81 @@ namespace ChildrenVaccinationSystem.API.Controllers
 	[ApiController]
 	public class AccountsController : ControllerBase
 	{
-		private readonly IAccountService _authenticationService;
-		private readonly IConfiguration _configuration;
-		public AccountsController(IAccountService authenticationService, IConfiguration configuration)
+		private readonly IAccountService _accountService;
+
+		public AccountsController(IAccountService accountService)
 		{
-			_authenticationService = authenticationService;
-			_configuration = configuration;
+			_accountService = accountService;
 		}
 
-		[HttpPost("login")]
-		public async Task<IActionResult> Login(LoginDto loginDto)
+		[HttpPost("force-update")]
+		public async Task<IActionResult> ForceUpdateAccountProfile(AccountForceUpdateDto accountForceUpdateDto)
 		{
-			string token = await _authenticationService.Login(loginDto);
+			await _accountService.ForceUpdateAccountProfile(accountForceUpdateDto);
 
 			return Ok(new BaseResponse<object>(
 				statusCode: StatusCodeEnum.OK,
 				code: StatusCodeEnum.OK.ToString(),
-				message: "Đăng nhập thành công",
-				data: token
-			));
-		}
-
-		[HttpPost("register")]
-		public async Task<IActionResult> Register(RegisterDto registerDto)
-		{
-			await _authenticationService.Register(registerDto);
-
-			return Ok(new BaseResponse<object>(
-				statusCode: StatusCodeEnum.OK,
-				code: StatusCodeEnum.OK.ToString(),
-				message: "Đăng ký thành công, bạn vui lòng kiểm tra mail để xác nhận tài khoản",
+				message: "Cập nhật hồ sơ người dùng thành công",
 				data: null
 			));
 		}
 
-		[HttpGet("verify-account")]
-		public async Task<IActionResult> VerifyAccount(string token)
-		{
-			bool result = await _authenticationService.VerifyAccount(token);
 
-			if (!result)
-			{
-				return BadRequest(new BaseResponse<string>(
-					statusCode: StatusCodeEnum.BadRequest,
-					code: StatusCodeEnum.BadRequest.ToString(),
-					message: "Fail to verify your account",
-					data: null
-				));
-			}
-			return Redirect(_configuration["VerifySuccessUrl"]!);
+		[HttpGet("profile-update-valid")]
+		public async Task<IActionResult> IsValidForProfileUpdate()
+		{
+			await _accountService.IsValidForProfileUpdate();
+
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Hợp lệ",
+				data: null
+			));
 		}
+
+
+		[HttpGet("email-reset-valid")]
+		public async Task<IActionResult> IsValidForEmailReset()
+		{
+			await _accountService.IsValidForEmailReset();
+
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Hợp lệ",
+				data: null
+			));
+		}
+
+
+		[HttpGet("customer")]
+		public async Task<IActionResult> GetCustomerAccounts(string? phoneNumber, int pageNumber = -1, int pageSize = -1)
+		{
+			BasePaginatedList<AccountViewDto> accounts = await _accountService.GetCustomerAccounts(phoneNumber, pageNumber, pageSize);
+
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Lấy thông tin ba/mẹ thành công",
+				data: accounts
+			));
+		}
+
+		[HttpGet("customer/minimal")]
+		public async Task<IActionResult> GetCustomerAccountsMinimal(string? phoneNumber, int pageNumber = -1, int pageSize = -1)
+		{
+			BasePaginatedList<object> accounts = await _accountService.GetCustomerAccountsMinimal(phoneNumber, pageNumber, pageSize);
+
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Lấy thông tin ba/mẹ thành công",
+				data: accounts
+			));
+		}
+
+
 	}
 }

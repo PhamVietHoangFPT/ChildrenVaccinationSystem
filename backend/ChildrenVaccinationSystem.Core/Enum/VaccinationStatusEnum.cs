@@ -2,8 +2,15 @@
 {
 	public enum VaccinationStatusEnum
 	{
-		PENDING,
-		COMPLETED,
-		CANCELLED
+		Pending,
+		Consulting,
+		Queued,
+		Injecting,
+		Monitoring,
+		Due,
+		Emergency,
+		Completed,
+		Canceled,
+		Refunded
 	}
 }

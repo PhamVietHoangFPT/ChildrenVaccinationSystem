@@ -48,6 +48,9 @@ const ManagerVaccineList: React.FC = () => {
     vaccine.name.toLowerCase().includes(searchText.toLowerCase())
   );
 
+
+  
+
   const columns: ColumnsType<Vaccine> = [
     {
       title: "Name",
@@ -94,9 +97,10 @@ const ManagerVaccineList: React.FC = () => {
         >
           Details
         </Button>
+
       ),
     },
-  ];
+  ]
 
   return (
     <div style={{ padding: 24 }}>
@@ -123,7 +127,7 @@ const ManagerVaccineList: React.FC = () => {
         loading={loading}
       />
     </div>
-  );
-};
+  )
+}
 
-export default ManagerVaccineList;
+export default ManagerVaccineList

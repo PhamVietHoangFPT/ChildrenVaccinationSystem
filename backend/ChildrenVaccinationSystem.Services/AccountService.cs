@@ -1,267 +1,123 @@
-﻿using ChildrenVaccinationSystem.Contract.Repositories.Dtos.AccountDtos;
+﻿using AutoMapper;
+using ChildrenVaccinationSystem.Contract.Repositories.Dtos.AccountDtos;
+using ChildrenVaccinationSystem.Contract.Repositories.Dtos.CategoryDtos;
+using ChildrenVaccinationSystem.Contract.Repositories.Dtos.ChildDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Entities;
 using ChildrenVaccinationSystem.Contract.Repositories.IUOW;
 using ChildrenVaccinationSystem.Contract.Services;
 using ChildrenVaccinationSystem.Core.Base;
 using ChildrenVaccinationSystem.Core.Enum;
-using ChildrenVaccinationSystem.Core.Utils;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Identity.Client;
-using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using static ChildrenVaccinationSystem.Core.Base.BaseException;
 
 namespace ChildrenVaccinationSystem.Services
 {
 	public class AccountService : IAccountService
 	{
 		private readonly IUnitOfWork _unitOfWork;
-		private readonly IConfiguration _configuration;
-		private readonly IHttpContextAccessor _httpContextAccessor;
-		private readonly IEmailService _emailService;
+		private readonly IMapper _mapper;
+		private readonly IAuthenticationService _authenticationService;
+		private IChildService _childService;
 
-		public AccountService(IUnitOfWork unitOfWork, IConfiguration configuration, IHttpContextAccessor httpContextAccessor, IEmailService emailService)
+		public AccountService(IUnitOfWork unitOfWork, IMapper mapper, IAuthenticationService authenticationService, IChildService childService)
 		{
 			_unitOfWork = unitOfWork;
-			_configuration = configuration;
-			_httpContextAccessor = httpContextAccessor;
-			_emailService = emailService;
+			_mapper = mapper;
+			_authenticationService = authenticationService;
+			_childService = childService;
 		}
 
-		
-
-		public Task ForgotPassword(string email, string userName)
+		public async Task ForceUpdateAccountProfile(AccountForceUpdateDto accountForceUpdateDto)
 		{
-			throw new NotImplementedException();
-		}
+			string accountId = _authenticationService.GetCurrentAccountId();
 
+			Account account = _unitOfWork.GetRepository<Account>().GetById(accountId)!;
 
-		public async Task<string> Login(LoginDto loginDto)
-		{
-			Account? account = await _unitOfWork.GetRepository<Account>().Entities
-				.Where(a => (a.Email == loginDto.Email || a.PhoneNumber == loginDto.PhoneNumber) && a.DeletedBy == null)
-				.FirstOrDefaultAsync();
+			_mapper.Map(accountForceUpdateDto.Account, account);
+			_authenticationService.UpdateAudits(account, false);
 
-			if (account == null || !BCrypt.Net.BCrypt.Verify(loginDto.Password, account.Password))
-			{
-				throw new BaseException.ErrorException(401, "unauthorized", "Sai mật khẩu hoặc tài khoản");
-			}
+			Child child = new();
+			_mapper.Map(accountForceUpdateDto.Child, child);
 
-			if (account.VerificationToken != null)
-			{
-				throw new BaseException.ErrorException(403, "forbidden", "Tài khoản chưa được xác thực, khách hàng vui lòng kiểm tra hộp mail");
-			}
+			child.ChildCode = _childService.GenerateChildCode();
+			child.AccountId = accountId;
 
-			return GenerateJwtToken(account);
-		}
-
-		public async Task Register(RegisterDto registerDto)
-		{
-			// Check if the user already exists
-			var existingAccount = await _unitOfWork.GetRepository<Account>().Entities
-				.Where(a => a.Email == registerDto.Email && a.DeletedBy == null)
-				.FirstOrDefaultAsync();
-			if (existingAccount != null)
-			{
-				throw new BaseException.ErrorException(409, "conflict", "Email này đã được sử dụng, vui lòng thử lại");
-			}
-
-			// Hash the password
-			var hashedPassword = BCrypt.Net.BCrypt.HashPassword(registerDto.Password);
-
-			// Create new user entity
-			Account newCustomer = new()
-			{
-				Name = registerDto.Name,
-				Password = hashedPassword,
-				Email = registerDto.Email,
-				Role = RoleEnum.Customer,
-				VerificationToken = Guid.NewGuid().ToString()
-			};
-
-			newCustomer.CreatedBy = newCustomer.Id;
-			newCustomer.LastUpdatedBy = newCustomer.Id;
-
-			// Save account to the database
-			await _unitOfWork.GetRepository<Account>().InsertAsync(newCustomer);
+			await _unitOfWork.GetRepository<Account>().UpdateAsync(account);
+			await _unitOfWork.GetRepository<Child>().InsertAsync(child);
 			await _unitOfWork.SaveAsync();
-
-			// Send verification email
-			await _emailService.SendVerificationEmail(registerDto.Email, newCustomer.VerificationToken);
 		}
 
-		public Task ResetPassword(string token, string newPassword)
+		public async Task IsValidForProfileUpdate()
 		{
-			throw new NotImplementedException();
-		}
+			string accountId = _authenticationService.GetCurrentAccountId();
 
-		public async Task<bool> VerifyAccount(string token)
-		{
-
-			Account? account = await _unitOfWork.GetRepository<Account>().Entities.Where(a => a.VerificationToken == token).FirstOrDefaultAsync();
-
+			Account? account = await _unitOfWork.GetRepository<Account>().GetByIdAsync(accountId);
 			if (account == null) 
 			{
-				return false;
+				throw new ErrorException(401, "unauthorized", "Không tìm thấy account id");
+
 			}
 
-			account.VerificationToken = null;
-
-			await _unitOfWork.SaveAsync();
-
-			return true;
+			if (account!.CreatedTime != account.LastUpdatedTime)
+				throw new ErrorException(400, "bad_request", "Không thể cập nhật tài khoản!");
 		}
 
-		public Task VerifyResetPasswordToken(string token)
+		public async Task IsValidForEmailReset()
 		{
-			throw new NotImplementedException();
-		}
+			string accountId = _authenticationService.GetCurrentAccountId();
 
-
-		public void UpdateAudits(BaseEntity entity, bool isCreating, bool isDeleting = false)
-		{
-			// Retrieve the JWT token from the Authorization header
-			var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-			var currentUserId = GetUserIdFromTokenHeader(token);
-
-			// If creating a new entity, set the CreatedBy field
-			if (isCreating)
-			{
-				entity.CreatedBy = currentUserId.ToUpper(); // Set the creator's ID
-			}
-
-			if (isDeleting)
-			{
-				entity.DeletedBy = currentUserId.ToUpper(); // Set the creator's ID
-				entity.DeletedTime = CoreHelper.SystemTimeNow;
-			}
-
-			// Always set LastUpdatedBy and LastUpdatedTime fields
-			entity.LastUpdatedBy = currentUserId.ToUpper(); // Set the current user's ID
-
-			// If is not created then update LastUpdatedTime
-			if (isCreating is false)
-			{
-				entity.LastUpdatedTime = CoreHelper.SystemTimeNow;
-			}
-		}
-
-		public string GetUserIdFromTokenHeader(string? token)
-		{
-			// Check if the token is null or empty
-			if (string.IsNullOrEmpty(token))
-			{
-				return string.Empty; // Handle null or empty token gracefully
-			}
-
-			// Decode the JWT token and extract claims
-			var principal = DecodeJwtToken(token);
-
-			if (principal == null)
-			{
-				return string.Empty; // Handle null principal gracefully
-			}
-
-			// Extract claims from the principal
-			var userIdClaim = principal.Claims.FirstOrDefault(c => c.Type == "Id");
-
-			if (userIdClaim != null && Guid.TryParse(userIdClaim.Value, out Guid parsedUserID))
-			{
-				return parsedUserID.ToString();
-			}
-
-			return string.Empty;
-		}
-
-
-		public ClaimsPrincipal DecodeJwtToken(string token)
-		{
-			// Retrieve the JWT secret from configuration
-			var secret = _configuration["JwtSettings:Secret"] ?? throw new ArgumentNullException("JwtSettings:Secret");
-			var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
-
-			// Set up token validation parameters
-			var tokenHandler = new JwtSecurityTokenHandler();
-			var validationParameters = new TokenValidationParameters
-			{
-				ValidateIssuerSigningKey = true,
-				IssuerSigningKey = key,
-				ValidateIssuer = false,
-				ValidateAudience = false,
-				ValidateLifetime = true
-			};
-
-			try
-			{
-				// Validate the token and return the claims principal
-				var principal = tokenHandler.ValidateToken(token, validationParameters, out var validatedToken);
-				return principal;
-			}
-			catch (SecurityTokenExpiredException)
-			{
-				throw new SecurityTokenException("Token has expired");
-			}
-			catch (SecurityTokenInvalidSignatureException)
-			{
-				throw new SecurityTokenException("Invalid token signature");
-			}
-			catch (Exception)
-			{
-				throw new SecurityTokenException("Invalid token");
-			}
-		}
-
-		private string GenerateJwtToken(Account account)
-		{
+			Account? account = await _unitOfWork.GetRepository<Account>().GetByIdAsync(accountId);
 			if (account == null)
 			{
-				throw new ArgumentNullException(nameof(account), "User object cannot be null.");
+				throw new ErrorException(401, "unauthorized", "Không tìm thấy account id");
+
 			}
 
-			// Retrieve the JWT secret from configuration
-			var secret = _configuration["JwtSettings:Secret"];
-			if (string.IsNullOrEmpty(secret))
+			DateTime sixMonthsAgo = DateTime.UtcNow.AddMonths(-6);
+
+			// Check if LastUpdatedTime is different from CreatedTime and within the last 6 months
+			if (account.CreatedTime != account.EmailLastUpdatedTime && account.EmailLastUpdatedTime > sixMonthsAgo)
 			{
-				throw new ArgumentNullException("JwtSettings:Secret", "JWT Secret not found in configuration.");
+				throw new ErrorException(400, "bad_request", "Không thể cập nhật tài khoản! Chưa đủ 6 tháng từ lần cập nhật trước.");
 			}
 
-			var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
-			var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-			// Create claims based on user information, with null checks
-			var claims = new List<Claim>
-			{
-				new Claim(ClaimTypes.NameIdentifier, account.Id),
-				new Claim("Id", account.Id),
-				new Claim("Name", account.Name),
-				new Claim("Email", account.Email),
-				new Claim("PhoneNumber", account.PhoneNumber ?? string.Empty),
-				new Claim("Address", account.Address ?? string.Empty),
-				new Claim("Role", account.Role.ToString())
-			};
-
-			// Retrieve the token expiry period from configuration, handle parsing errors
-			if (!int.TryParse(_configuration["JwtSettings:ExpiryInDays"], out var expiryInDays))
-			{
-				expiryInDays = 1; // Default to 1 day if parsing fails or value is not set
-			}
-
-			// Create and return the JWT token
-			var token = new JwtSecurityToken(
-				claims: claims,
-				expires: DateTime.UtcNow.AddDays(expiryInDays),
-				signingCredentials: creds
-			);
-
-			return new JwtSecurityTokenHandler().WriteToken(token);
 		}
 
+		public async Task<BasePaginatedList<AccountViewDto>> GetCustomerAccounts(string? phoneNumber, int pageNumber, int pageSize)
+		{
+			IQueryable<Account> query = _unitOfWork.GetRepository<Account>().Entities.Where(a => ((string.IsNullOrWhiteSpace(phoneNumber) || a.PhoneNumber == phoneNumber)) && a.Role == RoleEnum.Customer && a.DeletedBy == null);
+
+			BasePaginatedList<Account> resultQuery = (pageNumber <= 0 || pageSize <= 0)
+				? await _unitOfWork.GetRepository<Account>().GetPaging(query, 1, query.Count())
+				: await _unitOfWork.GetRepository<Account>().GetPaging(query, pageNumber, pageSize);
+
+			List<AccountViewDto> responseItems = resultQuery.Items.Select(_mapper.Map<AccountViewDto>).ToList();
+
+			return new BasePaginatedList<AccountViewDto>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
+		}
+
+		public async Task<BasePaginatedList<object>> GetCustomerAccountsMinimal(string? phoneNumber, int pageNumber, int pageSize)
+		{
+			IQueryable<Account> query = _unitOfWork.GetRepository<Account>().Entities.Where(a => ((string.IsNullOrWhiteSpace(phoneNumber) || a.PhoneNumber == phoneNumber)) && a.Role == RoleEnum.Customer && a.DeletedBy == null);
+
+			BasePaginatedList<Account> resultQuery = (pageNumber <= 0 || pageSize <= 0)
+				? await _unitOfWork.GetRepository<Account>().GetPaging(query, 1, query.Count())
+				: await _unitOfWork.GetRepository<Account>().GetPaging(query, pageNumber, pageSize);
+
+			var responseItems = resultQuery.Items.Select(v => new
+			{
+				v.Id,
+				v.Name,
+				v.PhoneNumber,
+				v.Email,
+				v.Gender
+			}).ToList();
+			return new BasePaginatedList<object>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
+		}
 	}
 }
