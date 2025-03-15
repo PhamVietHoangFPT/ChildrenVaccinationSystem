@@ -10,7 +10,7 @@ import {
   TeamOutlined,
   MedicineBoxOutlined,
   HomeOutlined,
-} from "@ant-design/icons"
+} from '@ant-design/icons'
 import Cookies from 'js-cookie'
 
 const { Sider } = Layout
