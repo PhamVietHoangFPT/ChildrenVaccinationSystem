@@ -1,96 +1,103 @@
-import React, { useEffect, useState } from 'react'
-import { Table, Button, Input, Pagination } from 'antd'
-import type { ColumnsType } from 'antd/es/table'
-import { EyeOutlined, SearchOutlined } from '@ant-design/icons'
+import React, { useState, useEffect } from "react";
+import { Table, Button, Input, message } from "antd";
+import type { ColumnsType } from "antd/es/table";
+import { EyeOutlined, SearchOutlined } from "@ant-design/icons";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-import { useNavigate } from 'react-router-dom'
-import { useGetVaccineListMiniMalQuery } from '../../../features/vaccine/vaccineAPI'
-import { Vaccines } from '../../../types/vaccine'
-
-interface VaccineResponse {
-  data: {
-    data: {
-      items: Vaccines[]
-      totalItems: number
-    }
-  }
-  isLoading: boolean
-  isFetching: boolean
+export interface Vaccine {
+  id: string;
+  name: string;
+  price: number;
+  startRecommendedAge: number;
+  endRecommendedAge: number;
+  dosage: number;
+  category: {
+    name: string;
+  };
+  manufacturer: {
+    name: string;
+  };
 }
 
 const ManagerVaccineList: React.FC = () => {
-  const [pageSize, setPageSize] = useState<number>(12)
-  const [pageNumber, setPageNumber] = useState<number>(1)
-  const [name, setName] = useState<string>('')
-  const [debouncedName, setDebouncedName] = useState(name)
-  const navigate = useNavigate()
-  const { data: vaccines, isLoading } =
-    useGetVaccineListMiniMalQuery<VaccineResponse>({
-      pageNumber: pageNumber,
-      pageSize: pageSize,
-      name: debouncedName,
-    })
+  const [vaccines, setVaccines] = useState<Vaccine[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [searchText, setSearchText] = useState<string>("");
+  const navigate = useNavigate();
 
-  // Xử lý debounce với timeout 500ms
+  const fetchVaccines = async () => {
+    try {
+      const response = await axios.get(
+        "https://childrenvaccinationswd2025-hwdzb7evepg7d4bv.eastasia-01.azurewebsites.net/api/vaccines/minimal?pageNumber=-1&pageSize=-1"
+      );
+      const vaccinesData: Vaccine[] = response.data.data.items;
+      setVaccines(vaccinesData);
+      setLoading(false);
+    } catch (error: any) {
+      message.error("Error fetching vaccines: " + error.message);
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedName(name)
-    }, 500) // Chỉ cập nhật sau 500ms
+    fetchVaccines();
+  }, []);
 
-    return () => clearTimeout(handler) // Xóa timeout khi name thay đổi
-  }, [name])
+  const filteredVaccines = vaccines.filter((vaccine) =>
+    vaccine.name.toLowerCase().includes(searchText.toLowerCase())
+  );
 
-  // Xử lý thay đổi input
-  const handleSetName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setName(e.target.value)
-  }
 
-  const columns: ColumnsType<Vaccines> = [
+  
+
+  const columns: ColumnsType<Vaccine> = [
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
-      title: 'Category',
-      dataIndex: ['category', 'name'],
-      key: 'category',
+      title: "Category",
+      dataIndex: ["category", "name"],
+      key: "category",
     },
     {
-      title: 'Manufacturer',
-      dataIndex: ['manufacturer', 'name'],
-      key: 'manufacturer',
+      title: "Manufacturer",
+      dataIndex: ["manufacturer", "name"],
+      key: "manufacturer",
     },
     {
-      title: 'Price',
-      dataIndex: 'price',
-      key: 'price',
-      render: (price) => (price ? `$${price}` : 'N/A'),
-      sorter: (a, b) => (a.price ?? 0) - (b.price ?? 0),
+      title: "Price",
+      dataIndex: "price",
+      key: "price",
+      render: (price) => (price ? `$${price}` : "N/A"),
+      sorter: (a, b) => a.price - b.price,
     },
     {
-      title: 'Recommended Age',
-      key: 'recommendedAge',
+      title: "Recommended Age",
+      key: "recommendedAge",
       render: (_, record) =>
         `${record.startRecommendedAge} - ${record.endRecommendedAge} years`,
     },
     {
-      title: 'Dosage',
-      dataIndex: 'dosage',
-      key: 'dosage',
+      title: "Dosage",
+      dataIndex: "dosage",
+      key: "dosage",
     },
     {
-      title: 'Actions',
-      key: 'actions',
+      title: "Actions",
+      key: "actions",
       render: (_, record) => (
         <Button
-          type='primary'
+          type="primary"
           icon={<EyeOutlined />}
           onClick={() => navigate(`/manager/vaccine/${record.id}`)}
         >
           Details
         </Button>
+
       ),
     },
   ]
@@ -99,51 +106,25 @@ const ManagerVaccineList: React.FC = () => {
     <div style={{ padding: 24 }}>
       <h2>Vaccine List</h2>
 
-      <div
-        style={{
-          marginBottom: 16,
-          display: 'flex',
-          justifyContent: 'space-between',
-          gap: 8,
-        }}
-      >
+      <div style={{ marginBottom: 16, display: "flex", justifyContent: "space-between", gap: 8 }}>
         <Input
-          placeholder='Search by vaccine name'
+          placeholder="Search by vaccine name"
           prefix={<SearchOutlined />}
-          value={name}
-          onChange={handleSetName}
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
           style={{ width: 300 }}
         />
 
-        <Button
-          type='primary'
-          onClick={() => navigate('/manager/vaccine/create')}
-        >
+        <Button type="primary" onClick={() => navigate("/manager/vaccine/create")}>
           Create Vaccine
         </Button>
+
       </div>
       <Table
-        dataSource={vaccines?.data.items}
+        dataSource={filteredVaccines}
         columns={columns}
-        rowKey='id'
-        loading={isLoading}
-        pagination={false}
-      />
-      <Pagination
-        current={pageNumber}
-        pageSize={pageSize}
-        total={vaccines?.data.totalItems}
-        pageSizeOptions={['12', '24', '36']}
-        showSizeChanger={true}
-        style={{ textAlign: 'center' }}
-        align='center'
-        onChange={(page, size) => {
-          setPageNumber(page)
-          setPageSize(size)
-        }}
-        locale={{
-          items_per_page: 'vaccines / trang',
-        }}
+        rowKey="id"
+        loading={loading}
       />
     </div>
   )

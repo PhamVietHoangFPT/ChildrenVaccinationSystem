@@ -12,6 +12,7 @@ export interface Vaccines {
   dosage?: string
   dosageInterval?: number
   manufacturer?: {
+    id: string
     name: string
     country?: {
       name: string

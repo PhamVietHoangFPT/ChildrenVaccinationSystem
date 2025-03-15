@@ -1,75 +1,109 @@
-import { useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
 import { Form, Input, Button, Typography, message, Select } from 'antd'
-const { Option } = Select
-import { useCreateVaccineMutation } from '../../../features/vaccine/vaccineAPI'
+import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
 
-import { useGetManufacturesListQuery } from '../../../features/manufactures/manufacturesAPI'
-import { useGetCategoriesListQuery } from '../../../features/categories/categoriesAPI'
-
-import { Vaccines } from '../../../types/vaccine'
-import { Manufacturers } from '../../../types/manufacturer'
-import { Category } from '../../../types/category'
+export interface VaccineFormValues {
+  name: string
+  price: number
+  startRecommendedAge?: number
+  endRecommendedAge?: number
+  dosage?: number
+  dosageInterval?: number
+  sequence?: number
+  categoryId: string
+  manufacturerId: string
+  description?: string
+}
 
 const { Title } = Typography
+const { Option } = Select
 
-interface VaccineResponse {
-  data: Vaccines
-  isLoading: boolean
-  isFetching: boolean
-}
-
-interface ManufacturesListResponse {
-  data: {
-    data: {
-      items: Manufacturers[]
-    }
-  }
-}
-
-interface CategoriesListResponse {
-  data: {
-    data: {
-      items: Category[]
-    }
-  }
-}
-
-const VaccineDetail: React.FC = () => {
-  const navigate = useNavigate()
-  const [createVaccine] = useCreateVaccineMutation<VaccineResponse>()
-
-  const { data: manufacturers } =
-    useGetManufacturesListQuery<ManufacturesListResponse>({
-      pageNumber: -1,
-      pageSize: -1,
-    })
-  const { data: categories } =
-    useGetCategoriesListQuery<CategoriesListResponse>({
-      pageNumber: -1,
-      pageSize: -1,
-    })
-
+const CreateVaccine: React.FC = () => {
   const [form] = Form.useForm()
+  const navigate = useNavigate()
 
-  const handleSave = async (values: any) => {
+  const [categories, setCategories] = useState<{ id: string; name: string }[]>(
+    []
+  )
+  const [manufacturers, setManufacturers] = useState<
+    { id: string; name: string }[]
+  >([])
+
+  useEffect(() => {
+    axios
+      .get(
+        'https://childrenvaccinationswd2025-hwdzb7evepg7d4bv.eastasia-01.azurewebsites.net/api/categories?pageNumber=-1&pageSize=-1'
+      )
+      .then((response) => {
+        const cats = response.data.data.items
+        setCategories(cats)
+      })
+      .catch((error) => {
+        message.error('Error fetching categories: ' + error.message)
+      })
+  }, [])
+
+  useEffect(() => {
+    axios
+      .get(
+        'https://childrenvaccinationswd2025-hwdzb7evepg7d4bv.eastasia-01.azurewebsites.net/api/manufacturers?pageNumber=-1&pageSize=-1'
+      )
+      .then((response) => {
+        const mans = response.data.data.items
+        setManufacturers(mans)
+      })
+      .catch((error) => {
+        message.error('Error fetching manufacturers: ' + error.message)
+      })
+  }, [])
+
+  const handleFinish = async (values: VaccineFormValues) => {
     try {
-      const value = { ...values, price: Number(values.price) }
-      const data = (await createVaccine({
-        data: value,
-      }).unwrap()) as {
-        message: string
+      const payload = {
+        ...values,
+        price: Number(values.price),
+        startRecommendedAge:
+          values.startRecommendedAge !== undefined
+            ? Number(values.startRecommendedAge)
+            : undefined,
+        endRecommendedAge:
+          values.endRecommendedAge !== undefined
+            ? Number(values.endRecommendedAge)
+            : undefined,
+        dosage: values.dosage !== undefined ? Number(values.dosage) : undefined,
+        dosageInterval:
+          values.dosageInterval !== undefined
+            ? Number(values.dosageInterval)
+            : undefined,
+        sequence:
+          values.sequence !== undefined ? Number(values.sequence) : undefined,
+        category: { id: values.categoryId },
+        manufacturer: { id: values.manufacturerId },
       }
-      message.success(data.message)
-      // navigate('/manager/vaccine')
+
+      await axios.post(
+        'https://childrenvaccinationswd2025-hwdzb7evepg7d4bv.eastasia-01.azurewebsites.net/api/vaccines',
+        payload
+      )
+      message.success('Vaccine created successfully!')
+      navigate('/manager/vaccine')
     } catch (error: any) {
-      message.error('Error create vaccine: ' + error.message)
+      message.error('Error creating vaccine: ' + error.message)
     }
   }
 
   return (
-    <div style={{ padding: '24px' }}>
-      <Title level={2}>Vaccine Details</Title>
-      <Form form={form} layout='vertical' onFinish={handleSave}>
+    <div style={{ padding: 24 }}>
+      <Title level={2} style={{ textAlign: 'center' }}>
+        Create Vaccine
+      </Title>
+      <Form
+        form={form}
+        layout='vertical'
+        onFinish={handleFinish}
+        style={{ maxWidth: 600, margin: '0 auto' }}
+      >
         <Form.Item
           label='Name'
           name='name'
@@ -80,27 +114,9 @@ const VaccineDetail: React.FC = () => {
         <Form.Item
           label='Price'
           name='price'
-          rules={[
-            { required: true, message: 'Please enter the price' },
-            {
-              validator: (_, value) => {
-                const num = Number(value)
-                if (Number.isNaN(num)) {
-                  return Promise.reject(
-                    new Error('Price must be a valid number')
-                  )
-                }
-                if (num <= 0) {
-                  return Promise.reject(
-                    new Error('Price must be greater than 0')
-                  )
-                }
-                return Promise.resolve()
-              },
-            },
-          ]}
+          rules={[{ required: true, message: 'Please enter the price' }]}
         >
-          <Input />
+          <Input type='number' />
         </Form.Item>
         <Form.Item label='Recommended Age' style={{ marginBottom: 0 }}>
           <Form.Item
@@ -183,61 +199,59 @@ const VaccineDetail: React.FC = () => {
           </Form.Item>
         </Form.Item>
         <Form.Item label='Dosage' name='dosage'>
-          <Input />
+          <Input type='number' />
         </Form.Item>
         <Form.Item label='Dosage Interval' name='dosageInterval'>
-          <Input />
+          <Input type='number' />
+        </Form.Item>
+        <Form.Item label='Sequence' name='sequence'>
+          <Input type='number' />
         </Form.Item>
         <Form.Item
-          label='Description'
-          name='description'
-          rules={[{ message: 'Please enter the description' }]}
+          label='Category'
+          name='categoryId'
+          rules={[{ required: true, message: 'Please select the category' }]}
         >
+          <Select placeholder='Select a category'>
+            {categories.map((cat) => (
+              <Option key={cat.id} value={cat.id}>
+                {cat.name}
+              </Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <Form.Item
+          label='Manufacturer'
+          name='manufacturerId'
+          rules={[
+            { required: true, message: 'Please select the manufacturer' },
+          ]}
+        >
+          <Select placeholder='Select a manufacturer'>
+            {manufacturers.map((man) => (
+              <Option key={man.id} value={man.id}>
+                {man.name}
+              </Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <Form.Item label='Description' name='description'>
           <Input.TextArea rows={3} />
         </Form.Item>
-        {categories && (
-          <Form.Item
-            label='Category'
-            name='categoryId'
-            rules={[{ required: true, message: 'Please select the category' }]}
-          >
-            <Select placeholder='Select a category'>
-              {categories.data.items.map((cat) => (
-                <Option key={cat.id} value={cat.id}>
-                  {cat.name}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-        )}
-        {manufacturers && (
-          <Form.Item
-            label='Manufacturer'
-            name='manufacturerId'
-            rules={[
-              { required: true, message: 'Please select the manufacturer' },
-            ]}
-          >
-            <Select placeholder='Select a manufacturer'>
-              {manufacturers.data.items.map((man) => (
-                <Option key={man.id} value={man.id}>
-                  {man.name}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-        )}
         <Form.Item>
-          <div style={{ display: 'flex', gap: '16px' }}>
-            <Button type='primary' htmlType='submit'>
-              Create vaccine
-            </Button>
-            <Button onClick={() => navigate('/manager/vaccine')}>Back</Button>
-          </div>
+          <Button type='primary' htmlType='submit'>
+            Create Vaccine
+          </Button>
+          <Button
+            style={{ marginLeft: 16 }}
+            onClick={() => navigate('/manager/vaccine')}
+          >
+            Cancel
+          </Button>
         </Form.Item>
       </Form>
     </div>
   )
 }
 
-export default VaccineDetail
+export default CreateVaccine

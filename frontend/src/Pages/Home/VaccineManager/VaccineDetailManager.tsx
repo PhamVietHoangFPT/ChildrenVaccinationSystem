@@ -24,11 +24,11 @@ import { Manufacturers } from '../../../types/manufacturer'
 import { Category } from '../../../types/category'
 
 const { Title } = Typography
-
-interface VaccineResponse {
-  data: Vaccines
+interface VaccineListResponse {
+  data: {
+    data: Vaccines
+  }
   isLoading: boolean
-  isFetching: boolean
 }
 
 interface ManufacturesListResponse {
@@ -37,6 +37,7 @@ interface ManufacturesListResponse {
       items: Manufacturers[]
     }
   }
+  isLoading: boolean
 }
 
 interface CategoriesListResponse {
@@ -45,20 +46,21 @@ interface CategoriesListResponse {
       items: Category[]
     }
   }
+  isLoading: boolean
 }
 
 const VaccineDetail: React.FC = () => {
-  const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
 
-  const { data: vaccine, isLoading } =
-    useGetVaccineDetailQuery<VaccineResponse>(id)
-  const { data: manufacturers } =
+  const { id } = useParams()
+  const { data: data, isLoading } =
+    useGetVaccineDetailQuery<VaccineListResponse>(id as string)
+  const { data: manufacturers, isLoading: manufacturerLoading } =
     useGetManufacturesListQuery<ManufacturesListResponse>({
       pageNumber: -1,
       pageSize: -1,
     })
-  const { data: categories } =
+  const { data: categories, isLoading: categoriesLoading } =
     useGetCategoriesListQuery<CategoriesListResponse>({
       pageNumber: -1,
       pageSize: -1,
@@ -113,8 +115,14 @@ const VaccineDetail: React.FC = () => {
     )
   }
 
-  if (!vaccine) {
+  if (!data) {
     return <div>No vaccine found.</div>
+  }
+
+  const initialValues = {
+    ...data.data,
+    categoryId: data.data?.category?.id,
+    manufacturerId: data.data?.manufacturer?.id,
   }
 
   return (
@@ -124,7 +132,7 @@ const VaccineDetail: React.FC = () => {
         form={form}
         layout='vertical'
         onFinish={handleSave}
-        initialValues={vaccine.data}
+        initialValues={initialValues}
       >
         <Form.Item label='ID' name='id'>
           <Input disabled />
@@ -254,37 +262,47 @@ const VaccineDetail: React.FC = () => {
         >
           <Input.TextArea rows={3} />
         </Form.Item>
-        {categories && (
-          <Form.Item
-            label='Category'
-            name='categoryId'
-            rules={[{ required: true, message: 'Please select the category' }]}
-          >
-            <Select placeholder='Select a category'>
-              {categories.data.items.map((cat) => (
-                <Option key={cat.id} value={cat.id}>
-                  {cat.name}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
+        {categoriesLoading ? (
+          <Spin />
+        ) : (
+          categories && (
+            <Form.Item
+              label='Category'
+              name='categoryId'
+              rules={[
+                { required: true, message: 'Please select the category' },
+              ]}
+            >
+              <Select placeholder='Select a category'>
+                {categories.data.items.map((cat) => (
+                  <Option key={cat.id} value={cat.id}>
+                    {cat.name}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          )
         )}
-        {manufacturers && (
-          <Form.Item
-            label='Manufacturer'
-            name='manufacturerId'
-            rules={[
-              { required: true, message: 'Please select the manufacturer' },
-            ]}
-          >
-            <Select placeholder='Select a manufacturer'>
-              {manufacturers.data.items.map((man) => (
-                <Option key={man.id} value={man.id}>
-                  {man.name}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
+        {manufacturerLoading ? (
+          <Spin />
+        ) : (
+          manufacturers && (
+            <Form.Item
+              label='Manufacturer'
+              name='manufacturerId'
+              rules={[
+                { required: true, message: 'Please select the manufacturer' },
+              ]}
+            >
+              <Select placeholder='Select a manufacturer'>
+                {manufacturers.data.items.map((man) => (
+                  <Option key={man.id} value={man.id}>
+                    {man.name}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          )
         )}
         <Form.Item>
           <div style={{ display: 'flex', gap: '16px' }}>

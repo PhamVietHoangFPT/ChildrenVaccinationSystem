@@ -23,7 +23,7 @@ export const apiSlice = createApi({
     'countries',
     'vaccines',
     'categories',
-    'manufacturers',
+    'manufactures',
     'facilities',
     'blogs',
     'children',
