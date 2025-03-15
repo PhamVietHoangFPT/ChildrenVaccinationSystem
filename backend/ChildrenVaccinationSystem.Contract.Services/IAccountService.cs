@@ -3,6 +3,7 @@ using ChildrenVaccinationSystem.Contract.Repositories.Dtos.CategoryDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Dtos.ChildDtos;
 using ChildrenVaccinationSystem.Core.Base;
 using ChildrenVaccinationSystem.Core.Enum;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +16,12 @@ namespace ChildrenVaccinationSystem.Contract.Services
 	{
 		Task<BasePaginatedList<AccountViewDto>> GetCustomerAccounts(string? phoneNumber, int pageNumber, int pageSize);
 		Task<BasePaginatedList<object>> GetCustomerAccountsMinimal(string? phoneNumber, int pageNumber, int pageSize);
+		Task<AccountViewDto> GetAccountById(string id);
 		Task ForceUpdateAccountProfile(AccountForceUpdateDto accountForceUpdateDto);
 		Task IsValidForProfileUpdate();
 		Task IsValidForEmailReset();
-
+		Task BgRemoveUnverifiedAccounts();
+		Task BgRemoveExpiredResetPasswordToken();
+		Task BgRemoveExpiredOTP();
 	}
 }

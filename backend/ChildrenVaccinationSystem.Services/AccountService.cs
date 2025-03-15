@@ -7,6 +7,7 @@ using ChildrenVaccinationSystem.Contract.Repositories.IUOW;
 using ChildrenVaccinationSystem.Contract.Services;
 using ChildrenVaccinationSystem.Core.Base;
 using ChildrenVaccinationSystem.Core.Enum;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -57,7 +58,7 @@ namespace ChildrenVaccinationSystem.Services
 			string accountId = _authenticationService.GetCurrentAccountId();
 
 			Account? account = await _unitOfWork.GetRepository<Account>().GetByIdAsync(accountId);
-			if (account == null) 
+			if (account == null)
 			{
 				throw new ErrorException(401, "unauthorized", "Không tìm thấy account id");
 
@@ -85,12 +86,11 @@ namespace ChildrenVaccinationSystem.Services
 			{
 				throw new ErrorException(400, "bad_request", "Không thể cập nhật tài khoản! Chưa đủ 6 tháng từ lần cập nhật trước.");
 			}
-
 		}
 
 		public async Task<BasePaginatedList<AccountViewDto>> GetCustomerAccounts(string? phoneNumber, int pageNumber, int pageSize)
 		{
-			IQueryable<Account> query = _unitOfWork.GetRepository<Account>().Entities.Where(a => ((string.IsNullOrWhiteSpace(phoneNumber) || a.PhoneNumber == phoneNumber)) && a.Role == RoleEnum.Customer && a.DeletedBy == null);
+			IQueryable<Account> query = _unitOfWork.GetRepository<Account>().Entities.Where(a => ((string.IsNullOrWhiteSpace(phoneNumber) || (!string.IsNullOrWhiteSpace(a.PhoneNumber) && a.PhoneNumber.StartsWith(phoneNumber)))) && a.Role == RoleEnum.Customer && a.VerificationToken == null && a.DeletedBy == null);
 
 			BasePaginatedList<Account> resultQuery = (pageNumber <= 0 || pageSize <= 0)
 				? await _unitOfWork.GetRepository<Account>().GetPaging(query, 1, query.Count())
@@ -103,21 +103,74 @@ namespace ChildrenVaccinationSystem.Services
 
 		public async Task<BasePaginatedList<object>> GetCustomerAccountsMinimal(string? phoneNumber, int pageNumber, int pageSize)
 		{
-			IQueryable<Account> query = _unitOfWork.GetRepository<Account>().Entities.Where(a => ((string.IsNullOrWhiteSpace(phoneNumber) || a.PhoneNumber == phoneNumber)) && a.Role == RoleEnum.Customer && a.DeletedBy == null);
+			IQueryable<Account> query = _unitOfWork.GetRepository<Account>().Entities.Where(a => ((string.IsNullOrWhiteSpace(phoneNumber) || (!string.IsNullOrWhiteSpace(a.PhoneNumber) && a.PhoneNumber.StartsWith(phoneNumber)))) && a.Role == RoleEnum.Customer && a.VerificationToken == null && a.DeletedBy == null);
 
 			BasePaginatedList<Account> resultQuery = (pageNumber <= 0 || pageSize <= 0)
 				? await _unitOfWork.GetRepository<Account>().GetPaging(query, 1, query.Count())
 				: await _unitOfWork.GetRepository<Account>().GetPaging(query, pageNumber, pageSize);
 
-			var responseItems = resultQuery.Items.Select(v => new
+			var responseItems = resultQuery.Items.Select(a => new
 			{
-				v.Id,
-				v.Name,
-				v.PhoneNumber,
-				v.Email,
-				v.Gender
+				a.Id,
+				a.Name,
+				a.PhoneNumber,
+				a.Email,
+				a.Gender
 			}).ToList();
 			return new BasePaginatedList<object>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
+		}
+
+		public async Task<AccountViewDto> GetAccountById(string id)
+		{
+			Account? account = await _unitOfWork.GetRepository<Account>().Entities.Where(c => c.Id == id && c.DeletedBy == null).FirstOrDefaultAsync();
+
+			if (account == null)
+				throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy account id");
+
+			return _mapper.Map<AccountViewDto>(account);
+		}
+
+
+		public async Task BgRemoveUnverifiedAccounts()
+		{
+			int minutes = 15;
+
+			var expiredUnverifiedAccounts = _unitOfWork.GetRepository<Account>().Entities
+				.Where(a => a.VerificationToken != null && a.CreatedTime <= DateTime.UtcNow.AddMinutes(-minutes))
+				.ToList();
+
+			foreach (var account in expiredUnverifiedAccounts)
+			{
+				await _unitOfWork.GetRepository<Account>().DeleteAsync(account);
+			}
+			await _unitOfWork.SaveAsync();
+		}
+
+		public async Task BgRemoveExpiredResetPasswordToken()
+		{
+			var expiredResetPasswordTokenAccounts = _unitOfWork.GetRepository<Account>().Entities
+				.Where(a => a.ResetPasswordToken != null).ToList();
+
+			foreach(var account in expiredResetPasswordTokenAccounts)
+			{
+				account.ResetPasswordToken = null;
+			}
+			await _unitOfWork.SaveAsync();
+		}
+
+		public async Task BgRemoveExpiredOTP()
+		{
+			int minutes = 15;
+
+			var expiredOTPAccounts = _unitOfWork.GetRepository<Account>().Entities
+				.Where(a => a.UpdateEmailOTP != null && a.EmailLastUpdatedTime <= DateTime.UtcNow.AddMinutes(-minutes)).ToList();
+
+			foreach (var account in expiredOTPAccounts)
+			{
+				account.UpdateEmailOTP = null;
+				account.TempUpdateEmail = null;
+			}
+			await _unitOfWork.SaveAsync();
 		}
 	}
 }

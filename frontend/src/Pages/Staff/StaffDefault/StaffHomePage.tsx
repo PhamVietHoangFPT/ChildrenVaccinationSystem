@@ -20,6 +20,7 @@ interface CustomerListResponse {
 const StaffHomePage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
+
   // Pagination and search states
   const initialPage = parseInt(searchParams.get('page') || '1', 10);
   const [searchTerm, setSearchTerm] = useState('');
@@ -29,6 +30,7 @@ const StaffHomePage: React.FC = () => {
   // Modal state
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(null);
+
 
   // Fetch customer list
   const {
@@ -41,9 +43,9 @@ const StaffHomePage: React.FC = () => {
     pageSize: pageSize,
   });
 
-
   const dataCustomer = customers?.data.items ?? [];
   const totalCustomers = customers?.data.totalItems ?? 0;
+
 
 
   // Update URL search params
@@ -55,6 +57,7 @@ const StaffHomePage: React.FC = () => {
   }, [currentPage, searchTerm, setSearchParams]);
 
   // Loading state for the table
+
   if (customerLoading) {
     return (
       <LoadingOutlined
@@ -142,6 +145,8 @@ const StaffHomePage: React.FC = () => {
           current: currentPage,
           pageSize: pageSize,
           total: totalCustomers,
+          pageSizeOptions: ['1', '5', '10', '20'],
+
           onChange: (page) => {
             setCurrentPage(page);
           },

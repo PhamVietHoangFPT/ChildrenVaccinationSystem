@@ -18,6 +18,12 @@ import VaccineRegistrationCustomer from '../Pages/Vaccines/VaccineRegistrationCu
 import ForceUpdateAccount from '../Pages/Register/ForgeUpdateRegister'
 import ChildrenPage from '../Pages/Staff/ChildrenProfile/Children'
 import CustomerDetail from '../Pages/Staff/CustomerProfile/CustomerDetail'
+import VaccineDetail from '../Pages/Home/VaccineDetailManager/VaccineDetailManager'
+import CreateVaccine from '../Pages/Home/CreateVaccineManager/CreateVaccineManager'
+import { DoctorLayout } from '../components/layout/DoctorLayout'
+import DoctorHomePage from '../Pages/Doctor/DoctorHomePage'
+import CustomerListDoctor from '../Pages/Home/CustomerListDoctor/CustomerListDoctor'
+
 
 const routes: LayoutRoute[] = [
   {
@@ -113,7 +119,36 @@ const routes: LayoutRoute[] = [
         exact: true,
         role: ['Manager'],
       },
+      {
+        path: '/manager/vaccine/:id',
+        component: VaccineDetail,
+        exact: true,
+        role: ['Manager'],
+      },
+      {
+        path: '/manager/vaccine/create',
+        component: CreateVaccine,
+        exact: true,
+        role: ['Manager'],
+      },
     ],
+  },
+    {
+      layout: DoctorLayout,
+      data: [
+        {
+          path: '/doctor',
+          component: DoctorHomePage,
+          exact: true,
+          role: ['Doctor'],
+        },
+        {
+          path: '/doctor/view',
+          component: CustomerListDoctor,
+          exact: true,
+          role: ['Doctor'],
+        },
+      ],
   },
   // {
   //   layout: SimpleLayout,
