@@ -31,5 +31,17 @@ namespace ChildrenVaccinationSystem.API.Controllers
 			));
 		}
 
+		[HttpGet("manufacturer")]
+		public async Task<IActionResult> GetManufacturerCountries(int pageNumber = -1, int pageSize = -1)
+		{
+			var countries = await _countryService.GetManufacturerCountries(pageNumber, pageSize);
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Lấy countries thành công",
+				data: countries
+			));
+		}
+
 	}
 }

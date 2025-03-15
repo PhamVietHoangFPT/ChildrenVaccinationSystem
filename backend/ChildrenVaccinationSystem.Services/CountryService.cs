@@ -33,9 +33,18 @@ namespace ChildrenVaccinationSystem.Services
 			return new BasePaginatedList<CountryViewDto>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
 		}
 
-		public Task<BasePaginatedList<CountryViewDto>> SearchCountries(int pageNumber, int pageSize)
+		public async Task<BasePaginatedList<CountryViewDto>> GetManufacturerCountries(int pageNumber, int pageSize)
 		{
-			throw new NotImplementedException();
+
+			IQueryable<Country> query = _unitOfWork.GetRepository<Country>().Entities.Where(c => (c.Manufacturers != null && c.Manufacturers.ToList().Any()) && c.DeletedBy == null);
+
+			BasePaginatedList<Country> resultQuery = (pageNumber <= 0 || pageSize <= 0)
+				? await _unitOfWork.GetRepository<Country>().GetPaging(query, 1, query.Count())
+				: await _unitOfWork.GetRepository<Country>().GetPaging(query, pageNumber, pageSize);
+
+			List<CountryViewDto> responseItems = resultQuery.Items.Select(_mapper.Map<CountryViewDto>).ToList();
+
+			return new BasePaginatedList<CountryViewDto>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
 		}
 	}
 }

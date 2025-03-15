@@ -12,7 +12,6 @@ namespace ChildrenVaccinationSystem.Contract.Services
 	public interface ICountryService
 	{
 		Task<BasePaginatedList<CountryViewDto>> GetCountries(int pageNumber, int pageSize);
-		Task<BasePaginatedList<CountryViewDto>> SearchCountries(int pageNumber, int pageSize);
-
+		Task<BasePaginatedList<CountryViewDto>> GetManufacturerCountries(int pageNumber, int pageSize);
 	}
 }
