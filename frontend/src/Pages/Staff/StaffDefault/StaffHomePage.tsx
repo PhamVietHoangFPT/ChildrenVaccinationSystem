@@ -99,7 +99,6 @@ const StaffHomePage: React.FC = () => {
       ),
     },
   ]
-
   return (
     <div style={{ padding: 20, background: '#fff', borderRadius: 8 }}>
        <Input.Search
