@@ -1,4 +1,5 @@
 export interface Vaccines {
+  data: Store | undefined
   id: string
   name: string
   images?: {

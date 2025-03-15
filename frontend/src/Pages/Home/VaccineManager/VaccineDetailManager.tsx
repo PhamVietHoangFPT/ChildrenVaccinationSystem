@@ -1,24 +1,49 @@
-import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Form, Input, Button, Typography, message, Modal, Spin } from 'antd'
-import axios from 'axios'
+import {
+  Form,
+  Input,
+  Button,
+  Typography,
+  message,
+  Modal,
+  Spin,
+  Select,
+} from 'antd'
+const { Option } = Select
+import {
+  useGetVaccineDetailQuery,
+  useUpdateVaccineMutation,
+  useDeleteVaccineMutation,
+} from '../../../features/vaccine/vaccineAPI'
+
+import { useGetManufacturesListQuery } from '../../../features/manufactures/manufacturesAPI'
+import { useGetCategoriesListQuery } from '../../../features/categories/categoriesAPI'
+
+import { Vaccines } from '../../../types/vaccine'
+import { Manufacturers } from '../../../types/manufacturer'
+import { Category } from '../../../types/category'
 
 const { Title } = Typography
 
-export interface Vaccine {
-  id: string
-  name: string
-  price: number
-  startRecommendedAge?: number
-  endRecommendedAge?: number
-  dosage?: number
-  dosageInterval?: number
-  description?: string
-  category: {
-    name: string
+interface VaccineResponse {
+  data: Vaccines
+  isLoading: boolean
+  isFetching: boolean
+}
+
+interface ManufacturesListResponse {
+  data: {
+    data: {
+      items: Manufacturers[]
+    }
   }
-  manufacturer: {
-    name: string
+}
+
+interface CategoriesListResponse {
+  data: {
+    data: {
+      items: Category[]
+    }
   }
 }
 
@@ -26,35 +51,34 @@ const VaccineDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
 
-  const [vaccine, setVaccine] = useState<Vaccine | null>(null)
-  const [loading, setLoading] = useState<boolean>(true)
+  const { data: vaccine, isLoading } =
+    useGetVaccineDetailQuery<VaccineResponse>(id)
+  const { data: manufacturers } =
+    useGetManufacturesListQuery<ManufacturesListResponse>({
+      pageNumber: -1,
+      pageSize: -1,
+    })
+  const { data: categories } =
+    useGetCategoriesListQuery<CategoriesListResponse>({
+      pageNumber: -1,
+      pageSize: -1,
+    })
+  const [updateVaccine] = useUpdateVaccineMutation()
+  const [deleteVaccine] = useDeleteVaccineMutation()
   const [form] = Form.useForm()
-
-  useEffect(() => {
-    axios
-      .get(
-        `https://childrenvaccinationswd2025-hwdzb7evepg7d4bv.eastasia-01.azurewebsites.net/api/vaccines/${id}`
-      )
-      .then((response) => {
-        const data = response.data.data
-        setVaccine(data)
-        form.setFieldsValue(data)
-        setLoading(false)
-      })
-      .catch((error) => {
-        message.error('Error fetching vaccine details: ' + error.message)
-        setLoading(false)
-      })
-  }, [id, form])
 
   const handleSave = async (values: any) => {
     try {
-      await axios.put(
-        `https://childrenvaccinationswd2025-hwdzb7evepg7d4bv.eastasia-01.azurewebsites.net/api/vaccines/${id}`,
-        values
-      )
-      message.success('Vaccine updated successfully!')
-      navigate('/manager/vaccine')
+      console.log(values)
+      const { id, ...value } = { ...values, price: Number(values.price) }
+      const dataUpdate = (await updateVaccine({
+        id: id,
+        data: value,
+      }).unwrap()) as {
+        message: string
+      }
+      message.success(dataUpdate.message)
+      // navigate('/manager/vaccine')
     } catch (error: any) {
       message.error('Error updating vaccine: ' + error.message)
     }
@@ -69,10 +93,10 @@ const VaccineDetail: React.FC = () => {
       cancelText: 'Cancel',
       onOk: async () => {
         try {
-          await axios.delete(
-            `https://childrenvaccinationswd2025-hwdzb7evepg7d4bv.eastasia-01.azurewebsites.net/api/vaccines/${id}`
-          )
-          message.success('Vaccine deleted successfully!')
+          const dataDelete = (await deleteVaccine(id).unwrap()) as {
+            message: string
+          }
+          message.success(dataDelete.message)
           navigate('/manager/vaccine')
         } catch (error: any) {
           message.error('Error deleting vaccine: ' + error.message)
@@ -81,7 +105,7 @@ const VaccineDetail: React.FC = () => {
     })
   }
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div style={{ textAlign: 'center', marginTop: '50px' }}>
         <Spin size='large' />
@@ -100,12 +124,11 @@ const VaccineDetail: React.FC = () => {
         form={form}
         layout='vertical'
         onFinish={handleSave}
-        initialValues={vaccine}
+        initialValues={vaccine.data}
       >
         <Form.Item label='ID' name='id'>
           <Input disabled />
         </Form.Item>
-
         <Form.Item
           label='Name'
           name='name'
@@ -113,7 +136,6 @@ const VaccineDetail: React.FC = () => {
         >
           <Input />
         </Form.Item>
-
         <Form.Item
           label='Price'
           name='price'
@@ -139,7 +161,6 @@ const VaccineDetail: React.FC = () => {
         >
           <Input />
         </Form.Item>
-
         <Form.Item label='Recommended Age' style={{ marginBottom: 0 }}>
           <Form.Item
             name='startRecommendedAge'
@@ -220,23 +241,12 @@ const VaccineDetail: React.FC = () => {
             <Input placeholder='End Age' />
           </Form.Item>
         </Form.Item>
-
-        <Form.Item
-          label='Dosage'
-          name='dosage'
-          
-        >
+        <Form.Item label='Dosage' name='dosage'>
           <Input />
         </Form.Item>
-
-        <Form.Item
-          label='Dosage Interval'
-          name='dosageInterval'
-          
-        >
+        <Form.Item label='Dosage Interval' name='dosageInterval'>
           <Input />
         </Form.Item>
-
         <Form.Item
           label='Description'
           name='description'
@@ -244,15 +254,38 @@ const VaccineDetail: React.FC = () => {
         >
           <Input.TextArea rows={3} />
         </Form.Item>
-
-        <Form.Item label='Category' name={['category', 'name']}>
-          <Input disabled />
-        </Form.Item>
-
-        <Form.Item label='Manufacturer' name={['manufacturer', 'name']}>
-          <Input disabled />
-        </Form.Item>
-
+        {categories && (
+          <Form.Item
+            label='Category'
+            name='categoryId'
+            rules={[{ required: true, message: 'Please select the category' }]}
+          >
+            <Select placeholder='Select a category'>
+              {categories.data.items.map((cat) => (
+                <Option key={cat.id} value={cat.id}>
+                  {cat.name}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+        )}
+        {manufacturers && (
+          <Form.Item
+            label='Manufacturer'
+            name='manufacturerId'
+            rules={[
+              { required: true, message: 'Please select the manufacturer' },
+            ]}
+          >
+            <Select placeholder='Select a manufacturer'>
+              {manufacturers.data.items.map((man) => (
+                <Option key={man.id} value={man.id}>
+                  {man.name}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+        )}
         <Form.Item>
           <div style={{ display: 'flex', gap: '16px' }}>
             <Button type='primary' htmlType='submit'>

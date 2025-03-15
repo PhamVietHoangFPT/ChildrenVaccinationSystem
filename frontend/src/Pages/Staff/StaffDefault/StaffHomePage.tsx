@@ -18,6 +18,7 @@ interface CustomerListResponse {
 
 const StaffHomePage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams()
+  const [searchTerm, setSearchTerm] = useState<string | undefined>(undefined)
   const navigate = useNavigate()
 
   // Default page = 1, pageSize = 7
@@ -34,7 +35,7 @@ const StaffHomePage: React.FC = () => {
     pageNumber: currentPage,
     pageSize: pageSize,
   })
-  
+
   const dataCustomer = customers?.data.items ?? []
   const totalCustomers = customers?.data?.totalItems ?? 0
 
@@ -100,7 +101,7 @@ const StaffHomePage: React.FC = () => {
   ]
   return (
     <div style={{ padding: 20, background: '#fff', borderRadius: 8 }}>
-       <Input.Search
+      <Input.Search
         placeholder='Search by phone number'
         allowClear
         onSearch={(value) => setSearchTerm(value)}
