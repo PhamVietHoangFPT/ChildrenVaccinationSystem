@@ -1,7 +1,7 @@
 export interface Children {
   id: string
   name: string
-  dateOfBirth?: string
+  dateOfBirth?: Date
   height?: number
   weight?: number
   gender?: boolean

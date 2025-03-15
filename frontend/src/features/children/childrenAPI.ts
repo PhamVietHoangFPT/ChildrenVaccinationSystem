@@ -3,16 +3,35 @@ import { apiSlice } from '../../apis/apiSlice'
 export const childrenApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getChildrenList: builder.query({
-      query: ({ pageNumber, pageSize }) => ({
-        url: '/children',
+      query: ({ pageNumber, pageSize, parentPhoneNumber, name }) => ({
+        url: '/children/minimal',
         method: 'GET',
         params: {
+          parentPhoneNumber,
+          name,
           pageNumber,
           pageSize,
         },
       }),
       transformResponse: (res) => res,
       providesTags: ['children'],
+    }),
+    getChildrenDetail: builder.query({
+      query: (id) => ({
+        url: `/children/${id}`,
+        method: 'GET',
+      }),
+      transformResponse: (res) => res,
+      providesTags: ['children'],
+    }),
+    updateChildren: builder.mutation({
+      query: ({ data, id }) => ({
+        url: `/children/${id}`,
+        method: 'PUT',
+        body: data,
+      }),
+      transformResponse: (res) => res,
+      invalidatesTags: ['children'],
     }),
     // createChildren: build.mutation({
     //   query: (data) => ({
@@ -31,15 +50,7 @@ export const childrenApi = apiSlice.injectEndpoints({
     //   transformResponse: (res) => res,
     //   providesTags: ['children'],
     // }),
-    // updateChildren: build.mutation({
-    //   query: ({ data, id }) => ({
-    //     url: `/children/${id}`,
-    //     method: 'PUT',
-    //     body: data,
-    //   }),
-    //   transformResponse: (res) => res,
-    //   invalidatesTags: ['children'],
-    // }),
+
     // deleteChildren: build.mutation({
     //   query: (id) => ({
     //     url: `/children/${id}`,
@@ -53,6 +64,8 @@ export const childrenApi = apiSlice.injectEndpoints({
 
 export const {
   useGetChildrenListQuery,
+  useGetChildrenDetailQuery,
+  useUpdateChildrenMutation
   // useCreateChildrenMutation,
   // useGetChildrenDetailQuery,
   // useUpdateChildrenMutation,
