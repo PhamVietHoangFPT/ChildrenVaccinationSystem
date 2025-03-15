@@ -1,172 +1,103 @@
-import React from 'react'
-import { Table, Button, Modal, message } from 'antd'
-import type { ColumnsType } from 'antd/es/table'
-import { EyeOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
+import React, { useState, useEffect } from "react";
+import { Table, Button, Input, message } from "antd";
+import type { ColumnsType } from "antd/es/table";
+import { EyeOutlined, SearchOutlined } from "@ant-design/icons";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export interface Vaccine {
-  id: number
-  name: string
-  imageUrl?: string
-  description?: string
-  price?: number
-  startRecommendAge?: number
-  endRecommendAge?: number
-  sequence?: number
-  dosage?: string
-  dosageInterval?: number
+  id: string;
+  name: string;
+  price: number;
+  startRecommendedAge: number;
+  endRecommendedAge: number;
+  dosage: number;
+  category: {
+    name: string;
+  };
+  manufacturer: {
+    name: string;
+  };
 }
 
-const vaccineData: Vaccine[] = [
-  {
-    id: 1,
-    name: 'Vaccine A',
-    price: 100,
-    startRecommendAge: 1,
-    endRecommendAge: 5,
-    sequence: 1,
-    dosage: '0.5ml',
-    dosageInterval: 30,
-    description: 'Protects against virus A',
-  },
-  {
-    id: 2,
-    name: 'Vaccine B',
-    price: 150,
-    startRecommendAge: 2,
-    endRecommendAge: 6,
-    sequence: 2,
-    dosage: '1ml',
-    dosageInterval: 60,
-    description: 'Prevents disease B',
-  },
-  {
-    id: 3,
-    name: 'Vaccine C',
-    price: 120,
-    startRecommendAge: 0,
-    endRecommendAge: 3,
-    sequence: 3,
-    dosage: '0.25ml',
-    dosageInterval: 15,
-    description: 'Effective against infection C',
-  },
-]
-
 const ManagerVaccineList: React.FC = () => {
-  const handleView = (record: Vaccine) => {
-    Modal.info({
-      title: 'Vaccine Details',
-      content: (
-        <div>
-          <p>
-            <strong>ID:</strong> {record.id}
-          </p>
-          <p>
-            <strong>Name:</strong> {record.name}
-          </p>
-          {record.price && (
-            <p>
-              <strong>Price:</strong> ${record.price}
-            </p>
-          )}
-          {record.startRecommendAge !== undefined &&
-            record.endRecommendAge !== undefined && (
-              <p>
-                <strong>Recommended Age:</strong> {record.startRecommendAge} -{' '}
-                {record.endRecommendAge} years
-              </p>
-            )}
-          {record.dosage && (
-            <p>
-              <strong>Dosage:</strong> {record.dosage}
-            </p>
-          )}
-          {record.dosageInterval && (
-            <p>
-              <strong>Dosage Interval:</strong> {record.dosageInterval} days
-            </p>
-          )}
-          {record.description && (
-            <p>
-              <strong>Description:</strong> {record.description}
-            </p>
-          )}
-        </div>
-      ),
-    })
-  }
+  const [vaccines, setVaccines] = useState<Vaccine[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [searchText, setSearchText] = useState<string>("");
+  const navigate = useNavigate();
 
-  const handleEdit = (record: Vaccine) => {
-    Modal.warning({
-      title: 'Edit Vaccine',
-      content: `You clicked to edit ${record.name}. (Simulated action)`,
-    })
-  }
+  const fetchVaccines = async () => {
+    try {
+      const response = await axios.get(
+        "https://childrenvaccinationswd2025-hwdzb7evepg7d4bv.eastasia-01.azurewebsites.net/api/vaccines/minimal?pageNumber=-1&pageSize=-1"
+      );
+      const vaccinesData: Vaccine[] = response.data.data.items;
+      setVaccines(vaccinesData);
+      setLoading(false);
+    } catch (error: any) {
+      message.error("Error fetching vaccines: " + error.message);
+      setLoading(false);
+    }
+  };
 
-  const handleDelete = (record: Vaccine) => {
-    Modal.confirm({
-      title: 'Are you sure?',
-      content: `Do you really want to delete ${record.name}?`,
-      okText: 'Delete',
-      okType: 'danger',
-      cancelText: 'Cancel',
-      onOk() {
-        message.success(`${record.name} has been deleted.`)
-      },
-    })
-  }
+  useEffect(() => {
+    fetchVaccines();
+  }, []);
+
+  const filteredVaccines = vaccines.filter((vaccine) =>
+    vaccine.name.toLowerCase().includes(searchText.toLowerCase())
+  );
+
+
+  
 
   const columns: ColumnsType<Vaccine> = [
     {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
+      title: "Category",
+      dataIndex: ["category", "name"],
+      key: "category",
     },
     {
-      title: 'Price',
-      dataIndex: 'price',
-      key: 'price',
-      render: (price) => (price ? `$${price}` : 'N/A'),
+      title: "Manufacturer",
+      dataIndex: ["manufacturer", "name"],
+      key: "manufacturer",
     },
     {
-      title: 'Dosage',
-      dataIndex: 'dosage',
-      key: 'dosage',
+      title: "Price",
+      dataIndex: "price",
+      key: "price",
+      render: (price) => (price ? `$${price}` : "N/A"),
+      sorter: (a, b) => a.price - b.price,
     },
     {
-      title: 'Actions',
-      key: 'actions',
+      title: "Recommended Age",
+      key: "recommendedAge",
+      render: (_, record) =>
+        `${record.startRecommendedAge} - ${record.endRecommendedAge} years`,
+    },
+    {
+      title: "Dosage",
+      dataIndex: "dosage",
+      key: "dosage",
+    },
+    {
+      title: "Actions",
+      key: "actions",
       render: (_, record) => (
-        <>
-          <Button
-            type='primary'
-            icon={<EyeOutlined />}
-            onClick={() => handleView(record)}
-            style={{ marginRight: 8 }}
-          >
-            View
-          </Button>
-          <Button
-            icon={<EditOutlined />}
-            onClick={() => handleEdit(record)}
-            style={{ marginRight: 8 }}
-          >
-            Edit
-          </Button>
-          <Button
-            type='primary'
-            danger
-            icon={<DeleteOutlined />}
-            onClick={() => handleDelete(record)}
-          >
-            Delete
-          </Button>
-        </>
+        <Button
+          type="primary"
+          icon={<EyeOutlined />}
+          onClick={() => navigate(`/manager/vaccine/${record.id}`)}
+        >
+          Details
+        </Button>
+
       ),
     },
   ]
@@ -174,7 +105,27 @@ const ManagerVaccineList: React.FC = () => {
   return (
     <div style={{ padding: 24 }}>
       <h2>Vaccine List</h2>
-      <Table dataSource={vaccineData} columns={columns} rowKey='id' />
+
+      <div style={{ marginBottom: 16, display: "flex", justifyContent: "space-between", gap: 8 }}>
+        <Input
+          placeholder="Search by vaccine name"
+          prefix={<SearchOutlined />}
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          style={{ width: 300 }}
+        />
+
+        <Button type="primary" onClick={() => navigate("/manager/vaccine/create")}>
+          Create Vaccine
+        </Button>
+
+      </div>
+      <Table
+        dataSource={filteredVaccines}
+        columns={columns}
+        rowKey="id"
+        loading={loading}
+      />
     </div>
   )
 }

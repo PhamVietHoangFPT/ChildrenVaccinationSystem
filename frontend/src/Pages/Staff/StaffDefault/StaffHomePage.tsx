@@ -20,9 +20,8 @@ const StaffHomePage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const navigate = useNavigate()
 
-  // Default page = 1, pageSize = 1
+  // Default page = 1, pageSize = 7
   const initialPage = parseInt(searchParams.get('page') || '1', 10)
-  const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(initialPage)
   const pageSize = 7
 
@@ -35,16 +34,16 @@ const StaffHomePage: React.FC = () => {
     pageNumber: currentPage,
     pageSize: pageSize,
   })
-
+  
   const dataCustomer = customers?.data.items ?? []
   const totalCustomers = customers?.data?.totalItems ?? 0
 
   useEffect(() => {
     setSearchParams({
       page: currentPage.toString(),
-      phoneNumber: searchTerm,
     })
-  }, [currentPage, searchTerm, setSearchParams])
+  }, [currentPage, setSearchParams])
+
   if (customerLoading) {
     return (
       <LoadingOutlined
@@ -121,6 +120,8 @@ const StaffHomePage: React.FC = () => {
           current: currentPage,
           pageSize: pageSize,
           total: totalCustomers,
+          pageSizeOptions: ['1', '5', '10', '20'],
+
           onChange: (page) => {
             setCurrentPage(page)
           },
