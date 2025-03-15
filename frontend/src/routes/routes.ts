@@ -70,12 +70,12 @@ const routes: LayoutRoute[] = [
         exact: true,
         role: ['Staff'],
       },
-      {
-        path: '/staff/customer-account/:customerId',
-        component: CustomerDetail,
-        exact: true,
-        role: ['Staff'],
-      },
+      // {
+      //   path: '/staff/customer-account/:customerId',
+      //   component: CustomerDetail,
+      //   exact: true,
+      //   role: ['Staff'],
+      // },
     ],
   },
   {
