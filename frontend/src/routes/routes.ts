@@ -22,6 +22,8 @@ import VaccineDetailsCustomer from '../Pages/Vaccines/VaccineDetailsCustomer'
 import VaccineRegistrationCustomer from '../Pages/Vaccines/VaccineRegistrationCustomer'
 import ForceUpdateAccount from '../Pages/Register/ForgeUpdateRegister'
 import ChildrenPage from '../Pages/Staff/ChildrenProfile/Children'
+import CustomerDetail from '../Pages/Staff/CustomerProfile/CustomerDetail'
+
 
 const routes: LayoutRoute[] = [
   {
@@ -66,6 +68,12 @@ const routes: LayoutRoute[] = [
       {
         path: '/staff/child-profile',
         component: ChildrenPage,
+        exact: true,
+        role: ['Staff'],
+      },
+      {
+        path: '/staff/customer-account/:customerId',
+        component: CustomerDetail,
         exact: true,
         role: ['Staff'],
       },

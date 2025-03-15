@@ -1,10 +1,10 @@
 import { apiSlice } from '../../apis/apiSlice'
 
-const manufacturersApi = apiSlice.injectEndpoints({
+const manufacturesApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getManufacturesList: builder.query({
       query: ({ pageNumber, pageSize }) => ({
-        url: '/manufacturers',
+        url: '/manufactures',
         method: 'GET',
         params: {
           pageNumber,
@@ -12,41 +12,41 @@ const manufacturersApi = apiSlice.injectEndpoints({
         },
       }),
       transformResponse: (res) => res,
-      providesTags: ['manufacturers'],
+      providesTags: ['manufactures'],
     }),
     createManufactures: builder.mutation({
       query: (data) => ({
-        url: '/manufacturers',
+        url: '/manufactures',
         method: 'POST',
         body: data,
       }),
       transformResponse: (res) => res,
-      invalidatesTags: ['manufacturers'],
+      invalidatesTags: ['manufactures'],
     }),
     getManufacturesDetail: builder.query({
       query: (id) => ({
-        url: `/manufacturers/${id}`,
+        url: `/manufactures/${id}`,
         method: 'GET',
       }),
       transformResponse: (res) => res,
-      providesTags: ['manufacturers'],
+      providesTags: ['manufactures'],
     }),
     updateManufactures: builder.mutation({
       query: ({ data, id }) => ({
-        url: `/manufacturers/${id}`,
+        url: `/manufactures/${id}`,
         method: 'PUT',
         body: data,
       }),
       transformResponse: (res) => res,
-      invalidatesTags: ['manufacturers'],
+      invalidatesTags: ['manufactures'],
     }),
     deleteManufactures: builder.mutation({
       query: (id) => ({
-        url: `/manufacturers/${id}`,
+        url: `/manufactures/${id}`,
         method: 'DELETE',
       }),
       transformResponse: (res) => res,
-      invalidatesTags: ['manufacturers'],
+      invalidatesTags: ['manufactures'],
     }),
   }),
 })
@@ -57,4 +57,4 @@ export const {
   useGetManufacturesDetailQuery,
   useUpdateManufacturesMutation,
   useDeleteManufacturesMutation,
-} = manufacturersApi
+} = manufacturesApi
