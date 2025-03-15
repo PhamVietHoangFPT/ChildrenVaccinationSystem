@@ -54,7 +54,7 @@ const routes: LayoutRoute[] = [
     layout: StaffLayout,
     data: [
       {
-        path: '/staff',
+        path: '/staff/customer-account',
         component: StaffHomePage,
         exact: true,
         role: ['Staff'],
