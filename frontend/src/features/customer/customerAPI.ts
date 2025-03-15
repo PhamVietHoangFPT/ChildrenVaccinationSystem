@@ -15,6 +15,18 @@ export const customerAPI = apiSlice.injectEndpoints({
       transformResponse: (res) => res,
       providesTags: ['customers'],
     }),
+    getCustomerDetail: builder.query({
+      query: (id) => ({
+        url: `/accounts/${id}`,
+        method: 'GET',
+      }),
+      transformResponse: (res) => res,
+      providesTags: ['customers'],
+    }),
   }),
+
 })
-export const { useGetCustomerListQuery } = customerAPI
+export const {
+  useGetCustomerListQuery,
+  useGetCustomerDetailQuery,
+} = customerAPI

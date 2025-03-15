@@ -1,31 +1,36 @@
-import React, { useEffect, useState } from 'react'
-import { useSearchParams, useNavigate } from 'react-router-dom'
-import { Customer } from '../../../types/customer'
-import { useGetCustomerListQuery } from '../../../features/customer/customerAPI'
-import { Button, Input, Table } from 'antd'
-import { EditOutlined, LoadingOutlined } from '@ant-design/icons'
+import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { Customer } from '../../../types/customer';
+import { useGetCustomerListQuery } from '../../../features/customer/customerAPI';
+import { Button, Input, Table } from 'antd';
+import { EditOutlined, LoadingOutlined } from '@ant-design/icons';
+import CustomerDetailModal from '../../../components/Modal/CustomerDetail';
 
 interface CustomerListResponse {
   data: {
     data: {
-      items: Customer[]
-      totalItems: number
-    }
-  }
-  isLoading: boolean
-  isFetching: boolean
+      items: Customer[];
+      totalItems: number;
+    };
+  };
+  isLoading: boolean;
+  isFetching: boolean;
 }
 
 const StaffHomePage: React.FC = () => {
-  const [searchParams, setSearchParams] = useSearchParams()
-  const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  // Default page = 1, pageSize = 1
-  const initialPage = parseInt(searchParams.get('page') || '1', 10)
+  // Pagination and search states
+  const initialPage = parseInt(searchParams.get('page') || '1', 10);
   const [searchTerm, setSearchTerm] = useState('');
-  const [currentPage, setCurrentPage] = useState(initialPage)
-  const pageSize = 7
+  const [currentPage, setCurrentPage] = useState(initialPage);
+  const pageSize = 7;
 
+  // Modal state
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(null);
+
+  // Fetch customer list
   const {
     data: customers,
     isFetching: customerFetching,
@@ -34,17 +39,22 @@ const StaffHomePage: React.FC = () => {
     phoneNumber: searchTerm || undefined,
     pageNumber: currentPage,
     pageSize: pageSize,
-  })
+  });
 
-  const dataCustomer = customers?.data.items ?? []
-  const totalCustomers = customers?.data?.totalItems ?? 0
 
+  const dataCustomer = customers?.data.items ?? [];
+  const totalCustomers = customers?.data.totalItems ?? 0;
+
+
+  // Update URL search params
   useEffect(() => {
     setSearchParams({
       page: currentPage.toString(),
       phoneNumber: searchTerm,
-    })
-  }, [currentPage, searchTerm, setSearchParams])
+    });
+  }, [currentPage, searchTerm, setSearchParams]);
+
+  // Loading state for the table
   if (customerLoading) {
     return (
       <LoadingOutlined
@@ -56,15 +66,16 @@ const StaffHomePage: React.FC = () => {
           height: '30vh',
         }}
       />
-    )
+    );
   }
+
+  // Table columns
   const columns = [
     {
       title: 'No.',
       dataIndex: 'index',
       key: 'index',
-      render: (_: any, __: any, index: number) =>
-        (currentPage - 1) * pageSize + index + 1,
+      render: (_: any, __: any, index: number) => (currentPage - 1) * pageSize + index + 1,
     },
     {
       title: 'Name',
@@ -90,19 +101,29 @@ const StaffHomePage: React.FC = () => {
     {
       title: 'Update',
       key: 'update',
-      render: (_: any, record: any) => (
+      render: (_: any, record: Customer) => (
         <Button
-          type='primary'
+          type="primary"
           icon={<EditOutlined />}
-          onClick={() => navigate(`${record.id}`)}
+          onClick={() => {
+            setSelectedCustomerId(record.id); // Set the selected customer ID
+            setIsModalVisible(true); // Show the modal
+          }}
         />
       ),
     },
-  ]
+  ];
+
+  // Handle modal close
+  const handleModalClose = () => {
+    setIsModalVisible(false);
+    setSelectedCustomerId(null); // Reset selected customer
+  };
+
   return (
     <div style={{ padding: 20, background: '#fff', borderRadius: 8 }}>
-       <Input.Search
-        placeholder='Search by phone number'
+      <Input.Search
+        placeholder="Search by phone number"
         allowClear
         onSearch={(value) => setSearchTerm(value)}
         style={{ marginBottom: 16, width: 300 }}
@@ -122,12 +143,17 @@ const StaffHomePage: React.FC = () => {
           pageSize: pageSize,
           total: totalCustomers,
           onChange: (page) => {
-            setCurrentPage(page)
+            setCurrentPage(page);
           },
         }}
       />
+      <CustomerDetailModal
+        visible={isModalVisible}
+        customerId={selectedCustomerId}
+        onClose={handleModalClose}
+      />
     </div>
-  )
-}
+  );
+};
 
-export default StaffHomePage
+export default StaffHomePage;
