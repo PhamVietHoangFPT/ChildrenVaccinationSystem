@@ -79,6 +79,11 @@ namespace ChildrenVaccinationSystem.Services
 
 		public async Task<string> RegisterVaccination(HttpContext context, VaccinationRegisterDto dto)
 		{
+			if (dto.PaymentChoice < 1 || dto.PaymentChoice > 3)
+			{
+				throw new ErrorException(400, "bad_request", "Phương thức không phù hợp");
+			}
+
 			if ((dto.VaccineIds == null || !dto.VaccineIds.Any()) && (string.IsNullOrWhiteSpace(dto.PackageId)))
 			{
 				throw new ErrorException(400, "bad_request", "Vui lòng chọn vaccine");
