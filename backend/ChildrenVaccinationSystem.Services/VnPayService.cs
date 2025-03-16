@@ -112,7 +112,7 @@ namespace ChildrenVaccinationSystem.Services
 			{
 				List<Vaccination> vaccinations = (JsonSerializer.Deserialize<List<Vaccination>>(vaccinationsJson))!;
 
-				foreach(var vaccination in vaccinations)
+                foreach (var vaccination in vaccinations)
 				{
 					_unitOfWork.GetRepository<Vaccination>().InsertRange(vaccinations);
 				}
@@ -122,4 +122,3 @@ namespace ChildrenVaccinationSystem.Services
 
 	}
 }
-
