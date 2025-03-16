@@ -143,7 +143,9 @@ const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
 
                     >
                         <DatePicker
-                            disabledDate={(current) => current && current > dayjs().endOf('day')} // Không cho chọn ngày tương lai
+                            disabledDate={(current) =>
+                                current && current > dayjs().subtract(18, 'year').endOf('day')
+                            } // Không cho chọn ngày trong tương lai & đảm bảo >= 18 tuổi
                             style={{ width: '100%' }} format='YYYY-MM-DD' />
                     </Form.Item>
 
