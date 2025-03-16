@@ -7,7 +7,7 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Entities
 	{
 		public string Name { get; set; } = default!;
 		public DateOnly? DateOfBirth { get; set; }
-		public string Email { get; set; } = default!;
+		public string? Email { get; set; } = default!;
 		public string Password { get; set; } = default!;
 		public string? PhoneNumber { get; set; }
 		public string? Address { get; set; }
