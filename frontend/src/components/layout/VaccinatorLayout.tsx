@@ -8,7 +8,7 @@ import { SideBarVaccinator } from './SideBarVaccinator/SideBarVaccinator'
 const { Header, Content, Footer } = Layout
 const { Title, Text } = Typography
 
-export const ManagerLayout = () => {
+export const VaccinatorLayout = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
