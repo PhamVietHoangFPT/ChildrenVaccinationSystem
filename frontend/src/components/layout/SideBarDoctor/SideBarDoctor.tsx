@@ -55,23 +55,24 @@ export const SideBarDoctor = () => {
   const items = [
     {
       key: 'doctor/view',
-      icon: <TeamOutlined />,
-      label: 'View all customers',
+      icon: <TeamOutlined style={{ color: 'white' }} />,
+      label: <span style={{ color: 'white' }}>View all customers</span>,
       onClick: () => navigate('/doctor/view'),
     },
     {
       key: 'doctor/staff',
-      icon: <HomeOutlined />,
-      label: 'Manage Staff',
+      icon: <HomeOutlined style={{ color: 'white' }} />,
+      label: <span style={{ color: 'white' }}>Manage Staff</span>,
       onClick: () => navigate('/doctor/staff'),
     },
     {
       key: 'doctor/vaccine',
-      icon: <MedicineBoxOutlined />,
-      label: 'Manage Vaccines',
+      icon: <MedicineBoxOutlined style={{ color: 'white' }} />,
+      label: <span style={{ color: 'white' }}>Manage Vaccines</span>,
       onClick: () => navigate('/doctor/vaccine'),
     },
   ]
+  
 
   return (
     <Sider
@@ -87,6 +88,7 @@ export const SideBarDoctor = () => {
         position: 'sticky',
         top: 0,
         left: 0,
+        backgroundColor: '#003153	',
       }}
     >
       {/* Logo and Title */}
@@ -99,16 +101,16 @@ export const SideBarDoctor = () => {
           borderBottom: '1px solid #f0f0f0',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <MedicineBoxOutlined style={{ color: '#1890ff', fontSize: 20 }} />
+        <div style={{ display: 'flex', alignItems: 'center', color: 'white' }}>
+          <MedicineBoxOutlined style={{ color: 'white', fontSize: 20 }} />
           {!collapsed && (
-            <span style={{ marginLeft: 12, fontWeight: 600 }}>VacciTrack</span>
+            <span style={{ marginLeft: 12, fontWeight: 600, color: 'white' }}>VacciTrack</span>
           )}
         </div>
         {!collapsed && (
           <Button
             type='text'
-            icon={<MenuFoldOutlined />}
+            icon={<MenuFoldOutlined style={{color: 'white'}}/>}
             onClick={() => setCollapsed(true)}
             size='small'
           />
@@ -116,7 +118,7 @@ export const SideBarDoctor = () => {
         {collapsed && (
           <Button
             type='text'
-            icon={<MenuUnfoldOutlined />}
+            icon={<MenuUnfoldOutlined style={{color: 'white'}}/>}
             onClick={() => setCollapsed(false)}
             size='small'
             style={{ marginTop: 16 }}
@@ -143,7 +145,8 @@ export const SideBarDoctor = () => {
         defaultOpenKeys={
           getSelectedKeys().length > 0 ? [getSelectedKeys()[0]] : []
         }
-        style={{ borderRight: 0 }}
+        color='white'
+        style={{ borderRight: 0, backgroundColor: '#003153', color: 'white' }}
         items={items}
       />
 
@@ -155,7 +158,7 @@ export const SideBarDoctor = () => {
           width: '100%',
           padding: '16px',
           borderTop: '1px solid #f0f0f0',
-          backgroundColor: '#fff',
+          backgroundColor: '#003153	',
         }}
       >
         <div
@@ -168,8 +171,8 @@ export const SideBarDoctor = () => {
           <Avatar icon={<UserOutlined />} />
           {!collapsed && (
             <div style={{ marginLeft: 12 }}>
-              <div style={{ fontWeight: 500, fontSize: 14 }}>Doctor User</div>
-              <div style={{ fontSize: 12, color: 'rgba(0, 0, 0, 0.45)' }}>
+              <div style={{ fontWeight: 500, fontSize: 14, color: 'white' }}>Doctor User</div>
+              <div style={{ fontSize: 12, color: 'white' }}>
                 doctor@vaccitrack.com
               </div>
             </div>

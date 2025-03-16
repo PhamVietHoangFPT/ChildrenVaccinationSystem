@@ -87,6 +87,7 @@ export const SideBarVaccinator = () => {
         position: 'sticky',
         top: 0,
         left: 0,
+        backgroundColor: 'lightgray'
       }}
     >
       {/* Logo and Title */}
@@ -99,7 +100,7 @@ export const SideBarVaccinator = () => {
           borderBottom: '1px solid #f0f0f0',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', }}>
           <MedicineBoxOutlined style={{ color: '#1890ff', fontSize: 20 }} />
           {!collapsed && (
             <span style={{ marginLeft: 12, fontWeight: 600 }}>VacciTrack</span>
@@ -143,7 +144,7 @@ export const SideBarVaccinator = () => {
         defaultOpenKeys={
           getSelectedKeys().length > 0 ? [getSelectedKeys()[0]] : []
         }
-        style={{ borderRight: 0 }}
+        style={{ borderRight: 0, backgroundColor: 'lightgray' }}
         items={items}
       />
 
@@ -155,7 +156,7 @@ export const SideBarVaccinator = () => {
           width: '100%',
           padding: '16px',
           borderTop: '1px solid #f0f0f0',
-          backgroundColor: '#fff',
+          backgroundColor: 'lightgray',
         }}
       >
         <div
@@ -168,7 +169,7 @@ export const SideBarVaccinator = () => {
           <Avatar icon={<UserOutlined />} />
           {!collapsed && (
             <div style={{ marginLeft: 12 }}>
-              <div style={{ fontWeight: 500, fontSize: 14 }}>Doctor User</div>
+              <div style={{ fontWeight: 500, fontSize: 14 }}>Vaccinator User</div>
               <div style={{ fontSize: 12, color: 'rgba(0, 0, 0, 0.45)' }}>
                 doctor@vaccitrack.com
               </div>
