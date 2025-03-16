@@ -101,7 +101,7 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Mapper
 
 			CreateMap<Vaccination, VaccinationViewDto>();
 
-
+			CreateMap<Vaccine, VaccineViewMiniDto>();
 			CreateMap<Vaccine, VaccineViewDto>();
 			CreateMap<VaccineCreateDto, Vaccine>();
 			CreateMap<VaccineUpdateDto, Vaccine>()

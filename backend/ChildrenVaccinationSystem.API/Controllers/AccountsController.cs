@@ -72,7 +72,7 @@ namespace ChildrenVaccinationSystem.API.Controllers
 			));
 		}
 
-		[HttpPost("customer/{id}")]
+		[HttpPut("customer/{id}")]
 		public async Task<IActionResult> UpdateCustomerAccount(string id, CustomerUpdateDto customerUpdateDto)
 		{
 			await _accountService.UpdateCustomerAccount(id, customerUpdateDto);
