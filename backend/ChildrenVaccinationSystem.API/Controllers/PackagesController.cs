@@ -30,7 +30,21 @@ namespace ChildrenVaccinationSystem.API.Controllers
             ));
         }
 
-        [HttpGet("{id}")]
+		[HttpGet("minimal")]
+		public async Task<IActionResult> GetPackagesMinimal(int pageNumber = -1, int pageSize = -1)
+		{
+			var packages = await _packageService.GetPackagesMinimal(pageNumber, pageSize);
+
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Lấy danh sách packages thành công",
+				data: packages
+			));
+		}
+
+
+		[HttpGet("{id}")]
         public async Task<IActionResult> GetPackageById(string id)
         {
             var package = await _packageService.GetPackageById(id);

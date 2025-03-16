@@ -83,7 +83,26 @@ namespace ChildrenVaccinationSystem.Services
             return new BasePaginatedList<PackageViewDto>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
         }
 
-        public async Task<PackageViewDto> GetPackageById(string id)
+		public async Task<BasePaginatedList<object>> GetPackagesMinimal(int pageNumber, int pageSize)
+		{
+			IQueryable<Package> query = _unitOfWork.GetRepository<Package>().Entities.Where(p => p.DeletedBy == null);
+
+			BasePaginatedList<Package> resultQuery = (pageNumber <= 0 || pageSize <= 0)
+				? await _unitOfWork.GetRepository<Package>().GetPaging(query, 1, query.Count())
+				: await _unitOfWork.GetRepository<Package>().GetPaging(query, pageNumber, pageSize);
+
+			var responseItems = resultQuery.Items.Select(v => new
+			{
+				v.Id,
+				v.Name,
+                v.Price
+			}).ToList();
+
+			return new BasePaginatedList<object>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
+		}
+
+
+		public async Task<PackageViewDto> GetPackageById(string id)
         {
             var package = await _unitOfWork.GetRepository<Package>().Entities
                 .Where(p => p.Id == id && p.DeletedBy == null)
