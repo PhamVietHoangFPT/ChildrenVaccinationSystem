@@ -50,6 +50,8 @@ export const SideBarDoctor = () => {
 
     return []
   }
+  const userDataString = Cookies.get('userData')
+  const userData = userDataString ? JSON.parse(userDataString) : {}
 
   // Define the menu items
   const items = [
@@ -72,7 +74,6 @@ export const SideBarDoctor = () => {
       onClick: () => navigate('/doctor/vaccine'),
     },
   ]
-  
 
   return (
     <Sider
@@ -104,13 +105,15 @@ export const SideBarDoctor = () => {
         <div style={{ display: 'flex', alignItems: 'center', color: 'white' }}>
           <MedicineBoxOutlined style={{ color: 'white', fontSize: 20 }} />
           {!collapsed && (
-            <span style={{ marginLeft: 12, fontWeight: 600, color: 'white' }}>VacciTrack</span>
+            <span style={{ marginLeft: 12, fontWeight: 600, color: 'white' }}>
+              VacciTrack
+            </span>
           )}
         </div>
         {!collapsed && (
           <Button
             type='text'
-            icon={<MenuFoldOutlined style={{color: 'white'}}/>}
+            icon={<MenuFoldOutlined style={{ color: 'white' }} />}
             onClick={() => setCollapsed(true)}
             size='small'
           />
@@ -118,7 +121,7 @@ export const SideBarDoctor = () => {
         {collapsed && (
           <Button
             type='text'
-            icon={<MenuUnfoldOutlined style={{color: 'white'}}/>}
+            icon={<MenuUnfoldOutlined style={{ color: 'white' }} />}
             onClick={() => setCollapsed(false)}
             size='small'
             style={{ marginTop: 16 }}
@@ -171,9 +174,11 @@ export const SideBarDoctor = () => {
           <Avatar icon={<UserOutlined />} />
           {!collapsed && (
             <div style={{ marginLeft: 12 }}>
-              <div style={{ fontWeight: 500, fontSize: 14, color: 'white' }}>Doctor User</div>
+              <div style={{ fontWeight: 500, fontSize: 14, color: 'white' }}>
+                {userData?.Name || 'Doctor User'}
+              </div>
               <div style={{ fontSize: 12, color: 'white' }}>
-                doctor@vaccitrack.com
+                {userData?.Email || 'doctor@vaccitrack.com'}
               </div>
             </div>
           )}

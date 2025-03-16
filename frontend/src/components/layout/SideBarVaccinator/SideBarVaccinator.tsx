@@ -50,7 +50,8 @@ export const SideBarVaccinator = () => {
 
     return []
   }
-
+  const userDataString = Cookies.get('userData')
+  const userData = userDataString ? JSON.parse(userDataString) : {}
   // Define the menu items
   const items = [
     {
@@ -101,7 +102,7 @@ export const SideBarVaccinator = () => {
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', }}>
-          <MedicineBoxOutlined style={{ color: '#1890ff', fontSize: 20 }} />
+          <MedicineBoxOutlined style={{ color: 'black', fontSize: 20 }} />
           {!collapsed && (
             <span style={{ marginLeft: 12, fontWeight: 600 }}>VacciTrack</span>
           )}
@@ -169,9 +170,11 @@ export const SideBarVaccinator = () => {
           <Avatar icon={<UserOutlined />} />
           {!collapsed && (
             <div style={{ marginLeft: 12 }}>
-              <div style={{ fontWeight: 500, fontSize: 14 }}>Vaccinator User</div>
-              <div style={{ fontSize: 12, color: 'rgba(0, 0, 0, 0.45)' }}>
-                doctor@vaccitrack.com
+              <div style={{ fontWeight: 500, fontSize: 14 }}>
+                {userData?.Name || 'Vaccinator'}
+              </div>
+              <div style={{ fontSize: 12 }}>
+                {userData?.Email || 'vaccinator@vaccitrack.com'}
               </div>
             </div>
           )}

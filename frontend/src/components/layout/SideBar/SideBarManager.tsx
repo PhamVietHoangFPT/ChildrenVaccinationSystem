@@ -50,7 +50,8 @@ export const SideBar = () => {
 
     return []
   }
-
+  const userDataString = Cookies.get('userData')
+  const userData = userDataString ? JSON.parse(userDataString) : {}
   // Define the menu items
   const items = [
     {
@@ -168,9 +169,11 @@ export const SideBar = () => {
           <Avatar icon={<UserOutlined />} />
           {!collapsed && (
             <div style={{ marginLeft: 12 }}>
-              <div style={{ fontWeight: 500, fontSize: 14 }}>Admin User</div>
-              <div style={{ fontSize: 12, color: 'rgba(0, 0, 0, 0.45)' }}>
-                admin@vaccitrack.com
+              <div style={{ fontWeight: 500, fontSize: 14, color: 'black' }}>
+                {userData?.Name || 'Manager User'}
+              </div>
+              <div style={{ fontSize: 12, color: 'black' }}>
+                {userData?.Email || 'manager@vaccitrack.com'}
               </div>
             </div>
           )}
