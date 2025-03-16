@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ChildrenVaccinationSystem.Contract.Repositories.Dtos.PackageDtos;
+using ChildrenVaccinationSystem.Core.Base;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +10,10 @@ namespace ChildrenVaccinationSystem.Contract.Services
 {
 	public interface IPackageService
 	{
-	}
+        Task CreatePackage(PackageCreateDto packageCreateDto);
+        Task DeletePackage(string id);
+        Task UpdatePackage(string id, PackageUpdateDto packageUpdateDto);
+        Task<BasePaginatedList<PackageViewDto>> GetPackages(string? name, int pageNumber, int pageSize);
+        Task<PackageViewDto> GetPackageById(string id);
+    }
 }

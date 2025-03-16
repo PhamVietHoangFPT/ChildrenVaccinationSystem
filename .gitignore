@@ -402,3 +402,8 @@ FodyWeavers.xsd
 # End of https://www.toptal.com/developers/gitignore/api/csharp
 
 .idea
+/backend/ChildrenVaccinationSystem.API/Controllers/VNPayController.cs
+/backend/ChildrenVaccinationSystem.Contract.Repositories/Dtos/PaymentDtos/PaymentDto.cs
+/backend/ChildrenVaccinationSystem.Contract.Repositories/Entities/PaymentRequest.cs
+/backend/ChildrenVaccinationSystem.Services/IPaymentService.cs
+/backend/ChildrenVaccinationSystem.Services/VNPayService.cs
