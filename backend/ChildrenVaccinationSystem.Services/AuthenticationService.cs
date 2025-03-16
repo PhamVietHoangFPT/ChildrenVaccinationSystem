@@ -412,8 +412,7 @@ namespace ChildrenVaccinationSystem.Services
 				new Claim(ClaimTypes.NameIdentifier, account.Id),
 				new Claim("Id", account.Id),
 				new Claim("Name", account.Name),
-				new Claim("Email", account.Email),
-				new Claim("Facility", account.Facility?.Name!),
+				new Claim("Email", account.Email ?? ""),
 				new Claim("PhoneNumber", account.PhoneNumber ?? string.Empty),
 				new Claim("Address", account.Address ?? string.Empty),
 				new Claim("Role", account.Role.ToString())
