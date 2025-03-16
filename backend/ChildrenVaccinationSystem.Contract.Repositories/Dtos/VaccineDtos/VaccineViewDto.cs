@@ -1,6 +1,7 @@
 ﻿using ChildrenVaccinationSystem.Contract.Repositories.Dtos.CategoryDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Dtos.ImageDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Dtos.ManufacturerDtos;
+using ChildrenVaccinationSystem.Contract.Repositories.Dtos.VaccinationDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Dtos.VaccineInventoryDtos;
 
 namespace ChildrenVaccinationSystem.Contract.Repositories.Dtos.VaccineDtos
@@ -18,6 +19,7 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Dtos.VaccineDtos
 		public int? DosageInterval { get; set; }
 		public CategoryViewDto Category { get; set; } = default!;
 		public ManufacturerViewDto Manufacturer { get; set; } = default!;
+		public ICollection<SimpleViewDto>? Vaccinations { get; set; } 
 		public ICollection<ImageViewDto>? Images { get; set; }
 		public ICollection<VaccineInventoryViewDto>? VaccineInventories { get; set; }
 	}

@@ -1,5 +1,4 @@
 ﻿using ChildrenVaccinationSystem.Contract.Repositories.Dtos.InstallmentDtos;
-using ChildrenVaccinationSystem.Contract.Repositories.Dtos.VaccinationDetailDtos;
 using ChildrenVaccinationSystem.Core.Enum;
 
 namespace ChildrenVaccinationSystem.Contract.Repositories.Dtos.VaccinationDtos
@@ -18,8 +17,6 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Dtos.VaccinationDtos
 		public SimpleViewDto Child { get; set; } = default!;
 		public SimpleViewDto? Doctor { get; set; }
 		public SimpleViewDto? Vaccinator { get; set; }
-		public ICollection<VaccinationDetailViewDto>? VaccinationDetails { get; set; }
-		public ICollection<InstallmentViewDto>? Installments { get; set; }
-
+		public SimpleViewDto Vaccine { get; set; } = default!;
 	}
 }

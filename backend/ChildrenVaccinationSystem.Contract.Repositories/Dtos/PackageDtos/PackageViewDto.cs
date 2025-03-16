@@ -1,5 +1,4 @@
 ﻿using ChildrenVaccinationSystem.Contract.Repositories.Dtos.PackageItemDtos;
-using ChildrenVaccinationSystem.Contract.Repositories.Dtos.VaccinationDetailDtos;
 
 namespace ChildrenVaccinationSystem.Contract.Repositories.Dtos.PackageDtos
 {

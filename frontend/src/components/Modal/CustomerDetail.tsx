@@ -6,26 +6,26 @@ import { Customer } from '../../types/customer';
 import { useGetCustomerDetailQuery, useUpdateCustomerMutation } from '../../features/customer/customerAPI';
 
 interface CustomerDetailResponse {
-    data: {
-        data: Customer;
-    };
-    isLoading: boolean;
-    isFetching: boolean;
-    error: any;
+  data: {
+    data: Customer
+  }
+  isLoading: boolean
+  isFetching: boolean
+  error: any
 }
 
 interface CustomerDetailModalProps {
-    visible: boolean;
-    customerId: string | null;
-    onClose: () => void;
+  visible: boolean
+  customerId: string | null
+  onClose: () => void
 }
 
 const { Text } = Typography
 
 const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
-    visible,
-    customerId,
-    onClose,
+  visible,
+  customerId,
+  onClose,
 }) => {
     const {
         data: customerDetailData,
@@ -172,5 +172,4 @@ const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
         </Modal>
     );
 };
-
-export default CustomerDetailModal;
+export default CustomerDetailModal

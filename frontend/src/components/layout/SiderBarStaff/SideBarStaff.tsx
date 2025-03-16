@@ -46,7 +46,7 @@ const SideBarStaff: React.FC = () => {
   const userData = Cookies.get('userData')
     ? JSON.parse(Cookies.get('userData') as string)
     : null
-    
+
   // Define menu items with useMemo for performance
   const items = useMemo((): CustomMenuItem[] => {
     return [

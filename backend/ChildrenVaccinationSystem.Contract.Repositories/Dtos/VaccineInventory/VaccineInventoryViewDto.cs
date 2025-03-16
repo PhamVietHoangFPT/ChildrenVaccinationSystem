@@ -4,7 +4,7 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Dtos.VaccineInventoryD
 {
 	public class VaccineInventoryViewDto
 	{
-		public string Stock { get; set; } = default!;
+		public int Stock { get; set; } = default!;
 		public DateOnly ImportedDate { get; set; } = default!;
 		public DateOnly ExpiryDate { get; set; } = default!;
 		public string BatchNumber { get; set; } = default!;

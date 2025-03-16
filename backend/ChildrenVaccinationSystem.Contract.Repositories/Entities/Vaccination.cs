@@ -5,7 +5,7 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Entities
 {
 	public class Vaccination : BaseEntity
 	{
-		public double TotalPrice { get; set; }
+		public double Price { get; set; }
 		public DateOnly Schedule {  get; set; }
 		public string? Note { get; set; }
 		public VaccinationStatusEnum Status { get; set; }
@@ -19,7 +19,7 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Entities
 		public virtual Account? Doctor { get; set; }
 		public string? VaccinatorId { get; set; }
 		public virtual Account? Vaccinator { get; set; }
-		public virtual ICollection<VaccinationDetail>? VaccinationDetails { get; set; }
-		public virtual ICollection<Installment>? Installments { get; set; }
+		public string? VaccineId { get; set; }
+		public virtual Vaccine Vaccine { get; set; } = default!;
 	}
 }

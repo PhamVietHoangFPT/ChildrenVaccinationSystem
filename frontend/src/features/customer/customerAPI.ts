@@ -33,10 +33,10 @@ export const customerAPI = apiSlice.injectEndpoints({
       invalidatesTags: ['customers'],
     }),
   }),
-
 })
 export const {
   useGetCustomerListQuery,
   useGetCustomerDetailQuery,
   useUpdateCustomerMutation
 } = customerAPI
+

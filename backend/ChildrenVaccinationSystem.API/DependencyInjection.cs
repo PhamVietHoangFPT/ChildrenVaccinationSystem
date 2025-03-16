@@ -84,7 +84,7 @@ namespace ChildrenVaccinationSystem.API
 			{
 				options.UseLazyLoadingProxies() // Enable lazy loading
 					   .UseSqlServer(configuration.GetConnectionString("MyCnn"), b =>
-						   b.MigrationsAssembly("ChildrenVaccinationSystem.API")); // Specify migrations assembly
+						 b.MigrationsAssembly("ChildrenVaccinationSystem.Repositories")); // Đổi API -> Repositories
 				options.ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
 			});
 		}
@@ -127,6 +127,10 @@ namespace ChildrenVaccinationSystem.API
 			services.AddScoped<ICategoryService, CategoryService>();
 			services.AddScoped<IFacilityService, FacilityService>();
 			services.AddScoped<IManufacturerService, ManufacturerService>();
+			services.AddScoped<IVaccinationService, VaccinationService>();
+			services.AddScoped<IVnPayService, VnPayService>();
+            services.AddScoped<IPackageService, PackageService>();
+            services.AddMemoryCache();
 		}
 
 		public static void AddRepositories(this IServiceCollection services)

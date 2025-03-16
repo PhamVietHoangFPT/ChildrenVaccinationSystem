@@ -34,13 +34,13 @@ export const childrenApi = apiSlice.injectEndpoints({
       invalidatesTags: ['children'],
     }),
     createChildren: builder.mutation({
-      query: ({data,parentId}) => ({
+      query: ({ data, parentId }) => ({
         url: '/children',
         method: 'POST',
         body: data,
-        params:{
-          parentId
-        }
+        params: {
+          parentId,
+        },
       }),
       transformResponse: (res) => res,
       invalidatesTags: ['children'],
@@ -69,7 +69,7 @@ export const {
   useGetChildrenListQuery,
   useGetChildrenDetailQuery,
   useUpdateChildrenMutation,
-  useCreateChildrenMutation
+  useCreateChildrenMutation,
   // useCreateChildrenMutation,
   // useGetChildrenDetailQuery,
   // useUpdateChildrenMutation,

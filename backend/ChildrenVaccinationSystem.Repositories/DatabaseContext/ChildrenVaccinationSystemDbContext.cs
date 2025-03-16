@@ -22,15 +22,22 @@ namespace ChildrenVaccinationSystem.Repositories.DatabaseContext
 		public virtual DbSet<Package> Packages { get; set; }
 		public virtual DbSet<PackageItem> PackageItems { get; set; }
 		public virtual DbSet<Vaccination> Vaccinations { get; set; }
-		public virtual DbSet<VaccinationDetail> VaccinationDetails { get; set; }
 		public virtual DbSet<Vaccine> Vaccines { get; set; }
+
+		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+		{
+			if (!optionsBuilder.IsConfigured)
+			{
+				optionsBuilder.UseSqlServer("Server=your_server;Database=your_db;User Id=your_user;Password=your_password;");
+			}
+		}
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
+
+
 			modelBuilder.Entity<PackageItem>()
 			.HasKey(p => new { p.PackageId, p.VaccineId });
-			modelBuilder.Entity<VaccinationDetail>()
-				.HasKey(vd => new { vd.PackageId, vd.VaccinationId, vd.VaccineId });
 			modelBuilder.Entity<VaccineInventory>()
 				.HasKey(vi => new { vi.BatchNumber, vi.FacilityId, vi.VaccineId });
 
@@ -68,14 +75,6 @@ namespace ChildrenVaccinationSystem.Repositories.DatabaseContext
 			modelBuilder.Entity<Child>()
 				.HasMany(c => c.Vaccinations).WithOne(v => v.Child).HasForeignKey(v => v.ChildId).OnDelete(DeleteBehavior.NoAction);
 
-			modelBuilder.Entity<Vaccination>()
-				.HasMany(v => v.VaccinationDetails).WithOne(vd => vd.Vaccination).HasForeignKey(vd => vd.VaccinationId).OnDelete(DeleteBehavior.NoAction);
-			modelBuilder.Entity<Vaccination>()
-				.HasMany(v => v.Installments).WithOne(i => i.Vaccination).HasForeignKey(vd => vd.VaccinationId).OnDelete(DeleteBehavior.NoAction);
-
-
-			modelBuilder.Entity<Package>()
-				.HasMany(p => p.VaccinationDetails).WithOne(vd => vd.Package).HasForeignKey(vd => vd.PackageId).OnDelete(DeleteBehavior.NoAction);
 			modelBuilder.Entity<Package>()
 				.HasMany(p => p.PackageItems).WithOne(pi => pi.Package).HasForeignKey(pi => pi.PackageId).OnDelete(DeleteBehavior.NoAction);
 
@@ -86,13 +85,14 @@ namespace ChildrenVaccinationSystem.Repositories.DatabaseContext
 				.HasMany(f => f.VaccineInventories).WithOne(vi => vi.Facility).HasForeignKey(vi => vi.FacilityId).OnDelete(DeleteBehavior.NoAction);
 
 			modelBuilder.Entity<Vaccine>()
-				.HasMany(v => v.VaccinationDetails).WithOne(vd => vd.Vaccine).HasForeignKey(vd => vd.VaccineId).OnDelete(DeleteBehavior.NoAction);
+				.HasMany(v => v.Vaccinations).WithOne(vd => vd.Vaccine).HasForeignKey(vd => vd.VaccineId).OnDelete(DeleteBehavior.NoAction);
 			modelBuilder.Entity<Vaccine>()
 				.HasMany(v => v.Images).WithOne(i => i.Vaccine).HasForeignKey(i => i.VaccineId).OnDelete(DeleteBehavior.NoAction);
 			modelBuilder.Entity<Vaccine>()
 				.HasMany(v => v.PackageItems).WithOne(pi => pi.Vaccine).HasForeignKey(pi => pi.VaccineId).OnDelete(DeleteBehavior.NoAction);
 			modelBuilder.Entity<Vaccine>()
 				.HasMany(v => v.VaccineInventories).WithOne(vi => vi.Vaccine).HasForeignKey(vi => vi.VaccineId).OnDelete(DeleteBehavior.NoAction);
+
 
 			modelBuilder.Entity<Category>()
 				.HasMany(c => c.Vaccines).WithOne(v => v.Category).HasForeignKey(v => v.CategoryId).OnDelete(DeleteBehavior.NoAction);
