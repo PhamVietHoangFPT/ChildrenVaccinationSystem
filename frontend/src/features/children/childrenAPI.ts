@@ -3,7 +3,7 @@ import { apiSlice } from '../../apis/apiSlice'
 export const childrenApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getChildrenList: builder.query({
-      query: ({ pageNumber, pageSize, parentPhoneNumber, name }) => ({
+      query: ({ pageNumber, pageSize, parentPhoneNumber, name, parentId }) => ({
         url: '/children/minimal',
         method: 'GET',
         params: {
@@ -11,6 +11,7 @@ export const childrenApi = apiSlice.injectEndpoints({
           name,
           pageNumber,
           pageSize,
+          parentId,
         },
       }),
       transformResponse: (res) => res,
@@ -45,14 +46,6 @@ export const childrenApi = apiSlice.injectEndpoints({
       transformResponse: (res) => res,
       invalidatesTags: ['children'],
     }),
-    // getChildrenDetail: build.query({
-    //   query: (id) => ({
-    //     url: `/children/${id}`,
-    //     method: 'GET',
-    //   }),
-    //   transformResponse: (res) => res,
-    //   providesTags: ['children'],
-    // }),
 
     // deleteChildren: build.mutation({
     //   query: (id) => ({
