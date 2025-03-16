@@ -164,7 +164,5 @@ namespace ChildrenVaccinationSystem.API.Controllers
 				data: account
 			));
 		}
-
-
 	}
 }
