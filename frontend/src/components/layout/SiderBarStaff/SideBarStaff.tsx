@@ -58,9 +58,9 @@ const SideBarStaff: React.FC = () => {
         url: '/staff',
       },
       {
-        key: 'sub0',
+        key: 'sub10',
         label: 'Register For Customer',
-        icon: <UserAddOutlined />,
+        icon: <UserAddOutlined/>,
         url: '/staff',
       },
       {
