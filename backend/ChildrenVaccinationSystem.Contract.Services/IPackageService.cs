@@ -13,8 +13,9 @@ namespace ChildrenVaccinationSystem.Contract.Services
         Task CreatePackage(PackageCreateDto packageCreateDto);
         Task DeletePackage(string id);
         Task UpdatePackage(string id, PackageUpdateDto packageUpdateDto);
+        Task RemoveVaccineFromPackage(string packageId, string vaccineId);
         Task<BasePaginatedList<PackageViewDto>> GetPackages(string? name, int pageNumber, int pageSize);
         Task<BasePaginatedList<object>> GetPackagesMinimal(int pageNumber, int pageSize);
-		Task<PackageViewDto> GetPackageById(string id);
+		Task<PackageViewDto> GetPackageById(string id);    
     }
 }
