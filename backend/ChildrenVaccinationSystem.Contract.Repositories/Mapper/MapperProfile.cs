@@ -77,9 +77,15 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Mapper
 										  (srcMember is not string || !string.IsNullOrWhiteSpace(srcMember.ToString()))
 				));
 
-			CreateMap<Package, PackageViewDto>();
+            CreateMap<Package, PackageViewDto>();
+            CreateMap<PackageCreateDto, Package>();
+            CreateMap<PackageUpdateDto, Package>()
+				.ForAllMembers(opt => opt.Condition(
+                (src, dest, srcMember) => srcMember != null &&
+                                          (srcMember is not string || !string.IsNullOrWhiteSpace(srcMember.ToString()))
+                ));
 
-			CreateMap<PackageItem, PackageItemViewDto>();
+            CreateMap<PackageItem, PackageItemViewDto>();
 
 			CreateMap<Vaccination, VaccinationViewDto>();
 
