@@ -10,6 +10,5 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Dtos.PackageDtos
     {
         public string? Name { get; set; }
         public double? Price { get; set; }
-        public List<string>? PackageItemIds { get; set; } 
     }
 }
