@@ -71,6 +71,7 @@ namespace ChildrenVaccinationSystem.API.Controllers
 				data: accounts
 			));
 		}
+
 		[HttpPost("customer/{id}")]
 		public async Task<IActionResult> UpdateCustomerAccount(string id, CustomerUpdateDto customerUpdateDto)
 		{
@@ -83,6 +84,7 @@ namespace ChildrenVaccinationSystem.API.Controllers
 				data: null
 			));
 		}
+
 		[HttpGet("customer/minimal")]
 		public async Task<IActionResult> GetCustomerAccountsMinimal(string? phoneNumber, int pageNumber = -1, int pageSize = -1)
 		{
@@ -95,6 +97,59 @@ namespace ChildrenVaccinationSystem.API.Controllers
 				data: accounts
 			));
 		}
+
+		[HttpGet("personnel")]
+		public async Task<IActionResult> GetPersonnelAccounts(int pageNumber = -1, int pageSize = -1)
+		{
+			BasePaginatedList<AccountViewDto> accounts = await _accountService.GetPersonnelAccounts(pageNumber, pageSize);
+
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Lấy thông tin nhân sự thành công",
+				data: accounts
+			));
+		}
+
+		[HttpGet("personnel/minimal")]
+		public async Task<IActionResult> GetPersonnelAccountsMinimal(int pageNumber = -1, int pageSize = -1)
+		{
+			BasePaginatedList<object> accounts = await _accountService.GetPersonnelAccountsMinimal(pageNumber, pageSize);
+
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Lấy thông tin nhân sự thành công",
+				data: accounts
+			));
+		}
+
+		[HttpPost("personnel")]
+		public async Task<IActionResult> CreatePersonnelAccount(PersonnelCreateDto personnelCreateDto)
+		{
+			await _accountService.CreatePersonnelAccount(personnelCreateDto);
+
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Tạo nhân sự thành công",
+				data: null
+			));
+		}
+
+		[HttpPut("personnel")]
+		public async Task<IActionResult> UpdatePersonnelAccount(string id, PersonnelUpdateDto personnelUpdateDto)
+		{
+			await _accountService.UpdatePersonnelAccount(id, personnelUpdateDto);
+
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Cập nhật nhân sự thành công",
+				data: null
+			));
+		}
+
 
 
 		[HttpGet("{id}")]

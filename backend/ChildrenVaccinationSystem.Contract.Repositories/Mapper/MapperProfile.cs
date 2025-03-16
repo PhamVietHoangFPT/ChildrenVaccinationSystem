@@ -35,6 +35,14 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Mapper
 										  (srcMember is not string || !string.IsNullOrWhiteSpace(srcMember.ToString()))
 				));
 
+			CreateMap<PersonnelCreateDto, Account>();
+			CreateMap<PersonnelUpdateDto, Account>()
+				.ForAllMembers(opt => opt.Condition(
+				(src, dest, srcMember) => srcMember != null &&
+										  (srcMember is not string || !string.IsNullOrWhiteSpace(srcMember.ToString()))
+				));
+
+
 			CreateMap<Blog, BlogViewDto>();
 			CreateMap<BlogCreateDto, Blog>();
 			CreateMap<BlogUpdateDto, Blog>()
