@@ -1,31 +1,31 @@
 // src/components/CustomerDetailModal.tsx
 import React, { useEffect } from 'react';
-import { Modal, Button, Form, message, Typography, Input, Switch } from 'antd';
+import { Modal, Button, Form, message, Typography, Input, Switch, DatePicker } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import { Customer } from '../../types/customer';
 import { useGetCustomerDetailQuery, useUpdateCustomerMutation } from '../../features/customer/customerAPI';
-
+import dayjs from 'dayjs'
 interface CustomerDetailResponse {
-  data: {
-    data: Customer
-  }
-  isLoading: boolean
-  isFetching: boolean
-  error: any
+    data: {
+        data: Customer
+    }
+    isLoading: boolean
+    isFetching: boolean
+    error: any
 }
 
 interface CustomerDetailModalProps {
-  visible: boolean
-  customerId: string | null
-  onClose: () => void
+    visible: boolean
+    customerId: string | null
+    onClose: () => void
 }
 
 const { Text } = Typography
 
 const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
-  visible,
-  customerId,
-  onClose,
+    visible,
+    customerId,
+    onClose,
 }) => {
     const {
         data: customerDetailData,
@@ -44,7 +44,9 @@ const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
         if (customerDetail) {
             form.setFieldsValue({
                 name: customerDetail.name || '',
-                dateOfBirth: customerDetail.dateOfBirth || '',
+                dateOfBirth: customerDetail.dateOfBirth
+                    ? dayjs(customerDetail.dateOfBirth)
+                    : null,
                 phoneNumber: customerDetail.phoneNumber || '',
                 address: customerDetail.address || '',
                 gender: customerDetail.gender ? customerDetail.gender : false,
@@ -57,7 +59,9 @@ const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
         if (!customerId) return;
         const inputValues = {
             name: values.name,
-            dateOfBirth: values.dateOfBirth,
+            dateOfBirth: values.dateOfBirth
+                ? dayjs(values.dateOfBirth).format('YYYY-MM-DD')
+                : null, // Chuyển đổi thành chuỗi 'YYYY-MM-DD'
             phoneNumber: values.phoneNumber,
             address: values.address,
             gender: values.gender,
@@ -116,7 +120,9 @@ const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
                     onFinish={handleUpdate}
                     initialValues={{
                         name: customerDetail.name,
-                        dateOfBirth: customerDetail.dateOfBirth,
+                        ateOfBirth: customerDetail.dateOfBirth
+                            ? dayjs(customerDetail.dateOfBirth)
+                            : null,
                         phoneNumber: customerDetail.phoneNumber,
                         address: customerDetail.address,
                         gender: customerDetail.gender,
@@ -133,11 +139,12 @@ const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
                     <Form.Item
                         label='Date Of Birth'
                         name='dateOfBirth'
-                        rules={[
-                            { required: true },
-                        ]}
+                        rules={[{ required: true, message: 'Vui lòng chọn ngày sinh' }]}
+
                     >
-                        <Input />
+                        <DatePicker
+                            disabledDate={(current) => current && current > dayjs().endOf('day')} // Không cho chọn ngày tương lai
+                            style={{ width: '100%' }} format='YYYY-MM-DD' />
                     </Form.Item>
 
                     <Form.Item
