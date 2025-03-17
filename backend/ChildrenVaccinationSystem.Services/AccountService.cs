@@ -39,6 +39,12 @@ namespace ChildrenVaccinationSystem.Services
 
 		public async Task ForceUpdateAccountProfile(AccountForceUpdateDto accountForceUpdateDto)
 		{
+			var existingAccount = _unitOfWork.GetRepository<Account>().Entities.Where(a => a.PhoneNumber == accountForceUpdateDto.Account.PhoneNumber && a.DeletedBy == null);
+			if (existingAccount != null)
+			{
+				throw new ErrorException(409, "conflict", "Số điện thoại này đã được sử dụng, vui lòng thử lại");
+			}
+
 			string accountId = _authenticationService.GetCurrentAccountId();
 
 			Account account = _unitOfWork.GetRepository<Account>().GetById(accountId)!;
@@ -51,6 +57,7 @@ namespace ChildrenVaccinationSystem.Services
 
 			child.ChildCode = _childService.GenerateChildCode();
 			child.AccountId = accountId;
+			_authenticationService.UpdateAudits(account, true);
 
 			await _unitOfWork.GetRepository<Account>().UpdateAsync(account);
 			await _unitOfWork.GetRepository<Child>().InsertAsync(child);
@@ -104,6 +111,30 @@ namespace ChildrenVaccinationSystem.Services
 
 			return new BasePaginatedList<AccountViewDto>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
 		}
+
+		public async Task CreateCustomerAccount(CustomerCreateDto customerCreateDto)
+		{
+			Account? existingAccount = await _unitOfWork.GetRepository<Account>().Entities.Where(a => a.PhoneNumber == customerCreateDto.PhoneNumber && a.DeletedBy == null).FirstOrDefaultAsync();
+
+			if (existingAccount != null)
+			{
+				throw new ErrorException(409, "conflict", "Số điện thoại này đã được sử dụng, vui lòng thử lại");
+			}
+
+			Account account = new()
+			{
+				Password = BCrypt.Net.BCrypt.HashPassword(customerCreateDto.PhoneNumber),
+				Role = RoleEnum.Customer,
+			};
+
+			_mapper.Map(customerCreateDto, account);
+
+			_authenticationService.UpdateAudits(account, true);
+
+			await _unitOfWork.GetRepository<Account>().InsertAsync(account);
+			await _unitOfWork.SaveAsync();
+		}
+
 
 		public async Task<BasePaginatedList<object>> GetCustomerAccountsMinimal(string? phoneNumber, int pageNumber, int pageSize)
 		{

@@ -1,0 +1,17 @@
+﻿using Microsoft.AspNetCore.Identity;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ChildrenVaccinationSystem.Contract.Repositories.Dtos.AccountDtos
+{
+	public class CustomerCreateDto
+	{
+		public string Name { get; set; } = default!;
+		public DateOnly DateOfBirth { get; set; }
+		public string PhoneNumber { get; set; } = default!;
+		public bool Gender {  get; set; }
+	}
+}

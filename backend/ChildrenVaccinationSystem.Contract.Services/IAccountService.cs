@@ -21,6 +21,7 @@ namespace ChildrenVaccinationSystem.Contract.Services
 		Task CreatePersonnelAccount(PersonnelCreateDto personnelCreateDto);
 		Task UpdatePersonnelAccount(string id, PersonnelUpdateDto personnelUpdateDto);
 		Task<AccountViewDto> GetAccountById(string id);
+		Task CreateCustomerAccount(CustomerCreateDto customerCreateDto);
 		Task UpdateCustomerAccount(string id, CustomerUpdateDto customerUpdateDto);
 		Task ForceUpdateAccountProfile(AccountForceUpdateDto accountForceUpdateDto);
 		Task IsValidForProfileUpdate();
