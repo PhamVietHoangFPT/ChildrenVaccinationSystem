@@ -7,7 +7,7 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Entities
 	{
 		public string Name { get; set; } = default!;
 		public DateOnly? DateOfBirth { get; set; }
-		public string Email { get; set; } = default!;
+		public string? Email { get; set; } = default!;
 		public string Password { get; set; } = default!;
 		public string? PhoneNumber { get; set; }
 		public string? Address { get; set; }
@@ -18,6 +18,8 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Entities
 		public string? UpdateEmailOTP { get; set; }
 		public string? TempUpdateEmail { get; set; }
 		public DateTimeOffset EmailLastUpdatedTime { get; set; }
+		public string? FacilityId { get; set; }
+		public virtual Facility? Facility { get; set; }
 		public virtual ICollection<Child>? Children { get; set; }
 		public virtual ICollection<Vaccination>? DoctorVaccinations { get; set; }
 		public virtual ICollection<Vaccination>? VaccinatorVaccinations { get; set; }

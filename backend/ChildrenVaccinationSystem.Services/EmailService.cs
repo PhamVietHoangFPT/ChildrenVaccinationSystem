@@ -17,11 +17,11 @@ namespace ChildrenVaccinationSystem.Services
 {
 	public class EmailService : IEmailService
 	{
-		private readonly IConfiguration _configuration;
+		private readonly IConfiguration _confg;
 
-		public EmailService(IConfiguration configuration)
+		public EmailService(IConfiguration config)
 		{
-			_configuration = configuration;
+			_confg = config;
 		}
 
 		public Task SendVerificationEmail(string email, string verificationToken)
@@ -35,7 +35,7 @@ namespace ChildrenVaccinationSystem.Services
 				Credentials = new NetworkCredential(mail, pw)
 			};
 
-			var productDomain = _configuration["ProductDomain"];
+			var productDomain = _confg["ProductDomain"];
 
 			string verificationUrl = $"{productDomain}/api/authentication/verify-account?token={verificationToken}";
 
@@ -85,7 +85,7 @@ namespace ChildrenVaccinationSystem.Services
 				Credentials = new NetworkCredential(mail, pw)
 			};
 
-			var productDomain = _configuration["ProductDomain"];
+			var productDomain = _confg["ProductDomain"];
 			string resetUrl = $"{productDomain}/api/authentication/verify-reset-password?token={resetToken}";
 
 			var message = $@"
@@ -134,7 +134,7 @@ namespace ChildrenVaccinationSystem.Services
 				Credentials = new NetworkCredential(mail, pw)
 			};
 
-			var productDomain = _configuration["ProductDomain"];
+			var productDomain = _confg["ProductDomain"];
 			string updateEmailUrl = $"{productDomain}/api/authentication/verify-reset-password?token={otp}";
 
 			var message = $@"

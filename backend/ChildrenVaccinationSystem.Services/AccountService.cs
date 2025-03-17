@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ChildrenVaccinationSystem.Contract.Repositories.Dtos.AccountDtos;
+using ChildrenVaccinationSystem.Contract.Repositories.Dtos.BlogDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Dtos.CategoryDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Dtos.ChildDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Entities;
@@ -9,8 +10,10 @@ using ChildrenVaccinationSystem.Core.Base;
 using ChildrenVaccinationSystem.Core.Enum;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,18 +26,27 @@ namespace ChildrenVaccinationSystem.Services
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IMapper _mapper;
 		private readonly IAuthenticationService _authenticationService;
+		private readonly IConfiguration _config;
 		private IChildService _childService;
 
-		public AccountService(IUnitOfWork unitOfWork, IMapper mapper, IAuthenticationService authenticationService, IChildService childService)
+		public AccountService(IUnitOfWork unitOfWork, IMapper mapper, IAuthenticationService authenticationService, IConfiguration config, IChildService childService)
 		{
 			_unitOfWork = unitOfWork;
 			_mapper = mapper;
 			_authenticationService = authenticationService;
+			_config = config;
 			_childService = childService;
 		}
 
 		public async Task ForceUpdateAccountProfile(AccountForceUpdateDto accountForceUpdateDto)
 		{
+			Console.WriteLine(accountForceUpdateDto.Account.PhoneNumber);
+			Account? existingAccount = await _unitOfWork.GetRepository<Account>().Entities.Where(a => a.PhoneNumber == accountForceUpdateDto.Account.PhoneNumber && a.DeletedBy == null).FirstOrDefaultAsync();
+			if (existingAccount != null)
+			{
+				throw new ErrorException(409, "conflict", "Số điện thoại này đã được sử dụng, vui lòng thử lại");
+			}
+
 			string accountId = _authenticationService.GetCurrentAccountId();
 
 			Account account = _unitOfWork.GetRepository<Account>().GetById(accountId)!;
@@ -47,6 +59,7 @@ namespace ChildrenVaccinationSystem.Services
 
 			child.ChildCode = _childService.GenerateChildCode();
 			child.AccountId = accountId;
+			_authenticationService.UpdateAudits(child, true);
 
 			await _unitOfWork.GetRepository<Account>().UpdateAsync(account);
 			await _unitOfWork.GetRepository<Child>().InsertAsync(child);
@@ -101,6 +114,30 @@ namespace ChildrenVaccinationSystem.Services
 			return new BasePaginatedList<AccountViewDto>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
 		}
 
+		public async Task CreateCustomerAccount(CustomerCreateDto customerCreateDto)
+		{
+			Account? existingAccount = await _unitOfWork.GetRepository<Account>().Entities.Where(a => a.PhoneNumber == customerCreateDto.PhoneNumber && a.DeletedBy == null).FirstOrDefaultAsync();
+
+			if (existingAccount != null)
+			{
+				throw new ErrorException(409, "conflict", "Số điện thoại này đã được sử dụng, vui lòng thử lại");
+			}
+
+			Account account = new()
+			{
+				Password = BCrypt.Net.BCrypt.HashPassword(customerCreateDto.PhoneNumber),
+				Role = RoleEnum.Customer,
+			};
+
+			_mapper.Map(customerCreateDto, account);
+
+			_authenticationService.UpdateAudits(account, true);
+
+			await _unitOfWork.GetRepository<Account>().InsertAsync(account);
+			await _unitOfWork.SaveAsync();
+		}
+
+
 		public async Task<BasePaginatedList<object>> GetCustomerAccountsMinimal(string? phoneNumber, int pageNumber, int pageSize)
 		{
 			IQueryable<Account> query = _unitOfWork.GetRepository<Account>().Entities.Where(a => ((string.IsNullOrWhiteSpace(phoneNumber) || (!string.IsNullOrWhiteSpace(a.PhoneNumber) && a.PhoneNumber.StartsWith(phoneNumber)))) && a.Role == RoleEnum.Customer && a.VerificationToken == null && a.DeletedBy == null);
@@ -118,6 +155,109 @@ namespace ChildrenVaccinationSystem.Services
 				a.Gender
 			}).ToList();
 			return new BasePaginatedList<object>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
+		}
+
+		public async Task<BasePaginatedList<AccountViewDto>> GetPersonnelAccounts(RoleEnum? role, int pageNumber, int pageSize)
+		{
+			IQueryable<Account> query = _unitOfWork.GetRepository<Account>().Entities.Where(a => (a.Role == RoleEnum.Staff || a.Role == RoleEnum.Doctor || a.Role == RoleEnum.Vaccinator) && (role == null || a.Role == role) && a.DeletedBy == null);
+			BasePaginatedList<Account> resultQuery = (pageNumber <= 0 || pageSize <= 0)
+			? await _unitOfWork.GetRepository<Account>().GetPaging(query, 1, query.Count())
+				: await _unitOfWork.GetRepository<Account>().GetPaging(query, pageNumber, pageSize);
+
+			List<AccountViewDto> responseItems = resultQuery.Items.Select(_mapper.Map<AccountViewDto>).ToList();
+
+			return new BasePaginatedList<AccountViewDto>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
+		}
+
+		public async Task<BasePaginatedList<object>> GetPersonnelAccountsMinimal(RoleEnum? role, int pageNumber, int pageSize)
+		{
+			IQueryable<Account> query = _unitOfWork.GetRepository<Account>().Entities.Where(a => (a.Role == RoleEnum.Staff || a.Role == RoleEnum.Doctor || a.Role == RoleEnum.Vaccinator) && (role == null || a.Role == role) && a.DeletedBy == null);
+
+			BasePaginatedList<Account> resultQuery = (pageNumber <= 0 || pageSize <= 0)
+				? await _unitOfWork.GetRepository<Account>().GetPaging(query, 1, query.Count())
+				: await _unitOfWork.GetRepository<Account>().GetPaging(query, pageNumber, pageSize);
+
+			var responseItems = resultQuery.Items.Select(a => new
+			{
+				a.Id,
+				a.Name,
+				a.PhoneNumber,
+				a.Email,
+				a.Gender,
+				Facility = new { a.Facility!.Name }
+			}).ToList();
+			return new BasePaginatedList<object>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
+		}
+
+		public async Task CreatePersonnelAccount(PersonnelCreateDto personnelCreateDto)
+		{
+
+			Account? existingAccount = await _unitOfWork.GetRepository<Account>().Entities.Where(a => a.Email == personnelCreateDto.Email && a.DeletedBy == null).FirstOrDefaultAsync();
+
+			if (existingAccount != null)
+			{
+				throw new BaseException.ErrorException(409, "conflict", "Email này đã được sử dụng, vui lòng thử lại");
+			}
+
+			if (personnelCreateDto.Role != RoleEnum.Staff && personnelCreateDto.Role != RoleEnum.Vaccinator && personnelCreateDto.Role != RoleEnum.Doctor)
+				throw new ErrorException(404, "not_found", "Nhập sai role của nhân sự");
+			if (!_unitOfWork.IsValid<Facility>(personnelCreateDto.FacilityId))
+				throw new ErrorException(404, "not_found", "Không tìm thấy facility id");
+
+			Account account = new();
+			var hashedPassword = BCrypt.Net.BCrypt.HashPassword(_config["DefaultPassword"]);
+
+			_mapper.Map(personnelCreateDto, account);
+			account.Password = hashedPassword;
+			_authenticationService.UpdateAudits(account, true);
+
+			await _unitOfWork.GetRepository<Account>().InsertAsync(account);
+			await _unitOfWork.SaveAsync();
+		}
+
+
+		public async Task UpdatePersonnelAccount(string id, PersonnelUpdateDto personnelUpdateDto)
+		{
+			Account? account = await _unitOfWork.GetRepository<Account>().Entities.Where(a => a.Id == id && a.DeletedBy == null).FirstOrDefaultAsync();
+
+			if (account == null || (account.Role != RoleEnum.Staff && account.Role != RoleEnum.Vaccinator && account.Role != RoleEnum.Doctor))
+			{
+				throw new ErrorException(401, "not_found", "Không tìm thấy account id");
+			}
+
+			if (personnelUpdateDto.Email != null)
+			{
+				Account? existingAccount = await _unitOfWork.GetRepository<Account>().Entities.Where(a => a.Email == personnelUpdateDto.Email && a.DeletedBy == null).FirstOrDefaultAsync();
+
+				if (existingAccount != null)
+				{
+					throw new BaseException.ErrorException(409, "conflict", "Email này đã được sử dụng, vui lòng thử lại");
+				}
+			}
+
+
+			if (personnelUpdateDto.FacilityId != null && !_unitOfWork.IsValid<Facility>(personnelUpdateDto.FacilityId))
+			{
+				throw new ErrorException(404, "not_found", "Không tìm thấy facility id");
+			}
+
+			if (personnelUpdateDto.Role != null && personnelUpdateDto.Role != RoleEnum.Staff && personnelUpdateDto.Role != RoleEnum.Vaccinator && personnelUpdateDto.Role != RoleEnum.Doctor)
+				throw new ErrorException(404, "not_found", "Nhập sai role của nhân sự");
+
+
+			_mapper.Map(personnelUpdateDto, account);
+
+			if (personnelUpdateDto.IsResettingPassword)
+			{
+				var hashedPassword = BCrypt.Net.BCrypt.HashPassword(_config["DefaultPassword"]);
+
+				account.Password = hashedPassword;
+			}
+			_authenticationService.UpdateAudits(account, false);
+
+
+			await _unitOfWork.GetRepository<Account>().UpdateAsync(account);
+			await _unitOfWork.SaveAsync();
 		}
 
 		public async Task<AccountViewDto> GetAccountById(string id)
@@ -165,7 +305,7 @@ namespace ChildrenVaccinationSystem.Services
 			var expiredResetPasswordTokenAccounts = _unitOfWork.GetRepository<Account>().Entities
 				.Where(a => a.ResetPasswordToken != null).ToList();
 
-			foreach(var account in expiredResetPasswordTokenAccounts)
+			foreach (var account in expiredResetPasswordTokenAccounts)
 			{
 				account.ResetPasswordToken = null;
 			}

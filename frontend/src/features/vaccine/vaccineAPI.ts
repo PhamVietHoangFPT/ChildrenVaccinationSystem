@@ -1,6 +1,6 @@
 import { apiSlice } from '../../apis/apiSlice'
 
-export const testApi = apiSlice.injectEndpoints({
+export const vaccineApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getVaccineList: builder.query({
       query: ({
@@ -88,4 +88,4 @@ export const {
   useGetVaccineDetailQuery,
   useUpdateVaccineMutation,
   useDeleteVaccineMutation,
-} = testApi
+} = vaccineApi
