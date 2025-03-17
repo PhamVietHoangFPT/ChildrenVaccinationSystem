@@ -1,12 +1,10 @@
-import { useState } from 'react'
 import { useGetVaccineDetailQuery } from '../../features/vaccine/vaccineAPI'
 import { useParams } from 'react-router-dom'
 import { Vaccines } from '../../types/vaccine'
 import { LoadingOutlined } from '@ant-design/icons'
-import { Card, Select, Typography, Image, Descriptions, Alert } from 'antd'
+import { Card, Typography, Image, Descriptions, Alert } from 'antd'
 
 const { Title } = Typography
-const { Option } = Select
 
 interface VaccineListResponse {
   data: {
