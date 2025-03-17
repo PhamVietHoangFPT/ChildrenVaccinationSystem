@@ -57,7 +57,7 @@ namespace ChildrenVaccinationSystem.Services
 
 			child.ChildCode = _childService.GenerateChildCode();
 			child.AccountId = accountId;
-			_authenticationService.UpdateAudits(account, true);
+			_authenticationService.UpdateAudits(child, true);
 
 			await _unitOfWork.GetRepository<Account>().UpdateAsync(account);
 			await _unitOfWork.GetRepository<Child>().InsertAsync(child);
