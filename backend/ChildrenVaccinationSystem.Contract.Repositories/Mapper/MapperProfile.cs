@@ -101,6 +101,11 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Mapper
             CreateMap<PackageItem, PackageItemViewDto>();
 
 			CreateMap<Vaccination, VaccinationViewDto>();
+			CreateMap<VaccinationUpdateDto, Vaccination>()
+				.ForAllMembers(opt => opt.Condition(
+				(src, dest, srcMember) => srcMember != null &&
+										  (srcMember is not string || !string.IsNullOrWhiteSpace(srcMember.ToString()))
+				));
 
 			CreateMap<Vaccine, VaccineViewMiniDto>();
 			CreateMap<Vaccine, VaccineViewDto>();
