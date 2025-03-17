@@ -49,20 +49,42 @@ namespace ChildrenVaccinationSystem.API.Controllers
 		[HttpPost("register")]
 		public async Task<IActionResult> RegisterVaccination(VaccinationRegisterDto dto)
 		{
-			{
-				string price = await _vaccinationService.RegisterVaccination(HttpContext, dto);
+			string price = await _vaccinationService.RegisterVaccination(HttpContext, dto);
 
 
-				return Ok(new BaseResponse<object>(
-					statusCode: StatusCodeEnum.OK,
-					code: StatusCodeEnum.OK.ToString(),
-					message: "Đăng ký mua vaccine thành công!",
-					data: price
-				));
-			}
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Đăng ký mua vaccine thành công!",
+				data: price
+			));
+		}
+
+		[HttpPut("{id}/staff")]
+		public async Task<IActionResult> UpdateVaccinationByStaff(string id, VaccinationUpdateDto dto)
+		{
+			await _vaccinationService.UpdateVaccinationByStaff(id, dto);
+
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Cập nhật thông tin vaccination thành công!",
+				data: null
+			));
+		}
+
+		[HttpPut("{id}/{status}")]
+		public async Task<IActionResult> ShiftVaccinationStatus(string id, VaccinationStatusEnum status)
+		{
+			await _vaccinationService.ShiftVaccinationStatus(id, status);
 
 
-
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Thay đổi trạng thái thành công!",
+				data: null
+			));
 		}
 	}
 }
