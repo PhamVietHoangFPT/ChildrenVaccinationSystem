@@ -8,14 +8,14 @@ import {
   Modal,
   Spin,
   Select,
+  Upload,
 } from 'antd'
-const { Option } = Select
+import { UploadOutlined } from '@ant-design/icons'
 import {
   useGetVaccineDetailQuery,
   useUpdateVaccineMutation,
   useDeleteVaccineMutation,
 } from '../../../features/vaccine/vaccineAPI'
-
 import { useGetManufacturersListQuery } from '../../../features/manufactures/manufacturesAPI'
 import { useGetCategoriesListQuery } from '../../../features/categories/categoriesAPI'
 
@@ -23,7 +23,9 @@ import { Vaccines } from '../../../types/vaccine'
 import { Manufacturers } from '../../../types/manufacturer'
 import { Category } from '../../../types/category'
 
+const { Option } = Select
 const { Title } = Typography
+
 interface VaccineListResponse {
   data: {
     data: Vaccines
@@ -51,46 +53,73 @@ interface CategoriesListResponse {
 
 const VaccineDetail: React.FC = () => {
   const navigate = useNavigate()
-
   const { id } = useParams()
-  const { data: data, isLoading } =
-    useGetVaccineDetailQuery<VaccineListResponse>(id as string)
+
+  const { data, isLoading } = useGetVaccineDetailQuery<VaccineListResponse>(
+    id as string
+  )
+
   const { data: manufacturers, isLoading: manufacturerLoading } =
     useGetManufacturersListQuery<ManufacturersListResponse>({
       pageNumber: -1,
       pageSize: -1,
     })
+
   const { data: categories, isLoading: categoriesLoading } =
     useGetCategoriesListQuery<CategoriesListResponse>({
       pageNumber: -1,
       pageSize: -1,
     })
+
   const [updateVaccine] = useUpdateVaccineMutation()
   const [deleteVaccine] = useDeleteVaccineMutation()
+
   const [form] = Form.useForm()
 
   const handleSave = async (values: any) => {
     try {
-      console.log(values)
-      const { id, ...value } = { ...values, price: Number(values.price) }
-      const dataUpdate = (await updateVaccine({
-        id: id,
-        data: value,
-      }).unwrap()) as {
-        message: string
+      console.log('Form values:', values)
+
+      const formData = new FormData()
+      formData.append('name', values.name)
+      formData.append('price', String(values.price))
+      formData.append('description', values.description || '')
+      formData.append('startRecommendedAge', String(values.startRecommendedAge))
+      formData.append('endRecommendedAge', String(values.endRecommendedAge))
+      formData.append(
+        'sequence',
+        values.sequence ? String(values.sequence) : '0'
+      )
+      formData.append('dosage', values.dosage ? String(values.dosage) : '0')
+      formData.append(
+        'dosageInterval',
+        values.dosageInterval ? String(values.dosageInterval) : '0'
+      )
+      formData.append('categoryId', values.categoryId)
+      formData.append('manufacturerId', values.manufacturerId)
+
+      // Phan nay de chon file upload
+      if (values.imageSource && values.imageSource[0]?.originFileObj) {
+        formData.append('imageSource', values.imageSource[0].originFileObj)
       }
+
+      const dataUpdate = (await updateVaccine({
+        id,
+        data: formData,
+      }).unwrap()) as { message: string }
+
       message.success(dataUpdate.message)
       // navigate('/manager/vaccine')
     } catch (error: any) {
-      message.error('Error updating vaccine: ' + error.message)
+      message.error(error.message)
     }
   }
 
   const handleDelete = () => {
     Modal.confirm({
-      title: 'Are you sure you want to delete this vaccine?',
-      content: `This action cannot be undone.`,
-      okText: 'Delete',
+      title: 'Bạn chắc chắn muốn xóa Vắc Xin này?',
+      content: `Hành động này không thể hoàn tác`,
+      okText: 'Xóa',
       okType: 'danger',
       cancelText: 'Cancel',
       onOk: async () => {
@@ -116,7 +145,7 @@ const VaccineDetail: React.FC = () => {
   }
 
   if (!data) {
-    return <div>No vaccine found.</div>
+    return <div>Không tìm thấy Vắc Xin</div>
   }
 
   const initialValues = {
@@ -127,40 +156,38 @@ const VaccineDetail: React.FC = () => {
 
   return (
     <div style={{ padding: '24px' }}>
-      <Title level={2}>Vaccine Details</Title>
+      <Title level={2}>Thông tin Vắc Xin</Title>
       <Form
         form={form}
         layout='vertical'
         onFinish={handleSave}
         initialValues={initialValues}
       >
-        <Form.Item label='ID' name='id'>
-          <Input disabled />
+        <Form.Item name='id' hidden>
+          <Input />
         </Form.Item>
+
         <Form.Item
-          label='Name'
+          label='Tên'
           name='name'
-          rules={[{ required: true, message: 'Please enter the vaccine name' }]}
+          rules={[{ required: true, message: 'Vui lòng nhập tên Vắc-Xin' }]}
         >
           <Input />
         </Form.Item>
+
         <Form.Item
-          label='Price'
+          label='Giá'
           name='price'
           rules={[
-            { required: true, message: 'Please enter the price' },
+            { required: true, message: 'Vui lòng nhập giá cả' },
             {
               validator: (_, value) => {
                 const num = Number(value)
                 if (Number.isNaN(num)) {
-                  return Promise.reject(
-                    new Error('Price must be a valid number')
-                  )
+                  return Promise.reject(new Error('Giá phải là một số hợp lệ'))
                 }
                 if (num <= 0) {
-                  return Promise.reject(
-                    new Error('Price must be greater than 0')
-                  )
+                  return Promise.reject(new Error('Giá phải lớn hơn 0'))
                 }
                 return Promise.resolve()
               },
@@ -169,30 +196,31 @@ const VaccineDetail: React.FC = () => {
         >
           <Input />
         </Form.Item>
+
+        <Form.Item label='Mô tả' name='description'>
+          <Input.TextArea rows={3} />
+        </Form.Item>
+
         <Form.Item label='Recommended Age' style={{ marginBottom: 0 }}>
           <Form.Item
             name='startRecommendedAge'
             style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}
             rules={[
-              {
-                required: true,
-                message: 'Enter start age',
-              },
+              { required: true, message: 'Nhập tuổi bắt đầu' },
               {
                 validator(_, value) {
                   if (value === undefined || value === null || value === '') {
-                    return Promise.reject('Start age is required')
+                    return Promise.reject('Yêu cầu nhập tuổi bắt đầu')
                   }
-
                   const num = Number(value)
                   if (isNaN(num)) {
-                    return Promise.reject('Start age must be a valid number')
+                    return Promise.reject('Tuổi bắt đầu phỉa là một số hợp lệ')
                   }
-
                   if (num < 0 || num > 15) {
-                    return Promise.reject('Start age must be between 0 and 15')
+                    return Promise.reject(
+                      'Tuổi bắt đầu phải nằm trong khoảng từ 0 đến 15'
+                    )
                   }
-
                   return Promise.resolve()
                 },
               },
@@ -200,6 +228,7 @@ const VaccineDetail: React.FC = () => {
           >
             <Input placeholder='Start Age' />
           </Form.Item>
+
           <span
             style={{
               display: 'inline-block',
@@ -209,71 +238,64 @@ const VaccineDetail: React.FC = () => {
           >
             -
           </span>
+
           <Form.Item
             name='endRecommendedAge'
             dependencies={['startRecommendedAge']}
             style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}
             rules={[
-              {
-                required: true,
-                message: 'Enter end age',
-              },
+              { required: true, message: 'Nhập tuổi kết thúc' },
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   if (value === undefined || value === null || value === '') {
-                    return Promise.reject('End age is required')
+                    return Promise.reject('Yêu cầu nhập tuổi kết thúc')
                   }
-
                   const endNum = Number(value)
                   const startNum = Number(getFieldValue('startRecommendedAge'))
-
                   if (isNaN(endNum)) {
-                    return Promise.reject('End age must be a valid number')
+                    return Promise.reject('Tuổi kết thúc phải là một số hợp lệ')
                   }
-
                   if (endNum < 1 || endNum > 16) {
-                    return Promise.reject('End age must be between 1 and 16')
-                  }
-
-                  if (startNum >= endNum) {
                     return Promise.reject(
-                      'End age must be greater than start age'
+                      'Tuổi kết thúc phải nằm trong khoảng từ 1 đến 16'
                     )
                   }
-
+                  if (startNum >= endNum) {
+                    return Promise.reject(
+                      'Tuổi kết thúc phải lớn hơn tuổi bắt đầu'
+                    )
+                  }
                   return Promise.resolve()
                 },
               }),
             ]}
           >
-            <Input placeholder='End Age' />
+            <Input placeholder='Tuổi kết thúc' />
           </Form.Item>
         </Form.Item>
-        <Form.Item label='Dosage' name='dosage'>
+
+        <Form.Item label='Số mũi' name='sequence'>
           <Input />
         </Form.Item>
-        <Form.Item label='Dosage Interval' name='dosageInterval'>
+
+        <Form.Item label='Liều' name='dosage'>
           <Input />
         </Form.Item>
-        <Form.Item
-          label='Description'
-          name='description'
-          rules={[{ message: 'Please enter the description' }]}
-        >
-          <Input.TextArea rows={3} />
+
+        <Form.Item label='Khoảng cách giữa các liều' name='dosageInterval'>
+          <Input />
         </Form.Item>
+
         {categoriesLoading ? (
           <Spin />
         ) : (
           categories && (
             <Form.Item
-              label='Category'
+              label='Danh mục'
               name='categoryId'
-              rules={[
-                { required: true, message: 'Please select the category' },
-              ]}
+              rules={[{ required: true, message: 'Vui lòng chọn danh mục' }]}
             >
-              <Select placeholder='Select a category'>
+              <Select placeholder='Chọn danh mục'>
                 {categories.data.items.map((cat) => (
                   <Option key={cat.id} value={cat.id}>
                     {cat.name}
@@ -283,18 +305,19 @@ const VaccineDetail: React.FC = () => {
             </Form.Item>
           )
         )}
+
         {manufacturerLoading ? (
           <Spin />
         ) : (
           manufacturers && (
             <Form.Item
-              label='Manufacturer'
+              label='Nhà sản xuất'
               name='manufacturerId'
               rules={[
-                { required: true, message: 'Please select the manufacturer' },
+                { required: true, message: 'Vui lòng chọn nhà sản xuất' },
               ]}
             >
-              <Select placeholder='Select a manufacturer'>
+              <Select placeholder='Chọn nhà sản xuất'>
                 {manufacturers.data.items.map((man) => (
                   <Option key={man.id} value={man.id}>
                     {man.name}
@@ -304,15 +327,53 @@ const VaccineDetail: React.FC = () => {
             </Form.Item>
           )
         )}
+
+        <img
+          src={
+            data?.data.images && data?.data.images.length > 0
+              ? import.meta.env.VITE_IMAGE_ENDPOINT +
+                data?.data.images[0].imageSource
+              : '/placeholder.svg'
+          }
+          alt={data?.data.name}
+          style={{
+            width: '200px',
+            objectFit: 'cover',
+          }}
+        />
+
+        <Form.Item
+          label='Tệp hình ảnh'
+          name='imageSource'
+          valuePropName='fileList'
+          getValueFromEvent={(e) => {
+            if (Array.isArray(e)) {
+              return e
+            }
+            return e?.fileList
+          }}
+        >
+          <Upload
+            name='image'
+            listType='picture'
+            beforeUpload={() => false} // ngan chan tu dong upload
+            maxCount={1}
+          >
+            <Button icon={<UploadOutlined />}>Tải tệp lên</Button>
+          </Upload>
+        </Form.Item>
+
         <Form.Item>
           <div style={{ display: 'flex', gap: '16px' }}>
             <Button type='primary' htmlType='submit'>
-              Save
+              Lưu
             </Button>
             <Button danger onClick={handleDelete}>
-              Delete
+              Xóa
             </Button>
-            <Button onClick={() => navigate('/manager/vaccine')}>Back</Button>
+            <Button onClick={() => navigate('/manager/vaccine')}>
+              Trở lại
+            </Button>
           </div>
         </Form.Item>
       </Form>

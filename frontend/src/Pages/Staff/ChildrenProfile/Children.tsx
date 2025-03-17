@@ -68,7 +68,6 @@ const ChildrenPage: React.FC = () => {
       />
     )
   }
-
   // Table columns
   const columns = [
     {
