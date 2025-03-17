@@ -72,6 +72,20 @@ namespace ChildrenVaccinationSystem.API.Controllers
 			));
 		}
 
+		//[HttpPost("customer")]
+		//public async Task<IActionResult> CreateCustomerAccount(CustomerCreateDto customerCreateDto)
+		//{
+		//	await _accountService.CreateCustomerAccount(customerCreateDto);
+
+		//	return Ok(new BaseResponse<object>(
+		//		statusCode: StatusCodeEnum.OK,
+		//		code: StatusCodeEnum.OK.ToString(),
+		//		message: "Tạo tài khoản thành công",
+		//		data: null
+		//	));
+		//}
+
+
 		[HttpPut("customer/{id}")]
 		public async Task<IActionResult> UpdateCustomerAccount(string id, CustomerUpdateDto customerUpdateDto)
 		{
@@ -149,8 +163,6 @@ namespace ChildrenVaccinationSystem.API.Controllers
 				data: null
 			));
 		}
-
-
 
 		[HttpGet("{id}")]
 		public async Task<IActionResult> GetAccountById(string id)
