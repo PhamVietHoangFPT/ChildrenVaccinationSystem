@@ -1,29 +1,45 @@
-import React, { useEffect, useState } from 'react'
-import { Vaccination } from '../../../types/vaccination'
-import { useSearchParams } from 'react-router-dom'
-import { CheckCircleOutlined, ClockCircleOutlined, EditOutlined, ExclamationCircleOutlined, LoadingOutlined, MinusCircleOutlined, SyncOutlined } from '@ant-design/icons'
-import { Button, Table, Tag } from 'antd'
-import { useGetVaccinationListQuery } from '../../../features/vaccinations/vaccinationAPI'
+import React, { useEffect, useState } from 'react';
+import { Vaccination } from '../../../types/vaccination';
+import { useSearchParams } from 'react-router-dom';
+import {
+    CheckCircleOutlined,
+    ClockCircleOutlined,
+    EditOutlined,
+    ExclamationCircleOutlined,
+    LoadingOutlined,
+    MinusCircleOutlined,
+    SyncOutlined,
+} from '@ant-design/icons';
+import { Button, Table, Tag } from 'antd';
+import { useGetVaccinationListQuery } from '../../../features/vaccinations/vaccinationAPI';
+import dayjs, { Dayjs } from 'dayjs';
+import VaccinationDateFilter from '../../../components/VaccinationFilter/VaccinationFilter';
+
 interface VaccinationListResponse {
     data: {
         data: {
-            items: Vaccination[]
-            totalItems: number
-        }
-    }
-    isLoading: boolean
-    isFetching: boolean
+            items: Vaccination[];
+            totalItems: number;
+        };
+    };
+    isLoading: boolean;
+    isFetching: boolean;
 }
 
 const StaffVaccination: React.FC = () => {
-    const [searchParams, setSearchParams] = useSearchParams()
+    const [searchParams, setSearchParams] = useSearchParams();
 
-    // Pagination and search states
-    const initialPage = parseInt(searchParams.get('page') || '1', 10)
-    const [currentPage, setCurrentPage] = useState(initialPage)
-    const pageSize = 7
+    // Pagination and search states from URL
+    const initialPage = parseInt(searchParams.get('page') || '1', 10);
+    const initialScheduleFrom = searchParams.get('scheduleFrom') || undefined;
+    const initialScheduleTo = searchParams.get('scheduleTo') || undefined;
 
-    // Fetch vaccination list
+    const [currentPage, setCurrentPage] = useState(initialPage);
+    const [scheduleFrom, setScheduleFrom] = useState<string | undefined>(initialScheduleFrom);
+    const [scheduleTo, setScheduleTo] = useState<string | undefined>(initialScheduleTo);
+    const pageSize = 7;
+
+    // Fetch vaccination list with dynamic filters
     const {
         data: vaccinations,
         isFetching: vaccinationFetching,
@@ -31,21 +47,37 @@ const StaffVaccination: React.FC = () => {
     } = useGetVaccinationListQuery<VaccinationListResponse>({
         pageNumber: currentPage,
         pageSize: pageSize,
-    })
+        scheduleFrom,
+        scheduleTo,
+    });
 
-    const dateVaccinations = vaccinations?.data.items ?? []
-    const totalVaccinations = vaccinations?.data.totalItems ?? 0
+    const dateVaccinations = vaccinations?.data.items ?? [];
+    const totalVaccinations = vaccinations?.data.totalItems ?? 0;
 
-
-    // Update URL search params
+    // Update URL search params for pagination and date filters
     useEffect(() => {
-        setSearchParams({
+        const params: { [key: string]: string } = {
             page: currentPage.toString(),
-        })
-    }, [currentPage, setSearchParams])
+        };
+        if (scheduleFrom) params.scheduleFrom = scheduleFrom;
+        if (scheduleTo) params.scheduleTo = scheduleTo;
+
+        setSearchParams(params);
+    }, [currentPage, scheduleFrom, scheduleTo, setSearchParams]);
+
+    // Handle date changes
+    const handleScheduleFromChange = (date: Dayjs | null) => {
+        setScheduleFrom(date ? date.format('YYYY-MM-DD') : undefined);
+        setCurrentPage(1); // Reset to first page on filter change
+    };
+
+    const handleScheduleToChange = (date: Dayjs | null) => {
+        setScheduleTo(date ? date.format('YYYY-MM-DD') : undefined);
+        setCurrentPage(1); // Reset to first page on filter change
+    };
 
     // Loading state for the table
-    if (vaccinationLoading) {
+    if (vaccinationLoading && !vaccinationFetching) {
         return (
             <LoadingOutlined
                 style={{
@@ -56,35 +88,36 @@ const StaffVaccination: React.FC = () => {
                     height: '30vh',
                 }}
             />
-        )
+        );
     }
 
     const columns = [
         {
             title: 'No.',
-            dataIndex: 'index',
             key: 'index',
-            render: (_: any, __: any, index: number) =>
+            render: (_: any, __: Vaccination, index: number) =>
                 (currentPage - 1) * pageSize + index + 1,
         },
         {
             title: 'Child Name',
             dataIndex: 'child.name',
-            key: 'name',
+            key: 'childName',
             render: (_: string | undefined, record: Vaccination) =>
-                record.child?.name ?? 'N/A', // Fallback for undefined child
+                record.child?.name ?? 'N/A',
         },
         {
             title: 'Schedule',
             dataIndex: 'schedule',
             key: 'schedule',
+            render: (schedule: Date | undefined) =>
+                schedule ? dayjs(schedule).format('YYYY-MM-DD') : 'N/A',
         },
         {
             title: 'Vaccine Name',
-            dataIndex: 'vaccines.name',
-            key: 'name',
+            dataIndex: 'vaccine.name',
+            key: 'vaccineName',
             render: (_: string | undefined, record: Vaccination) =>
-                record.vaccine?.name ?? 'N/A', // Fallback for undefined vaccines
+                record.vaccine?.name ?? 'N/A',
         },
         {
             title: 'Status',
@@ -119,31 +152,33 @@ const StaffVaccination: React.FC = () => {
         },
         {
             title: 'Gender',
-            dataIndex: 'gender',
+            dataIndex: 'child.gender',
             key: 'gender',
-            render: (gender: boolean) => (gender ? 'Male' : 'Female'),
+            render: (gender: boolean | undefined) =>
+                gender === undefined ? 'N/A' : gender ? 'Male' : 'Female',
         },
         {
             title: 'Update',
             key: 'update',
             render: (_: any) => (
-                <Button
-                    type='primary'
-                    icon={<EditOutlined />}
-                />
+                <Button type="primary" icon={<EditOutlined />} />
             ),
         },
-    ]
-    console.log(dateVaccinations)
+    ];
+
     return (
         <div style={{ padding: 20, background: '#fff', borderRadius: 8 }}>
+            <VaccinationDateFilter
+                scheduleFrom={scheduleFrom}
+                scheduleTo={scheduleTo}
+                onScheduleFromChange={handleScheduleFromChange}
+                onScheduleToChange={handleScheduleToChange}
+            />
             <Table
                 columns={columns}
-                dataSource={dateVaccinations.map((item, index) => ({
+                dataSource={dateVaccinations.map((item) => ({
                     ...item,
                     key: item.id,
-                    index: (currentPage - 1) * pageSize + index + 1,
-                    children: undefined,
                 }))}
                 loading={vaccinationFetching}
                 bordered
@@ -153,11 +188,12 @@ const StaffVaccination: React.FC = () => {
                     total: totalVaccinations,
                     pageSizeOptions: ['1', '5', '10', '20'],
                     onChange: (page) => {
-                        setCurrentPage(page)
+                        setCurrentPage(page);
                     },
                 }}
             />
         </div>
-    )
-}
+    );
+};
+
 export default StaffVaccination;
