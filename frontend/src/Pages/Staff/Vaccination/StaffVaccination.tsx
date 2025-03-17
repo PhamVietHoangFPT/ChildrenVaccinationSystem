@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { Vaccination } from '../../../types/vaccination'
 import { useSearchParams } from 'react-router-dom'
-import { useGetVaccinationListQuery } from '../../../features/vaccination/vaccinationAPI'
 import { CheckCircleOutlined, ClockCircleOutlined, EditOutlined, ExclamationCircleOutlined, LoadingOutlined, MinusCircleOutlined, SyncOutlined } from '@ant-design/icons'
 import { Button, Table, Tag } from 'antd'
+import { useGetVaccinationListQuery } from '../../../features/vaccinations/vaccinationAPI'
 interface VaccinationListResponse {
     data: {
         data: {
