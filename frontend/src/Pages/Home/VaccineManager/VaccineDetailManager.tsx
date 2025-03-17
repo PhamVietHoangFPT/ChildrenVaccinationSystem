@@ -99,7 +99,9 @@ const VaccineDetail: React.FC = () => {
       formData.append('manufacturerId', values.manufacturerId)
 
       // Phan nay de chon file upload
-      formData.append('imageSource', values.imageSource[0].originFileObj)
+      if (values.imageSource && values.imageSource[0]?.originFileObj) {
+        formData.append('imageSource', values.imageSource[0].originFileObj)
+      }
 
       const dataUpdate = (await updateVaccine({
         id,
@@ -109,7 +111,7 @@ const VaccineDetail: React.FC = () => {
       message.success(dataUpdate.message)
       // navigate('/manager/vaccine')
     } catch (error: any) {
-      message.error('Error updating vaccine: ' + error.message)
+      message.error(error.message)
     }
   }
 
