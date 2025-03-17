@@ -44,7 +44,7 @@ interface CategoriesListResponse {
 export default function AllVaccinesCustomer() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-
+  const [debouncedVaccineName, setDebouncedVaccineName] = useState('')
   // Khởi tạo state với giá trị mặc định hoặc từ URL
   const [vaccineName, setVaccineName] = useState(searchParams.get('name') || '')
   const [categoryName, setCategoryName] = useState(
@@ -96,10 +96,20 @@ export default function AllVaccinesCustomer() {
     useGetVaccineListQuery<VaccineListResponse>({
       pageNumber,
       pageSize,
-      name: vaccineName,
+      name: debouncedVaccineName,
       categoryName: categoryName,
       manufacturerCountry: manufacturerCountry,
     })
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedVaccineName(vaccineName)
+    }, 500) // 500ms debounce time
+
+    return () => {
+      clearTimeout(handler)
+    }
+  }, [vaccineName])
 
   return (
     <>

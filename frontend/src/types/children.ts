@@ -1,3 +1,5 @@
+import { Vaccination } from "./vaccination"
+
 export interface Children {
   id: string
   name: string
@@ -6,5 +8,5 @@ export interface Children {
   weight?: number
   gender?: boolean
   medicalNote?: string
-  vaccination?: string
+  vaccination?: Vaccination[]
 }
