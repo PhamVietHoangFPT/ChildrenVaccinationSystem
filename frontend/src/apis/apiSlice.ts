@@ -28,6 +28,7 @@ export const apiSlice = createApi({
     'blogs',
     'children',
     'customers',
+    'vaccination'
     'packages',
     'vaccinations',
   ],
