@@ -30,21 +30,7 @@ namespace ChildrenVaccinationSystem.API.Controllers
             ));
         }
 
-		[HttpGet("minimal")]
-		public async Task<IActionResult> GetPackagesMinimal(int pageNumber = -1, int pageSize = -1)
-		{
-			var packages = await _packageService.GetPackagesMinimal(pageNumber, pageSize);
-
-			return Ok(new BaseResponse<object>(
-				statusCode: StatusCodeEnum.OK,
-				code: StatusCodeEnum.OK.ToString(),
-				message: "Lấy danh sách packages thành công",
-				data: packages
-			));
-		}
-
-
-		[HttpGet("{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetPackageById(string id)
         {
             var package = await _packageService.GetPackageById(id);
@@ -92,6 +78,19 @@ namespace ChildrenVaccinationSystem.API.Controllers
                 statusCode: StatusCodeEnum.OK,
                 code: StatusCodeEnum.OK.ToString(),
                 message: "Xóa package thành công",
+                data: null
+            ));
+        }
+
+        [HttpDelete("{packageId}/remove-vaccine/{vaccineId}")]
+        public async Task<IActionResult> RemoveVaccineFromPackage(string packageId, string vaccineId)
+        {
+            await _packageService.RemoveVaccineFromPackage(packageId, vaccineId);
+
+            return Ok(new BaseResponse<object>(
+                statusCode: StatusCodeEnum.OK,
+                code: StatusCodeEnum.OK.ToString(),
+                message: "Xóa vaccine thành công",
                 data: null
             ));
         }
