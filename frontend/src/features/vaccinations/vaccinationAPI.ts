@@ -11,7 +11,33 @@ export const vaccinationsApi = apiSlice.injectEndpoints({
       transformResponse: (res) => res,
       invalidatesTags: ['vaccinations'],
     }),
+    getVaccinationList: build.query({
+      query: ({
+        pageNumber,
+        pageSize,
+        childId,
+        scheduleFrom,
+        scheduleTo,
+        status,
+      }) => ({
+        url: '/vaccinations/minimal',
+        method: 'GET',
+        params: {
+          pageNumber,
+          pageSize,
+          childId,
+          scheduleFrom,
+          scheduleTo,
+          status
+        },
+      }),
+      transformResponse: (res) => res,
+      providesTags: ['vaccinations'],
+    }),
   }),
 })
 
-export const { useCreateRegisterVaccinationMutation } = vaccinationsApi
+export const {
+  useCreateRegisterVaccinationMutation,
+  useGetVaccinationListQuery
+} = vaccinationsApi
