@@ -33,10 +33,14 @@ const StaffVaccination: React.FC = () => {
     const initialPage = parseInt(searchParams.get('page') || '1', 10);
     const initialScheduleFrom = searchParams.get('scheduleFrom') || undefined;
     const initialScheduleTo = searchParams.get('scheduleTo') || undefined;
+    const initialStatus = searchParams.get('status')
+        ? parseInt(searchParams.get('status')!, 10)
+        : undefined; // Default to undefined if not present
 
     const [currentPage, setCurrentPage] = useState(initialPage);
     const [scheduleFrom, setScheduleFrom] = useState<string | undefined>(initialScheduleFrom);
     const [scheduleTo, setScheduleTo] = useState<string | undefined>(initialScheduleTo);
+    const [status, setStatus] = useState<number | undefined>(initialStatus);
     const pageSize = 7;
 
     // Fetch vaccination list with dynamic filters
@@ -45,6 +49,7 @@ const StaffVaccination: React.FC = () => {
         isFetching: vaccinationFetching,
         isLoading: vaccinationLoading,
     } = useGetVaccinationListQuery<VaccinationListResponse>({
+        status: status,
         pageNumber: currentPage,
         pageSize: pageSize,
         scheduleFrom,
@@ -54,16 +59,17 @@ const StaffVaccination: React.FC = () => {
     const dateVaccinations = vaccinations?.data.items ?? [];
     const totalVaccinations = vaccinations?.data.totalItems ?? 0;
 
-    // Update URL search params for pagination and date filters
+    // Update URL search params for pagination, date filters, and status
     useEffect(() => {
         const params: { [key: string]: string } = {
             page: currentPage.toString(),
         };
         if (scheduleFrom) params.scheduleFrom = scheduleFrom;
         if (scheduleTo) params.scheduleTo = scheduleTo;
+        if (status !== undefined) params.status = status.toString();
 
         setSearchParams(params);
-    }, [currentPage, scheduleFrom, scheduleTo, setSearchParams]);
+    }, [currentPage, scheduleFrom, scheduleTo, status, setSearchParams]);
 
     // Handle date changes
     const handleScheduleFromChange = (date: Dayjs | null) => {
@@ -73,6 +79,11 @@ const StaffVaccination: React.FC = () => {
 
     const handleScheduleToChange = (date: Dayjs | null) => {
         setScheduleTo(date ? date.format('YYYY-MM-DD') : undefined);
+        setCurrentPage(1); // Reset to first page on filter change
+    };
+
+    const handleStatusChange = (value: number | undefined) => {
+        setStatus(value);
         setCurrentPage(1); // Reset to first page on filter change
     };
 
@@ -171,8 +182,10 @@ const StaffVaccination: React.FC = () => {
             <VaccinationDateFilter
                 scheduleFrom={scheduleFrom}
                 scheduleTo={scheduleTo}
+                status={status}
                 onScheduleFromChange={handleScheduleFromChange}
                 onScheduleToChange={handleScheduleToChange}
+                onStatusChange={handleStatusChange}
             />
             <Table
                 columns={columns}
