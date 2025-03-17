@@ -93,9 +93,7 @@ const VaccineDetail: React.FC = () => {
       formData.append('manufacturerId', values.manufacturerId)
 
       // Phan nay de chon file upload
-      if (values.imageSource && values.imageSource.file) {
-        formData.append('imageSource', values.imageSource.file.originFileObj)
-      } 
+      formData.append('imageSource', values.imageSource[0].originFileObj)
 
       const dataUpdate = await updateVaccine({
         id,        
@@ -264,7 +262,7 @@ const VaccineDetail: React.FC = () => {
         </Form.Item>
 
         <Form.Item
-          label='Tần suất'
+          label='Số mũi'
           name='sequence'
         >
           <Input />
@@ -325,13 +323,24 @@ const VaccineDetail: React.FC = () => {
         )}
 
         <Form.Item
+          label='Image'
+          name={['images', 0, 'imageSource']}
+        >
+          <Input />
+        </Form.Item>
+
+
+        <Form.Item
           label='Tệp hình ảnh'
           name='imageSource'
-          valuePropName='file'
+          valuePropName="fileList" 
           getValueFromEvent={(e) => {
-            if (Array.isArray(e)) return e
-            return e && e.fileList.length > 0 ? e : undefined
+            if (Array.isArray(e)) {
+              return e
+            }
+            return e?.fileList
           }}
+          
         >
           <Upload
             name='image'

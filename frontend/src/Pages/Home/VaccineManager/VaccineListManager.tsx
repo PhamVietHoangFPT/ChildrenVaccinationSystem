@@ -1,54 +1,41 @@
-import React, { useState, useEffect } from 'react'
-import { Table, Button, Input, message } from 'antd'
+import React, { useState } from 'react'
+import { Table, Button, Input, Typography, Spin } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
-import { EyeOutlined, SearchOutlined } from '@ant-design/icons'
-import axios from 'axios'
+import { EyeOutlined, SearchOutlined, PlusOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 
-export interface Vaccine {
-  id: string
-  name: string
-  price: number
-  startRecommendedAge: number
-  endRecommendedAge: number
-  dosage: number
-  category: {
-    name: string
+// Import your API hooks
+import { useGetVaccineListMiniMalQuery } from '../../../features/vaccine/vaccineAPI'
+import { Vaccines } from '../../../types/vaccine'
+
+const { Title } = Typography
+
+interface VaccinesListResponse {
+  data: {
+    data: {
+      items: Vaccines[]
+    }
   }
-  manufacturer: {
-    name: string
-  }
+  isLoading: boolean
 }
 
 const ManagerVaccineList: React.FC = () => {
-  const [vaccines, setVaccines] = useState<Vaccine[]>([])
-  const [loading, setLoading] = useState<boolean>(true)
-  const [searchText, setSearchText] = useState<string>('')
   const navigate = useNavigate()
+  const [searchText, setSearchText] = useState<string>('')
 
-  const fetchVaccines = async () => {
-    try {
-      const response = await axios.get(
-        'https://childrenvaccinationswd2025-hwdzb7evepg7d4bv.eastasia-01.azurewebsites.net/api/vaccines/minimal?pageNumber=-1&pageSize=-1'
-      )
-      const vaccinesData: Vaccine[] = response.data.data.items
-      setVaccines(vaccinesData)
-      setLoading(false)
-    } catch (error: any) {
-      message.error('Error fetching vaccines: ' + error.message)
-      setLoading(false)
-    }
-  }
+  const { data, isLoading } =
+    useGetVaccineListMiniMalQuery<VaccinesListResponse>({
+      pageNumber: -1,
+      pageSize: -1,
+    })
 
-  useEffect(() => {
-    fetchVaccines()
-  }, [])
+  const vaccines = data?.data?.items || []
 
   const filteredVaccines = vaccines.filter((vaccine) =>
     vaccine.name.toLowerCase().includes(searchText.toLowerCase())
   )
 
-  const columns: ColumnsType<Vaccine> = [
+  const columns: ColumnsType<Vaccines> = [
     {
       title: 'Name',
       dataIndex: 'name',
@@ -69,8 +56,9 @@ const ManagerVaccineList: React.FC = () => {
       title: 'Price',
       dataIndex: 'price',
       key: 'price',
-      render: (price) => (price ? `$${price}` : 'N/A'),
-      sorter: (a, b) => a.price - b.price,
+      render: (price) =>
+        price ? `${new Intl.NumberFormat('en-US').format(price)} ` : 'N/A',
+      sorter: (a, b) => a.price! - b.price!,
     },
     {
       title: 'Recommended Age',
@@ -99,8 +87,8 @@ const ManagerVaccineList: React.FC = () => {
   ]
 
   return (
-    <div style={{ padding: 24 }}>
-      <h2>Vaccine List</h2>
+    <div style={{ padding: '24px' }}>
+      <Title level={2}>Vaccine List</Title>
 
       <div
         style={{
@@ -120,17 +108,23 @@ const ManagerVaccineList: React.FC = () => {
 
         <Button
           type='primary'
+          icon={<PlusOutlined />}
           onClick={() => navigate('/manager/vaccine/create')}
         >
           Create Vaccine
         </Button>
       </div>
-      <Table
-        dataSource={filteredVaccines}
-        columns={columns}
-        rowKey='id'
-        loading={loading}
-      />
+
+      {isLoading ? (
+        <Spin />
+      ) : (
+        <Table
+          dataSource={filteredVaccines}
+          columns={columns}
+          rowKey='id'
+          pagination={{ pageSize: 10 }}
+        />
+      )}
     </div>
   )
 }

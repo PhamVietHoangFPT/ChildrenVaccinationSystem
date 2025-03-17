@@ -71,17 +71,16 @@ const CreateVaccine: React.FC = () => {
       formData.append('dosageInterval', values.dosageInterval)
       formData.append('categoryId', values.categoryId)
       formData.append('manufacturerId', values.manufacturerId)
-
-      if (values.imageSource && values.imageSource.file) {
-        formData.append('imageSource', values.imageSource.file.originFileObj)
-      }
-
+      
+      formData.append('imageSource', values.imageSource[0].originFileObj)
+     
       const createResponse = (await createVaccine(formData).unwrap()) as {
         message: string
       }
 
       message.success(createResponse.message)
       navigate('/manager/vaccine')
+      
     } catch (error: any) {
       message.error('Error creating vaccine: ' + error.message)
     }
@@ -130,6 +129,7 @@ const CreateVaccine: React.FC = () => {
         <Form.Item
           label='Description'
           name='description'
+          rules={[{ required: true, message: 'Please enter the description' }]}
         >
           <Input.TextArea rows={3} />
         </Form.Item>
@@ -204,8 +204,8 @@ const CreateVaccine: React.FC = () => {
         <Form.Item
           label='Sequence'
           name='sequence'
-          rules={[
-            { required: true, message: 'Please enter the sequence' },
+          rules={[{ required: true, message: 'Please enter sequence' },
+            
             {
               validator: (_, value) => {
                 const num = Number(value)
@@ -223,6 +223,7 @@ const CreateVaccine: React.FC = () => {
         <Form.Item
           label='Dosage'
           name='dosage'
+          rules={[{ required: true, message: 'Please enter dosage' }]}
         >
           <Input />
         </Form.Item>
@@ -230,6 +231,7 @@ const CreateVaccine: React.FC = () => {
         <Form.Item
           label='Dosage Interval'
           name='dosageInterval'
+          rules={[{ required: true, message: 'Please enter dosage interval' }]}
         >
           <Input />
         </Form.Item>
@@ -281,13 +283,14 @@ const CreateVaccine: React.FC = () => {
         <Form.Item
           label='Image Source'
           name='imageSource'
-          valuePropName='file'
+          valuePropName="fileList" 
           getValueFromEvent={(e) => {
             if (Array.isArray(e)) {
               return e
             }
-            return e && e.fileList.length > 0 ? e : undefined
+            return e?.fileList
           }}
+          rules={[{ required: true, message: 'Please upload image' }]}
         >
           <Upload
             name='image'
