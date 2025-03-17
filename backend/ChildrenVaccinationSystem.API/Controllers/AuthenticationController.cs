@@ -58,7 +58,7 @@ namespace ChildrenVaccinationSystem.API.Controllers
 					data: null
 				));
 			}
-			return Redirect(_configuration["VerifySuccessUrl"]!);
+			return Redirect(_configuration["ProductWeb"]+"/login");
 		}
 
 		[HttpPost("forget-password")]
