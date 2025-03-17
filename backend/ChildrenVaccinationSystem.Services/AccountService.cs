@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -156,12 +157,11 @@ namespace ChildrenVaccinationSystem.Services
 			return new BasePaginatedList<object>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
 		}
 
-		public async Task<BasePaginatedList<AccountViewDto>> GetPersonnelAccounts(int pageNumber, int pageSize)
+		public async Task<BasePaginatedList<AccountViewDto>> GetPersonnelAccounts(RoleEnum? role, int pageNumber, int pageSize)
 		{
-			IQueryable<Account> query = _unitOfWork.GetRepository<Account>().Entities.Where(a => (a.Role == RoleEnum.Staff || a.Role == RoleEnum.Doctor || a.Role == RoleEnum.Vaccinator) && a.DeletedBy == null);
-
+			IQueryable<Account> query = _unitOfWork.GetRepository<Account>().Entities.Where(a => (a.Role == RoleEnum.Staff || a.Role == RoleEnum.Doctor || a.Role == RoleEnum.Vaccinator) && (role == null || a.Role == role) && a.DeletedBy == null);
 			BasePaginatedList<Account> resultQuery = (pageNumber <= 0 || pageSize <= 0)
-				? await _unitOfWork.GetRepository<Account>().GetPaging(query, 1, query.Count())
+			? await _unitOfWork.GetRepository<Account>().GetPaging(query, 1, query.Count())
 				: await _unitOfWork.GetRepository<Account>().GetPaging(query, pageNumber, pageSize);
 
 			List<AccountViewDto> responseItems = resultQuery.Items.Select(_mapper.Map<AccountViewDto>).ToList();
@@ -169,9 +169,9 @@ namespace ChildrenVaccinationSystem.Services
 			return new BasePaginatedList<AccountViewDto>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
 		}
 
-		public async Task<BasePaginatedList<object>> GetPersonnelAccountsMinimal(int pageNumber, int pageSize)
+		public async Task<BasePaginatedList<object>> GetPersonnelAccountsMinimal(RoleEnum? role, int pageNumber, int pageSize)
 		{
-			IQueryable<Account> query = _unitOfWork.GetRepository<Account>().Entities.Where(a => (a.Role == RoleEnum.Staff || a.Role == RoleEnum.Doctor || a.Role == RoleEnum.Vaccinator) && a.DeletedBy == null);
+			IQueryable<Account> query = _unitOfWork.GetRepository<Account>().Entities.Where(a => (a.Role == RoleEnum.Staff || a.Role == RoleEnum.Doctor || a.Role == RoleEnum.Vaccinator) && (role == null || a.Role == role) && a.DeletedBy == null);
 
 			BasePaginatedList<Account> resultQuery = (pageNumber <= 0 || pageSize <= 0)
 				? await _unitOfWork.GetRepository<Account>().GetPaging(query, 1, query.Count())
