@@ -147,7 +147,7 @@ namespace ChildrenVaccinationSystem.Services
 			var hashedPassword = BCrypt.Net.BCrypt.HashPassword(newPassword);
 			account.Password = hashedPassword;
 			account.ResetPasswordToken = null;
-			
+
 			await _unitOfWork.GetRepository<Account>().UpdateAsync(account);
 			await _unitOfWork.SaveAsync();
 		}
@@ -211,9 +211,9 @@ namespace ChildrenVaccinationSystem.Services
 
 			if (account == null)
 				throw new ErrorException(401, "unauthorized", "Không tìm thấy account id.");
-			
+
 			if (account.UpdateEmailOTP == null || account.TempUpdateEmail == null || account.UpdateEmailOTP != otp)
-					throw new ErrorException(401, "unauthorized", "Mã OTP không đúng hoặc hết hạn!");
+				throw new ErrorException(401, "unauthorized", "Mã OTP không đúng hoặc hết hạn!");
 
 			account.UpdateEmailOTP = null;
 			account.Email = account.TempUpdateEmail;
@@ -413,6 +413,7 @@ namespace ChildrenVaccinationSystem.Services
 				new Claim("Id", account.Id),
 				new Claim("Name", account.Name),
 				new Claim("Email", account.Email ?? ""),
+				new Claim("FacilityId", account.Facility?.Id ?? ""),
 				new Claim("PhoneNumber", account.PhoneNumber ?? string.Empty),
 				new Claim("Address", account.Address ?? string.Empty),
 				new Claim("Role", account.Role.ToString())
