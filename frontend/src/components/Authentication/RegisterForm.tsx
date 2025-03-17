@@ -46,7 +46,7 @@ export function RegisterForm() {
       }).unwrap()
       notification.success({
         message: 'Đăng ký thành công',
-        description: 'Vui lòng đăng nhập để tiếp tục',
+        description: 'Vui lòng kiểm tra hộp mail để xác thực tài khoản',
       })
       resetForm()
     } catch (error: any) {
