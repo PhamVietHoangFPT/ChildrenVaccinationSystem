@@ -20,9 +20,9 @@ namespace ChildrenVaccinationSystem.API.Controllers
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> GetVaccinations(string? childId, DateOnly? scheduleFrom, DateOnly? scheduleTo, VaccinationStatusEnum? status, int pageNumber = -1, int pageSize = -1)
+		public async Task<IActionResult> GetVaccinations(string? childId, string? childCode, DateOnly? scheduleFrom, DateOnly? scheduleTo, VaccinationStatusEnum? status, int pageNumber = -1, int pageSize = -1)
 		{
-			BasePaginatedList<VaccinationViewDto> vaccinations = await _vaccinationService.GetVaccinations(childId, scheduleFrom, scheduleTo, status, pageNumber, pageSize);
+			BasePaginatedList<VaccinationViewDto> vaccinations = await _vaccinationService.GetVaccinations(childId, childCode, scheduleFrom, scheduleTo, status, pageNumber, pageSize);
 
 			return Ok(new BaseResponse<object>(
 				statusCode: StatusCodeEnum.OK,
@@ -34,9 +34,9 @@ namespace ChildrenVaccinationSystem.API.Controllers
 
 
 		[HttpGet("minimal")]
-		public async Task<IActionResult> GetVaccinationsMinimal(string? childId, DateOnly? scheduleFrom, DateOnly? scheduleTo, VaccinationStatusEnum? status, int pageNumber = -1, int pageSize = -1)
+		public async Task<IActionResult> GetVaccinationsMinimal(string? childId, string? childCode, DateOnly? scheduleFrom, DateOnly? scheduleTo, VaccinationStatusEnum? status, int pageNumber = -1, int pageSize = -1)
 		{
-			BasePaginatedList<object> vaccinations = await _vaccinationService.GetVaccinationsMinimal(childId, scheduleFrom, scheduleTo, status, pageNumber, pageSize);
+			BasePaginatedList<object> vaccinations = await _vaccinationService.GetVaccinationsMinimal(childId, childCode, scheduleFrom, scheduleTo, status, pageNumber, pageSize);
 
 			return Ok(new BaseResponse<object>(
 				statusCode: StatusCodeEnum.OK,
