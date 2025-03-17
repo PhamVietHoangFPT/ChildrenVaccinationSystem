@@ -55,7 +55,9 @@ const VaccineDetail: React.FC = () => {
   const navigate = useNavigate()
   const { id } = useParams()
 
-  const { data, isLoading } = useGetVaccineDetailQuery<VaccineListResponse>(id as string)
+  const { data, isLoading } = useGetVaccineDetailQuery<VaccineListResponse>(
+    id as string
+  )
 
   const { data: manufacturers, isLoading: manufacturerLoading } =
     useGetManufacturersListQuery<ManufacturersListResponse>({
@@ -69,12 +71,10 @@ const VaccineDetail: React.FC = () => {
       pageSize: -1,
     })
 
-
   const [updateVaccine] = useUpdateVaccineMutation()
   const [deleteVaccine] = useDeleteVaccineMutation()
 
   const [form] = Form.useForm()
-
 
   const handleSave = async (values: any) => {
     try {
@@ -82,23 +82,29 @@ const VaccineDetail: React.FC = () => {
 
       const formData = new FormData()
       formData.append('name', values.name)
-      formData.append('price', String(values.price)) 
+      formData.append('price', String(values.price))
       formData.append('description', values.description || '')
       formData.append('startRecommendedAge', String(values.startRecommendedAge))
       formData.append('endRecommendedAge', String(values.endRecommendedAge))
-      formData.append('sequence', values.sequence ? String(values.sequence) : '0')
+      formData.append(
+        'sequence',
+        values.sequence ? String(values.sequence) : '0'
+      )
       formData.append('dosage', values.dosage ? String(values.dosage) : '0')
-      formData.append('dosageInterval', values.dosageInterval ? String(values.dosageInterval) : '0')
+      formData.append(
+        'dosageInterval',
+        values.dosageInterval ? String(values.dosageInterval) : '0'
+      )
       formData.append('categoryId', values.categoryId)
       formData.append('manufacturerId', values.manufacturerId)
 
       // Phan nay de chon file upload
       formData.append('imageSource', values.imageSource[0].originFileObj)
 
-      const dataUpdate = await updateVaccine({
-        id,        
+      const dataUpdate = (await updateVaccine({
+        id,
         data: formData,
-      }).unwrap() as {message : string};
+      }).unwrap()) as { message: string }
 
       message.success(dataUpdate.message)
       // navigate('/manager/vaccine')
@@ -116,7 +122,9 @@ const VaccineDetail: React.FC = () => {
       cancelText: 'Cancel',
       onOk: async () => {
         try {
-          const dataDelete = await deleteVaccine(id).unwrap() as {message : string};
+          const dataDelete = (await deleteVaccine(id).unwrap()) as {
+            message: string
+          }
           message.success(dataDelete.message)
           navigate('/manager/vaccine')
         } catch (error: any) {
@@ -187,10 +195,7 @@ const VaccineDetail: React.FC = () => {
           <Input />
         </Form.Item>
 
-        <Form.Item
-          label='Mô tả'
-          name='description'
-        >
+        <Form.Item label='Mô tả' name='description'>
           <Input.TextArea rows={3} />
         </Form.Item>
 
@@ -210,7 +215,9 @@ const VaccineDetail: React.FC = () => {
                     return Promise.reject('Tuổi bắt đầu phỉa là một số hợp lệ')
                   }
                   if (num < 0 || num > 15) {
-                    return Promise.reject('Tuổi bắt đầu phải nằm trong khoảng từ 0 đến 15')
+                    return Promise.reject(
+                      'Tuổi bắt đầu phải nằm trong khoảng từ 0 đến 15'
+                    )
                   }
                   return Promise.resolve()
                 },
@@ -247,10 +254,14 @@ const VaccineDetail: React.FC = () => {
                     return Promise.reject('Tuổi kết thúc phải là một số hợp lệ')
                   }
                   if (endNum < 1 || endNum > 16) {
-                    return Promise.reject('Tuổi kết thúc phải nằm trong khoảng từ 1 đến 16')
+                    return Promise.reject(
+                      'Tuổi kết thúc phải nằm trong khoảng từ 1 đến 16'
+                    )
                   }
                   if (startNum >= endNum) {
-                    return Promise.reject('Tuổi kết thúc phải lớn hơn tuổi bắt đầu')
+                    return Promise.reject(
+                      'Tuổi kết thúc phải lớn hơn tuổi bắt đầu'
+                    )
                   }
                   return Promise.resolve()
                 },
@@ -261,24 +272,15 @@ const VaccineDetail: React.FC = () => {
           </Form.Item>
         </Form.Item>
 
-        <Form.Item
-          label='Số mũi'
-          name='sequence'
-        >
+        <Form.Item label='Số mũi' name='sequence'>
           <Input />
         </Form.Item>
 
-        <Form.Item
-          label='Liều'
-          name='dosage'
-        >
+        <Form.Item label='Liều' name='dosage'>
           <Input />
         </Form.Item>
 
-        <Form.Item
-          label='Khoảng cách giữa các liều'
-          name='dosageInterval'
-        >
+        <Form.Item label='Khoảng cách giữa các liều' name='dosageInterval'>
           <Input />
         </Form.Item>
 
@@ -309,7 +311,9 @@ const VaccineDetail: React.FC = () => {
             <Form.Item
               label='Nhà sản xuất'
               name='manufacturerId'
-              rules={[{ required: true, message: 'Vui lòng chọn nhà sản xuất' }]}
+              rules={[
+                { required: true, message: 'Vui lòng chọn nhà sản xuất' },
+              ]}
             >
               <Select placeholder='Chọn nhà sản xuất'>
                 {manufacturers.data.items.map((man) => (
@@ -322,25 +326,30 @@ const VaccineDetail: React.FC = () => {
           )
         )}
 
-        <Form.Item
-          label='Image'
-          name={['images', 0, 'imageSource']}
-        >
-          <Input />
-        </Form.Item>
-
+        <img
+          src={
+            data?.data.images && data?.data.images.length > 0
+              ? import.meta.env.VITE_IMAGE_ENDPOINT +
+                data?.data.images[0].imageSource
+              : '/placeholder.svg'
+          }
+          alt={data?.data.name}
+          style={{
+            width: '200px',
+            objectFit: 'cover',
+          }}
+        />
 
         <Form.Item
           label='Tệp hình ảnh'
           name='imageSource'
-          valuePropName="fileList" 
+          valuePropName='fileList'
           getValueFromEvent={(e) => {
             if (Array.isArray(e)) {
               return e
             }
             return e?.fileList
           }}
-          
         >
           <Upload
             name='image'
