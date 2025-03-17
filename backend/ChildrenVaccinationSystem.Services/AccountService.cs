@@ -39,7 +39,8 @@ namespace ChildrenVaccinationSystem.Services
 
 		public async Task ForceUpdateAccountProfile(AccountForceUpdateDto accountForceUpdateDto)
 		{
-			var existingAccount = _unitOfWork.GetRepository<Account>().Entities.Where(a => a.PhoneNumber == accountForceUpdateDto.Account.PhoneNumber && a.DeletedBy == null);
+			Console.WriteLine(accountForceUpdateDto.Account.PhoneNumber);
+			Account? existingAccount = await _unitOfWork.GetRepository<Account>().Entities.Where(a => a.PhoneNumber == accountForceUpdateDto.Account.PhoneNumber && a.DeletedBy == null).FirstOrDefaultAsync();
 			if (existingAccount != null)
 			{
 				throw new ErrorException(409, "conflict", "Số điện thoại này đã được sử dụng, vui lòng thử lại");
@@ -191,7 +192,7 @@ namespace ChildrenVaccinationSystem.Services
 		public async Task CreatePersonnelAccount(PersonnelCreateDto personnelCreateDto)
 		{
 
-			var existingAccount = await _unitOfWork.GetRepository<Account>().Entities.Where(a => a.Email == personnelCreateDto.Email && a.DeletedBy == null).FirstOrDefaultAsync();
+			Account? existingAccount = await _unitOfWork.GetRepository<Account>().Entities.Where(a => a.Email == personnelCreateDto.Email && a.DeletedBy == null).FirstOrDefaultAsync();
 
 			if (existingAccount != null)
 			{
@@ -226,7 +227,7 @@ namespace ChildrenVaccinationSystem.Services
 
 			if (personnelUpdateDto.Email != null)
 			{
-				var existingAccount = await _unitOfWork.GetRepository<Account>().Entities.Where(a => a.Email == personnelUpdateDto.Email && a.DeletedBy == null).FirstOrDefaultAsync();
+				Account? existingAccount = await _unitOfWork.GetRepository<Account>().Entities.Where(a => a.Email == personnelUpdateDto.Email && a.DeletedBy == null).FirstOrDefaultAsync();
 
 				if (existingAccount != null)
 				{

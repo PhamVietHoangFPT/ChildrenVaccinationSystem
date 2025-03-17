@@ -12,6 +12,7 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Dtos.AccountDtos
 		public string Name { get; set; } = default!;
 		public DateOnly DateOfBirth { get; set; }
 		public string PhoneNumber { get; set; } = default!;
+		public string Address { get; set; } = default!;
 		public bool Gender {  get; set; }
 	}
 }

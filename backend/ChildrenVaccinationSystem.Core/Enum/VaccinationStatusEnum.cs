@@ -8,8 +8,8 @@
 		Queued, // 3. Sau khi bác sĩ khám xong sẽ chuyển bệnh nhân thành queued hoặc paid hoặc refund (nếu ko đủ điều kiện để tiêm)
 		Injecting, // 4. Sau khi tới lượt tiêm thì staff sẽ  chuyển bệnh nhân từ queued sang injecting
 		Monitoring, // 5. Sau khi tiêm thành công, vaccinator sẽ chuyển thành monitoring để theo dõi
-		Emergency, // 6. Nếu tiêm có triệu chứng, staff chuyển sang emergency
-		Completed, // 7. Sau 30 phút nếu tiêm không có triệu chứng, staff ở quầy theo dõi sẽ chuyển thành completed
+		Completed, // 6. Sau 30 phút nếu tiêm không có triệu chứng, staff ở quầy theo dõi sẽ chuyển thành completed
+		Emergency, // 7. Nếu tiêm có triệu chứng, staff chuyển sang emergency
 		Canceled, // 8. Khách hàng cancel những lượt tiêm chưa trả tiền
 		Refunded // 9. Lượt tiêm được hoàn tiền lại cho khách, khách không được hoàn tiền nếu đã qua bước consulting
 	}
