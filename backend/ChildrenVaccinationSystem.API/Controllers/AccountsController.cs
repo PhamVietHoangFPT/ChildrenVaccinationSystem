@@ -72,6 +72,20 @@ namespace ChildrenVaccinationSystem.API.Controllers
 			));
 		}
 
+		[HttpPost("customer")]
+		public async Task<IActionResult> CreateCustomerAccount(CustomerCreateDto customerCreateDto)
+		{
+			await _accountService.CreateCustomerAccount(customerCreateDto);
+
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Tạo tài khoản thành công",
+				data: null
+			));
+		}
+
+
 		[HttpPut("customer/{id}")]
 		public async Task<IActionResult> UpdateCustomerAccount(string id, CustomerUpdateDto customerUpdateDto)
 		{
@@ -99,9 +113,9 @@ namespace ChildrenVaccinationSystem.API.Controllers
 		}
 
 		[HttpGet("personnel")]
-		public async Task<IActionResult> GetPersonnelAccounts(int pageNumber = -1, int pageSize = -1)
+		public async Task<IActionResult> GetPersonnelAccounts(RoleEnum? role, int pageNumber = -1, int pageSize = -1)
 		{
-			BasePaginatedList<AccountViewDto> accounts = await _accountService.GetPersonnelAccounts(pageNumber, pageSize);
+			BasePaginatedList<AccountViewDto> accounts = await _accountService.GetPersonnelAccounts(role, pageNumber, pageSize);
 
 			return Ok(new BaseResponse<object>(
 				statusCode: StatusCodeEnum.OK,
@@ -112,9 +126,9 @@ namespace ChildrenVaccinationSystem.API.Controllers
 		}
 
 		[HttpGet("personnel/minimal")]
-		public async Task<IActionResult> GetPersonnelAccountsMinimal(int pageNumber = -1, int pageSize = -1)
+		public async Task<IActionResult> GetPersonnelAccountsMinimal(RoleEnum? role, int pageNumber = -1, int pageSize = -1)
 		{
-			BasePaginatedList<object> accounts = await _accountService.GetPersonnelAccountsMinimal(pageNumber, pageSize);
+			BasePaginatedList<object> accounts = await _accountService.GetPersonnelAccountsMinimal(role, pageNumber, pageSize);
 
 			return Ok(new BaseResponse<object>(
 				statusCode: StatusCodeEnum.OK,
@@ -149,8 +163,6 @@ namespace ChildrenVaccinationSystem.API.Controllers
 				data: null
 			));
 		}
-
-
 
 		[HttpGet("{id}")]
 		public async Task<IActionResult> GetAccountById(string id)

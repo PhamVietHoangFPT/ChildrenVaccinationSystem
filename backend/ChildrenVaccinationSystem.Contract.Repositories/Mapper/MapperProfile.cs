@@ -42,6 +42,7 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Mapper
 										  (srcMember is not string || !string.IsNullOrWhiteSpace(srcMember.ToString()))
 				));
 
+			CreateMap<CustomerCreateDto, Account>();
 
 			CreateMap<Blog, BlogViewDto>();
 			CreateMap<BlogCreateDto, Blog>();
@@ -91,16 +92,25 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Mapper
 
             CreateMap<Package, PackageViewDto>();
             CreateMap<PackageCreateDto, Package>();
-			CreateMap<PackageUpdateDto, Package>();
             CreateMap<Package, PackageDeleteVaccineDto>()
 				.ForAllMembers(opt => opt.Condition(
                 (src, dest, srcMember) => srcMember != null &&
                                           (srcMember is not string || !string.IsNullOrWhiteSpace(srcMember.ToString()))
                 ));
+			CreateMap<PackageUpdateDto, Package>()
+				.ForAllMembers(opt => opt.Condition(
+				(src, dest, srcMember) => srcMember != null &&
+										  (srcMember is not string || !string.IsNullOrWhiteSpace(srcMember.ToString()))
+				));
 
-            CreateMap<PackageItem, PackageItemViewDto>();
+			CreateMap<PackageItem, PackageItemViewDto>();
 
 			CreateMap<Vaccination, VaccinationViewDto>();
+			CreateMap<VaccinationUpdateDto, Vaccination>()
+				.ForAllMembers(opt => opt.Condition(
+				(src, dest, srcMember) => srcMember != null &&
+										  (srcMember is not string || !string.IsNullOrWhiteSpace(srcMember.ToString()))
+				));
 
 			CreateMap<Vaccine, VaccineViewMiniDto>();
 			CreateMap<Vaccine, VaccineViewDto>();

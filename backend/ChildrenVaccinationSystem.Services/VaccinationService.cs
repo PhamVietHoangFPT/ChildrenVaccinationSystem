@@ -15,6 +15,7 @@ using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 using static ChildrenVaccinationSystem.Core.Base.BaseException;
@@ -37,11 +38,11 @@ namespace ChildrenVaccinationSystem.Services
 		}
 
 
-		public async Task<BasePaginatedList<VaccinationViewDto>> GetVaccinations(string? childId, DateOnly? scheduleFrom, DateOnly? scheduleTo, VaccinationStatusEnum? status, int pageNumber, int pageSize)
+		public async Task<BasePaginatedList<VaccinationViewDto>> GetVaccinations(string? childId, string? childCode, DateOnly? scheduleFrom, DateOnly? scheduleTo, VaccinationStatusEnum? status, int pageNumber, int pageSize)
 		{
 			IQueryable<Vaccination> query = _unitOfWork.GetRepository<Vaccination>().Entities
-				.Where(v => (string.IsNullOrWhiteSpace(childId) || v.ChildId == childId) && (status == null || v.Status == status) && (scheduleFrom == null || scheduleTo == null || (v.Schedule >= scheduleFrom && v.Schedule <= scheduleTo)))
-				.OrderByDescending(v => v.CreatedTime);
+				.Where(v => (string.IsNullOrWhiteSpace(childId) || v.ChildId == childId) && (string.IsNullOrWhiteSpace(childCode) || v.Child.ChildCode == childCode) && (status == null || v.Status == status) && (scheduleFrom == null || scheduleTo == null || (v.Schedule >= scheduleFrom && v.Schedule <= scheduleTo)))
+				.OrderByDescending(v => v.Schedule);
 
 			BasePaginatedList<Vaccination> resultQuery = (pageNumber <= 0 || pageSize <= 0)
 				? await _unitOfWork.GetRepository<Vaccination>().GetPaging(query, 1, query.Count())
@@ -52,11 +53,11 @@ namespace ChildrenVaccinationSystem.Services
 			return new BasePaginatedList<VaccinationViewDto>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
 		}
 
-		public async Task<BasePaginatedList<object>> GetVaccinationsMinimal(string? childId, DateOnly? scheduleFrom, DateOnly? scheduleTo, VaccinationStatusEnum? status, int pageNumber, int pageSize)
+		public async Task<BasePaginatedList<object>> GetVaccinationsMinimal(string? childId, string? childCode, DateOnly? scheduleFrom, DateOnly? scheduleTo, VaccinationStatusEnum? status, int pageNumber, int pageSize)
 		{
 			IQueryable<Vaccination> query = _unitOfWork.GetRepository<Vaccination>().Entities
-				.Where(v => (string.IsNullOrWhiteSpace(childId) || v.ChildId == childId) && (status == null || v.Status == status) && (scheduleFrom == null || scheduleTo == null || (v.Schedule >= scheduleFrom && v.Schedule <= scheduleTo)))
-				.OrderByDescending(v => v.CreatedTime);
+				.Where(v => (string.IsNullOrWhiteSpace(childId) || v.ChildId == childId) && (string.IsNullOrWhiteSpace(childCode) || v.Child.ChildCode == childCode) && (status == null || v.Status == status) && (scheduleFrom == null || scheduleTo == null || (v.Schedule >= scheduleFrom && v.Schedule <= scheduleTo)))
+				.OrderByDescending(v => v.Schedule);
 
 			BasePaginatedList<Vaccination> resultQuery = (pageNumber <= 0 || pageSize <= 0)
 				? await _unitOfWork.GetRepository<Vaccination>().GetPaging(query, 1, query.Count())
@@ -75,6 +76,33 @@ namespace ChildrenVaccinationSystem.Services
 
 			return new BasePaginatedList<object>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
 		}
+
+		//public async Task CreateVaccinationByStaffForVaccine(string childId, string vaccineId)
+		//{
+		//	Child? child = await _unitOfWork.GetRepository<Child>().Entities.Where(c => c.Id == childId && c.DeletedBy == null).FirstOrDefaultAsync();
+		//	if (child == null)
+		//		throw new ErrorException(404, "not_found", "Không tìm thấy child id");
+
+		//	Vaccine? vaccine = await _unitOfWork.GetRepository<Vaccine>().Entities.Where(v => v.Id == vaccineId && v.DeletedBy == null).FirstOrDefaultAsync();
+		//	if (vaccine == null)
+		//		throw new ErrorException(404, "not_found", "Không tìm thấy vaccine id");
+
+
+		//	Vaccination vaccination = new()
+		//	{
+		//		ChildId = childId,
+		//		Price = vaccine.Price,
+		//		Schedule = DateOnly.FromDateTime(DateTime.Now),
+		//		Note = "",
+		//		Status = VaccinationStatusEnum.Pending,
+		//		VaccinatorId = vaccineId,
+		//	};
+
+		//	_authenticationService.UpdateAudits(vaccine, true);
+
+		//	await _unitOfWork.GetRepository<Vaccination>().InsertAsync(vaccination);
+		//	await _unitOfWork.SaveAsync();
+		//}
 
 
 		public async Task<string> RegisterVaccination(HttpContext context, VaccinationRegisterDto dto)
@@ -142,6 +170,9 @@ namespace ChildrenVaccinationSystem.Services
 				{
 					Vaccine vaccine = (await _unitOfWork.GetRepository<Vaccine>().GetByIdAsync(vaccineId))!;
 
+					if (vaccine.DeletedBy != null)
+						continue;
+
 					for (int i = 0; i < vaccine.Sequence; i++)
 					{
 						Vaccination vaccination = new()
@@ -163,6 +194,66 @@ namespace ChildrenVaccinationSystem.Services
 			// Extracting a list of IDs
 
 			return _vnPayService.CreatePaymentUrl(context, vaccinations, price);
+		}
+
+		public async Task UpdateVaccinationByStaff(string id, VaccinationUpdateDto dto)
+		{
+			Vaccination? vaccination = await _unitOfWork.GetRepository<Vaccination>().GetByIdAsync(id);
+			if (vaccination == null)
+			{
+				throw new ErrorException(404, "not_found", "Không tìm thấy vaccination id");
+			}
+
+			if (vaccination.Status != VaccinationStatusEnum.Pending && vaccination.Status != VaccinationStatusEnum.Paid)
+			{
+				throw new ErrorException(400, "bad_request", "Đã quá hạn để cập nhật");
+			}
+
+			if (dto.DoctorId != null)
+			{
+				Account? doctor = await _unitOfWork.GetRepository<Account>().Entities.Where(d => d.Id == dto.DoctorId && d.Role == RoleEnum.Doctor && d.DeletedBy == null).FirstOrDefaultAsync();
+				if (doctor == null)
+					throw new ErrorException(404, "not_found", "Không tìm thấy doctor id");
+			}
+
+			_mapper.Map(dto, vaccination);
+
+			_authenticationService.UpdateAudits(vaccination, false);
+			await _unitOfWork.GetRepository<Vaccination>().UpdateAsync(vaccination);
+
+			await _unitOfWork.SaveAsync();
+		}
+
+		public async Task ShiftVaccinationStatus(string id, VaccinationStatusEnum status)
+		{
+			Vaccination? vaccination = await _unitOfWork.GetRepository<Vaccination>().GetByIdAsync(id);
+			if (vaccination == null)
+			{
+				throw new ErrorException(404, "not_found", "Không tìm thấy vaccination id");
+			}
+
+			VaccinationStatusEnum currentStatus = vaccination.Status;
+
+			if (currentStatus == VaccinationStatusEnum.Pending && status == VaccinationStatusEnum.Paid)
+			{
+				throw new ErrorException(400, "bad_request", "Không thể chuyển đổi trạng thái của đơn hàng chưa thanh toán");
+			}
+
+
+
+			if ((currentStatus == VaccinationStatusEnum.Pending && (status == VaccinationStatusEnum.Paid || status == VaccinationStatusEnum.Canceled)) || (currentStatus == VaccinationStatusEnum.Paid && (status == VaccinationStatusEnum.Consulting || status == VaccinationStatusEnum.Refunded)) || (currentStatus == VaccinationStatusEnum.Consulting && (status == VaccinationStatusEnum.Paid || status == VaccinationStatusEnum.Queued)) || (currentStatus == VaccinationStatusEnum.Queued && status == VaccinationStatusEnum.Injecting) || (currentStatus == VaccinationStatusEnum.Injecting && status == VaccinationStatusEnum.Monitoring) || (currentStatus == VaccinationStatusEnum.Monitoring && (status == VaccinationStatusEnum.Completed || status == VaccinationStatusEnum.Emergency)) || (currentStatus == VaccinationStatusEnum.Emergency && status == VaccinationStatusEnum.Refunded))
+			{
+
+				vaccination.Status = status;
+
+				_authenticationService.UpdateAudits(vaccination, false);
+				await _unitOfWork.GetRepository<Vaccination>().UpdateAsync(vaccination);
+
+				await _unitOfWork.SaveAsync();
+			}
+			else
+				throw new ErrorException(400, "bad_request", "Trạng thái không hợp lệ");
+
 		}
 	}
 }

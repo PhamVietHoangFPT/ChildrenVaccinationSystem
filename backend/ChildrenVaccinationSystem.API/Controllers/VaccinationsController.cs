@@ -20,9 +20,9 @@ namespace ChildrenVaccinationSystem.API.Controllers
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> GetVaccinations(string? childId, DateOnly? scheduleFrom, DateOnly? scheduleTo, VaccinationStatusEnum? status, int pageNumber = -1, int pageSize = -1)
+		public async Task<IActionResult> GetVaccinations(string? childId, string? childCode, DateOnly? scheduleFrom, DateOnly? scheduleTo, VaccinationStatusEnum? status, int pageNumber = -1, int pageSize = -1)
 		{
-			BasePaginatedList<VaccinationViewDto> vaccinations = await _vaccinationService.GetVaccinations(childId, scheduleFrom, scheduleTo, status, pageNumber, pageSize);
+			BasePaginatedList<VaccinationViewDto> vaccinations = await _vaccinationService.GetVaccinations(childId, childCode, scheduleFrom, scheduleTo, status, pageNumber, pageSize);
 
 			return Ok(new BaseResponse<object>(
 				statusCode: StatusCodeEnum.OK,
@@ -34,9 +34,9 @@ namespace ChildrenVaccinationSystem.API.Controllers
 
 
 		[HttpGet("minimal")]
-		public async Task<IActionResult> GetVaccinationsMinimal(string? childId, DateOnly? scheduleFrom, DateOnly? scheduleTo, VaccinationStatusEnum? status, int pageNumber = -1, int pageSize = -1)
+		public async Task<IActionResult> GetVaccinationsMinimal(string? childId, string? childCode, DateOnly? scheduleFrom, DateOnly? scheduleTo, VaccinationStatusEnum? status, int pageNumber = -1, int pageSize = -1)
 		{
-			BasePaginatedList<object> vaccinations = await _vaccinationService.GetVaccinationsMinimal(childId, scheduleFrom, scheduleTo, status, pageNumber, pageSize);
+			BasePaginatedList<object> vaccinations = await _vaccinationService.GetVaccinationsMinimal(childId, childCode, scheduleFrom, scheduleTo, status, pageNumber, pageSize);
 
 			return Ok(new BaseResponse<object>(
 				statusCode: StatusCodeEnum.OK,
@@ -49,20 +49,42 @@ namespace ChildrenVaccinationSystem.API.Controllers
 		[HttpPost("register")]
 		public async Task<IActionResult> RegisterVaccination(VaccinationRegisterDto dto)
 		{
-			{
-				string price = await _vaccinationService.RegisterVaccination(HttpContext, dto);
+			string price = await _vaccinationService.RegisterVaccination(HttpContext, dto);
 
 
-				return Ok(new BaseResponse<object>(
-					statusCode: StatusCodeEnum.OK,
-					code: StatusCodeEnum.OK.ToString(),
-					message: "Đăng ký mua vaccine thành công!",
-					data: price
-				));
-			}
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Đăng ký mua vaccine thành công!",
+				data: price
+			));
+		}
+
+		[HttpPut("{id}/staff")]
+		public async Task<IActionResult> UpdateVaccinationByStaff(string id, VaccinationUpdateDto dto)
+		{
+			await _vaccinationService.UpdateVaccinationByStaff(id, dto);
+
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Cập nhật thông tin vaccination thành công!",
+				data: null
+			));
+		}
+
+		[HttpPut("{id}/{status}")]
+		public async Task<IActionResult> ShiftVaccinationStatus(string id, VaccinationStatusEnum status)
+		{
+			await _vaccinationService.ShiftVaccinationStatus(id, status);
 
 
-
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Thay đổi trạng thái thành công!",
+				data: null
+			));
 		}
 	}
 }

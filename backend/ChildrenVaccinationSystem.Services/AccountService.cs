@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -39,6 +40,13 @@ namespace ChildrenVaccinationSystem.Services
 
 		public async Task ForceUpdateAccountProfile(AccountForceUpdateDto accountForceUpdateDto)
 		{
+			Console.WriteLine(accountForceUpdateDto.Account.PhoneNumber);
+			Account? existingAccount = await _unitOfWork.GetRepository<Account>().Entities.Where(a => a.PhoneNumber == accountForceUpdateDto.Account.PhoneNumber && a.DeletedBy == null).FirstOrDefaultAsync();
+			if (existingAccount != null)
+			{
+				throw new ErrorException(409, "conflict", "Số điện thoại này đã được sử dụng, vui lòng thử lại");
+			}
+
 			string accountId = _authenticationService.GetCurrentAccountId();
 
 			Account account = _unitOfWork.GetRepository<Account>().GetById(accountId)!;
@@ -51,6 +59,7 @@ namespace ChildrenVaccinationSystem.Services
 
 			child.ChildCode = _childService.GenerateChildCode();
 			child.AccountId = accountId;
+			_authenticationService.UpdateAudits(child, true);
 
 			await _unitOfWork.GetRepository<Account>().UpdateAsync(account);
 			await _unitOfWork.GetRepository<Child>().InsertAsync(child);
@@ -105,6 +114,30 @@ namespace ChildrenVaccinationSystem.Services
 			return new BasePaginatedList<AccountViewDto>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
 		}
 
+		public async Task CreateCustomerAccount(CustomerCreateDto customerCreateDto)
+		{
+			Account? existingAccount = await _unitOfWork.GetRepository<Account>().Entities.Where(a => a.PhoneNumber == customerCreateDto.PhoneNumber && a.DeletedBy == null).FirstOrDefaultAsync();
+
+			if (existingAccount != null)
+			{
+				throw new ErrorException(409, "conflict", "Số điện thoại này đã được sử dụng, vui lòng thử lại");
+			}
+
+			Account account = new()
+			{
+				Password = BCrypt.Net.BCrypt.HashPassword(customerCreateDto.PhoneNumber),
+				Role = RoleEnum.Customer,
+			};
+
+			_mapper.Map(customerCreateDto, account);
+
+			_authenticationService.UpdateAudits(account, true);
+
+			await _unitOfWork.GetRepository<Account>().InsertAsync(account);
+			await _unitOfWork.SaveAsync();
+		}
+
+
 		public async Task<BasePaginatedList<object>> GetCustomerAccountsMinimal(string? phoneNumber, int pageNumber, int pageSize)
 		{
 			IQueryable<Account> query = _unitOfWork.GetRepository<Account>().Entities.Where(a => ((string.IsNullOrWhiteSpace(phoneNumber) || (!string.IsNullOrWhiteSpace(a.PhoneNumber) && a.PhoneNumber.StartsWith(phoneNumber)))) && a.Role == RoleEnum.Customer && a.VerificationToken == null && a.DeletedBy == null);
@@ -124,12 +157,11 @@ namespace ChildrenVaccinationSystem.Services
 			return new BasePaginatedList<object>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
 		}
 
-		public async Task<BasePaginatedList<AccountViewDto>> GetPersonnelAccounts(int pageNumber, int pageSize)
+		public async Task<BasePaginatedList<AccountViewDto>> GetPersonnelAccounts(RoleEnum? role, int pageNumber, int pageSize)
 		{
-			IQueryable<Account> query = _unitOfWork.GetRepository<Account>().Entities.Where(a => (a.Role == RoleEnum.Staff || a.Role == RoleEnum.Doctor || a.Role == RoleEnum.Vaccinator) && a.DeletedBy == null);
-
+			IQueryable<Account> query = _unitOfWork.GetRepository<Account>().Entities.Where(a => (a.Role == RoleEnum.Staff || a.Role == RoleEnum.Doctor || a.Role == RoleEnum.Vaccinator) && (role == null || a.Role == role) && a.DeletedBy == null);
 			BasePaginatedList<Account> resultQuery = (pageNumber <= 0 || pageSize <= 0)
-				? await _unitOfWork.GetRepository<Account>().GetPaging(query, 1, query.Count())
+			? await _unitOfWork.GetRepository<Account>().GetPaging(query, 1, query.Count())
 				: await _unitOfWork.GetRepository<Account>().GetPaging(query, pageNumber, pageSize);
 
 			List<AccountViewDto> responseItems = resultQuery.Items.Select(_mapper.Map<AccountViewDto>).ToList();
@@ -137,9 +169,9 @@ namespace ChildrenVaccinationSystem.Services
 			return new BasePaginatedList<AccountViewDto>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
 		}
 
-		public async Task<BasePaginatedList<object>> GetPersonnelAccountsMinimal(int pageNumber, int pageSize)
+		public async Task<BasePaginatedList<object>> GetPersonnelAccountsMinimal(RoleEnum? role, int pageNumber, int pageSize)
 		{
-			IQueryable<Account> query = _unitOfWork.GetRepository<Account>().Entities.Where(a => (a.Role == RoleEnum.Staff || a.Role == RoleEnum.Doctor || a.Role == RoleEnum.Vaccinator) && a.DeletedBy == null);
+			IQueryable<Account> query = _unitOfWork.GetRepository<Account>().Entities.Where(a => (a.Role == RoleEnum.Staff || a.Role == RoleEnum.Doctor || a.Role == RoleEnum.Vaccinator) && (role == null || a.Role == role) && a.DeletedBy == null);
 
 			BasePaginatedList<Account> resultQuery = (pageNumber <= 0 || pageSize <= 0)
 				? await _unitOfWork.GetRepository<Account>().GetPaging(query, 1, query.Count())
@@ -160,7 +192,7 @@ namespace ChildrenVaccinationSystem.Services
 		public async Task CreatePersonnelAccount(PersonnelCreateDto personnelCreateDto)
 		{
 
-			var existingAccount = await _unitOfWork.GetRepository<Account>().Entities.Where(a => a.Email == personnelCreateDto.Email && a.DeletedBy == null).FirstOrDefaultAsync();
+			Account? existingAccount = await _unitOfWork.GetRepository<Account>().Entities.Where(a => a.Email == personnelCreateDto.Email && a.DeletedBy == null).FirstOrDefaultAsync();
 
 			if (existingAccount != null)
 			{
@@ -195,7 +227,7 @@ namespace ChildrenVaccinationSystem.Services
 
 			if (personnelUpdateDto.Email != null)
 			{
-				var existingAccount = await _unitOfWork.GetRepository<Account>().Entities.Where(a => a.Email == personnelUpdateDto.Email && a.DeletedBy == null).FirstOrDefaultAsync();
+				Account? existingAccount = await _unitOfWork.GetRepository<Account>().Entities.Where(a => a.Email == personnelUpdateDto.Email && a.DeletedBy == null).FirstOrDefaultAsync();
 
 				if (existingAccount != null)
 				{

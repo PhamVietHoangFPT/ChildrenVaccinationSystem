@@ -9,6 +9,7 @@ import {
   SearchOutlined,
   TeamOutlined,
   SmileOutlined,
+  UserAddOutlined,
 } from '@ant-design/icons'
 import { MenuProps, Layout } from 'antd'
 import { Menu } from 'antd'
@@ -54,7 +55,13 @@ const SideBarStaff: React.FC = () => {
         key: 'sub0',
         label: `Welcome, ${userData?.Name}`,
         icon: <SmileOutlined />,
-        url: '/staff',
+        url: '/staff/customer-account',
+      },
+      {
+        key: 'sub10',
+        label: 'Register For Customer',
+        icon: <UserAddOutlined/>,
+        url: '/staff/customer-account/register',
       },
       {
         key: 'sub1',
@@ -65,7 +72,7 @@ const SideBarStaff: React.FC = () => {
             key: '1',
             label: 'Vaccination Registration',
             icon: <CheckCircleOutlined />,
-            url: '/staff',
+            url: '/staff/vaccination-record',
           },
           {
             key: '3',
