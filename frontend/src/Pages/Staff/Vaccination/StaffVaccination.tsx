@@ -10,7 +10,7 @@ import {
     MinusCircleOutlined,
     SyncOutlined,
 } from '@ant-design/icons';
-import { Button, Table, Tag } from 'antd';
+import { Button, Table, Tag, Input } from 'antd'; // Added Input to imports
 import { useGetVaccinationListQuery } from '../../../features/vaccinations/vaccinationAPI';
 import dayjs, { Dayjs } from 'dayjs';
 import VaccinationDateFilter from '../../../components/VaccinationFilter/VaccinationFilter';
@@ -35,15 +35,17 @@ const StaffVaccination: React.FC = () => {
     const initialScheduleTo = searchParams.get('scheduleTo') || undefined;
     const initialStatus = searchParams.get('status')
         ? parseInt(searchParams.get('status')!, 10)
-        : undefined; // Default to undefined if not present
+        : undefined;
+    const initialChildCode = searchParams.get('childCode') || undefined;
 
     const [currentPage, setCurrentPage] = useState(initialPage);
     const [scheduleFrom, setScheduleFrom] = useState<string | undefined>(initialScheduleFrom);
     const [scheduleTo, setScheduleTo] = useState<string | undefined>(initialScheduleTo);
     const [status, setStatus] = useState<number | undefined>(initialStatus);
+    const [childCode, setChildCode] = useState<string | undefined>(initialChildCode);
     const pageSize = 7;
 
-    // Fetch vaccination list with dynamic filters
+    // Fetch vaccination list with dynamic filters including childCode
     const {
         data: vaccinations,
         isFetching: vaccinationFetching,
@@ -54,12 +56,13 @@ const StaffVaccination: React.FC = () => {
         pageSize: pageSize,
         scheduleFrom,
         scheduleTo,
+        childCode,
     });
 
     const dateVaccinations = vaccinations?.data.items ?? [];
     const totalVaccinations = vaccinations?.data.totalItems ?? 0;
 
-    // Update URL search params for pagination, date filters, and status
+    // Update URL search params for pagination, date filters, status, and childCode
     useEffect(() => {
         const params: { [key: string]: string } = {
             page: currentPage.toString(),
@@ -67,24 +70,31 @@ const StaffVaccination: React.FC = () => {
         if (scheduleFrom) params.scheduleFrom = scheduleFrom;
         if (scheduleTo) params.scheduleTo = scheduleTo;
         if (status !== undefined) params.status = status.toString();
+        if (childCode) params.childCode = childCode;
 
         setSearchParams(params);
-    }, [currentPage, scheduleFrom, scheduleTo, status, setSearchParams]);
+    }, [currentPage, scheduleFrom, scheduleTo, status, childCode, setSearchParams]);
 
     // Handle date changes
     const handleScheduleFromChange = (date: Dayjs | null) => {
         setScheduleFrom(date ? date.format('YYYY-MM-DD') : undefined);
-        setCurrentPage(1); // Reset to first page on filter change
+        setCurrentPage(1);
     };
 
     const handleScheduleToChange = (date: Dayjs | null) => {
         setScheduleTo(date ? date.format('YYYY-MM-DD') : undefined);
-        setCurrentPage(1); // Reset to first page on filter change
+        setCurrentPage(1);
     };
 
     const handleStatusChange = (value: number | undefined) => {
         setStatus(value);
-        setCurrentPage(1); // Reset to first page on filter change
+        setCurrentPage(1);
+    };
+
+    // Handle childCode search
+    const handleChildCodeSearch = (value: string) => {
+        setChildCode(value.trim() || undefined);
+        setCurrentPage(1);
     };
 
     // Loading state for the table
@@ -179,6 +189,16 @@ const StaffVaccination: React.FC = () => {
 
     return (
         <div style={{ padding: 20, background: '#fff', borderRadius: 8 }}>
+            <div style={{ marginBottom: 16 }}>
+                <Input.Search
+                    placeholder="Search by Child Code"
+                    allowClear
+                    enterButton="Search"
+                    onSearch={handleChildCodeSearch}
+                    style={{ width: 300 }}
+                    defaultValue={childCode}
+                />
+            </div>
             <VaccinationDateFilter
                 scheduleFrom={scheduleFrom}
                 scheduleTo={scheduleTo}
