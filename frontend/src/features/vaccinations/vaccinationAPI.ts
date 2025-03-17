@@ -15,7 +15,7 @@ export const vaccinationsApi = apiSlice.injectEndpoints({
       query: ({
         pageNumber,
         pageSize,
-        childId,
+        childCode,
         scheduleFrom,
         scheduleTo,
         status,
@@ -25,7 +25,7 @@ export const vaccinationsApi = apiSlice.injectEndpoints({
         params: {
           pageNumber,
           pageSize,
-          childId,
+          childCode,
           scheduleFrom,
           scheduleTo,
           status
