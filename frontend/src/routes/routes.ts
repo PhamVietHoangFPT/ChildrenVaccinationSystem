@@ -23,6 +23,8 @@ import VaccineRegistrationCustomer from '../Pages/Vaccines/VaccineRegistrationCu
 import ForceUpdateAccount from '../Pages/Register/ForgeUpdateRegister'
 import ChildrenPage from '../Pages/Staff/ChildrenProfile/Children'
 import CustomerDetail from '../Pages/Staff/CustomerProfile/CustomerDetail'
+import RegisterCustomer from '../Pages/Staff/RegisterCustomer/registerCustomer'
+import StaffVaccination from '../Pages/Staff/Vaccination/StaffVaccination'
 
 const routes: LayoutRoute[] = [
   {
@@ -73,6 +75,18 @@ const routes: LayoutRoute[] = [
       {
         path: '/staff/customer-account/:customerId',
         component: CustomerDetail,
+        exact: true,
+        role: ['Staff'],
+      },
+      {
+        path: '/staff/customer-account/register',
+        component: RegisterCustomer,
+        exact: true,
+        role: ['Staff'],
+      },
+      {
+        path: '/staff/vaccination-record',
+        component: StaffVaccination,
         exact: true,
         role: ['Staff'],
       },

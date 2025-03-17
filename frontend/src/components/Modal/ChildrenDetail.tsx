@@ -31,6 +31,7 @@ interface ChilrenDetailModalProps {
     id: string | null
     onClose: () => void
 }
+
 const { Text } = Typography
 const ChildrenDetailModal: React.FC<ChilrenDetailModalProps> = ({
     visible,
@@ -52,7 +53,6 @@ const ChildrenDetailModal: React.FC<ChilrenDetailModalProps> = ({
     const childrenDetail = childrenDetailData?.data ?? null
 
     const [form] = Form.useForm()
-
     // Set dữ liệu vào form khi có data
     useEffect(() => {
         if (childrenDetail) {
@@ -164,7 +164,7 @@ const ChildrenDetailModal: React.FC<ChilrenDetailModalProps> = ({
                             disabledDate={(current) => current && current > dayjs().endOf('day')} // Không cho chọn ngày tương lai
                             style={{ width: '100%' }} format='YYYY-MM-DD' />
                     </Form.Item>
-                    
+
                     <Form.Item
                         label='Height (cm)'
                         name='height'
