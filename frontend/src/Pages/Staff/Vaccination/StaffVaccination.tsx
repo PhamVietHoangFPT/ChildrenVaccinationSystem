@@ -10,10 +10,23 @@ import {
     MinusCircleOutlined,
     SyncOutlined,
 } from '@ant-design/icons';
-import { Button, Table, Tag, Input } from 'antd'; // Added Input to imports
+import { Button, Table, Tag, AutoComplete } from 'antd'; // Replaced Input with AutoComplete
 import { useGetVaccinationListQuery } from '../../../features/vaccinations/vaccinationAPI';
 import dayjs, { Dayjs } from 'dayjs';
 import VaccinationDateFilter from '../../../components/VaccinationFilter/VaccinationFilter';
+import { Children } from '../../../types/children';
+import { useGetChildrenListQuery } from '../../../features/children/childrenAPI';
+
+interface ChildrenListResponse {
+    data: {
+        data: {
+            items: Children[];
+            totalItems: number;
+        };
+    };
+    isLoading?: boolean;
+    isFetching?: boolean;
+}
 
 interface VaccinationListResponse {
     data: {
@@ -43,6 +56,7 @@ const StaffVaccination: React.FC = () => {
     const [scheduleTo, setScheduleTo] = useState<string | undefined>(initialScheduleTo);
     const [status, setStatus] = useState<number | undefined>(initialStatus);
     const [childCode, setChildCode] = useState<string | undefined>(initialChildCode);
+    const [searchValue, setSearchValue] = useState<string>(initialChildCode || ''); // For AutoComplete input
     const pageSize = 7;
 
     // Fetch vaccination list with dynamic filters including childCode
@@ -61,6 +75,17 @@ const StaffVaccination: React.FC = () => {
 
     const dateVaccinations = vaccinations?.data.items ?? [];
     const totalVaccinations = vaccinations?.data.totalItems ?? 0;
+
+    // Fetch children list for childCode options
+    const {
+        data: children,
+        isFetching: childrenFetching,
+    } = useGetChildrenListQuery<ChildrenListResponse>({
+        pageNumber: 1,
+        pageSize: 100, // Adjust this if you need more or fewer options
+    });
+
+    const dataChildren = children?.data.items ?? [];
 
     // Update URL search params for pagination, date filters, status, and childCode
     useEffect(() => {
@@ -91,11 +116,24 @@ const StaffVaccination: React.FC = () => {
         setCurrentPage(1);
     };
 
-    // Handle childCode search
-    const handleChildCodeSearch = (value: string) => {
-        setChildCode(value.trim() || undefined);
+    // Handle childCode selection from AutoComplete
+    const handleChildCodeSelect = (value: string) => {
+        const trimmedValue = value.trim();
+        setChildCode(trimmedValue || undefined);
+        setSearchValue(trimmedValue);
         setCurrentPage(1);
     };
+
+    // Handle AutoComplete input change
+    const handleSearchChange = (value: string) => {
+        setSearchValue(value);
+    };
+
+    // Map dataChildren to AutoComplete options
+    const options = dataChildren.map((child) => ({
+        value: child.childCode || undefined, // Assuming childCode is a property in Children type
+        label: `${child.childCode} - ${child.name || 'N/A'}`, // Optional: Enhance display with name
+    }));
 
     // Loading state for the table
     if (vaccinationLoading && !vaccinationFetching) {
@@ -190,13 +228,28 @@ const StaffVaccination: React.FC = () => {
     return (
         <div style={{ padding: 20, background: '#fff', borderRadius: 8 }}>
             <div style={{ marginBottom: 16 }}>
-                <Input.Search
-                    placeholder="Search by Child Code"
-                    allowClear
-                    enterButton="Search"
-                    onSearch={handleChildCodeSearch}
+                <AutoComplete
                     style={{ width: 300 }}
-                    defaultValue={childCode}
+                    options={options}
+                    placeholder="Search by Child Code"
+                    value={searchValue}
+                    onSelect={handleChildCodeSelect}
+                    onChange={handleSearchChange}
+                    onSearch={(value) => {
+                        if (!value) {
+                            setChildCode(undefined);
+                            setCurrentPage(1);
+                        }
+                    }}
+                    allowClear
+                    filterOption={(inputValue, option) =>
+                        (option?.value?.toUpperCase() || '').indexOf(
+                          inputValue.toUpperCase()
+                        ) !== -1 ||
+                        (option?.label?.toString().toUpperCase() || '').indexOf(
+                          inputValue.toUpperCase()
+                        ) !== -1
+                      }
                 />
             </div>
             <VaccinationDateFilter
@@ -213,7 +266,7 @@ const StaffVaccination: React.FC = () => {
                     ...item,
                     key: item.id,
                 }))}
-                loading={vaccinationFetching}
+                loading={vaccinationFetching || childrenFetching} // Include childrenFetching
                 bordered
                 pagination={{
                     current: currentPage,
