@@ -30,6 +30,7 @@ import RegisterCustomer from '../Pages/Staff/RegisterCustomer/registerCustomer'
 import StaffVaccination from '../Pages/Staff/Vaccination/StaffVaccination'
 import ManagerBlogList from '../Pages/Home/BlogManager/BlogListManager'
 import BlogDetail from '../Pages/Home/BlogManager/BlogDetailManager'
+import CreateBlog from '../Pages/Home/BlogManager/CreateBlogManager'
 
 const routes: LayoutRoute[] = [
   {
@@ -158,6 +159,12 @@ const routes: LayoutRoute[] = [
       {
         path: '/manager/blog/:id',
         component: BlogDetail,
+        exact: true,
+        role: ['Manager'],
+      },
+      {
+        path: '/manager/blog/create',
+        component: CreateBlog,
         exact: true,
         role: ['Manager'],
       },
