@@ -24,26 +24,26 @@ const ManagerBlogList: React.FC = () => {
   const [searchText, setSearchText] = useState<string>('');
   const [currentPage, setCurrentPage] = useState<number>(1);
   const pageSize = 7
-  const [debouncedTitle, setDebouncedTitle] = useState('');
+  const [filteredData, setFilteredData] = useState<Blogs[]>([]);
 
 
   const { data, isLoading, isFetching } = useGetBlogsListQuery<BlogsListResponse>({
     pageNumber: currentPage,
     pageSize: pageSize,
-    search: debouncedTitle, 
   });
 
   useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedTitle(searchText);
-    }, 500); // Debounce 500ms
-
-    return () => clearTimeout(handler);
-  }, [searchText]);
+    if (data?.data?.items) {
+      // Filter thanh search
+      const filtered = data.data.items.filter((blog) =>
+        blog.title.toLowerCase().includes(searchText.toLowerCase())
+      );
+      setFilteredData(filtered);
+    }
+  }, [data, searchText]);
 
   console.log('data:', data);
-
-  const blogs : Blogs[] = data?.data?.items || []; //Kiem tra xem data Blogs co ton tai 
+ 
   const totalItems = data?.data?.totalItems || 0;
 
   const columns: ColumnsType<Blogs> = [
@@ -119,7 +119,7 @@ const ManagerBlogList: React.FC = () => {
       ) : (
         <Table
           columns={columns}
-          dataSource={blogs.map((item, index) => ({
+          dataSource={filteredData.map((item, index) => ({
             ...item,
             key: item.id,
             index: (currentPage - 1) * pageSize + index + 1,
