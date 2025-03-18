@@ -1,85 +1,75 @@
-import React, { useEffect, useState } from 'react'
-import { Table, Button, Input, Typography, Spin, Pagination } from 'antd'
-import type { ColumnsType } from 'antd/es/table'
-import { EyeOutlined, SearchOutlined, PlusOutlined } from '@ant-design/icons'
-import { useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from 'react';
+import { Table, Button, Input, Typography, Spin } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
+import { EyeOutlined, SearchOutlined, PlusOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
+import { useGetBlogsListQuery } from '../../../features/blogs/blogsAPI';
+import { Blogs } from '../../../types/blog';
 
-// Import your API hooks
-import { useGetVaccineListMiniMalQuery } from '../../../features/vaccine/vaccineAPI'
-import { Vaccines } from '../../../types/vaccine'
+const { Title } = Typography;
 
-const { Title } = Typography
-
-interface VaccinesListResponse {
+interface BlogsListResponse {
   data: {
     data: {
-      items: Vaccines[]
-      totalItems: number
-    }
-  }
-  isLoading: boolean
+      items: Blogs[];
+    totalItems: number;
+    } 
+  };
+  isLoading: boolean,
   isFetching: boolean
 }
 
 const ManagerBlogList: React.FC = () => {
-  const navigate = useNavigate()
-  const [searchText, setSearchText] = useState<string>('')
-  const [pageNumber, setPageNumber] = useState<number>(1)
-  const [pageSize, setPageSize] = useState<number>(10)
-  const [debouncedVaccineName, setDebouncedVaccineName] = useState('')
-  const { data, isLoading, isFetching } =
-    useGetVaccineListMiniMalQuery<VaccinesListResponse>({
-      pageNumber: pageNumber,
-      pageSize: pageSize,
-      name: debouncedVaccineName,
-    })
+  const navigate = useNavigate();
+  const [searchText, setSearchText] = useState<string>('');
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const pageSize = 7
+  const [debouncedTitle, setDebouncedTitle] = useState('');
+
+
+  const { data, isLoading, isFetching } = useGetBlogsListQuery<BlogsListResponse>({
+    pageNumber: currentPage,
+    pageSize: pageSize,
+    search: debouncedTitle, 
+  });
 
   useEffect(() => {
     const handler = setTimeout(() => {
-      setDebouncedVaccineName(searchText)
-    }, 500) // 500ms debounce time
+      setDebouncedTitle(searchText);
+    }, 500); // Debounce 500ms
 
-    return () => {
-      clearTimeout(handler)
-    }
-  }, [searchText])
+    return () => clearTimeout(handler);
+  }, [searchText]);
 
-  const columns: ColumnsType<Vaccines> = [
+  console.log('data:', data);
+
+  const blogs : Blogs[] = data?.data?.items || []; //Kiem tra xem data Blogs co ton tai 
+  const totalItems = data?.data?.totalItems || 0;
+
+  const columns: ColumnsType<Blogs> = [
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
-      sorter: (a, b) => a.name.localeCompare(b.name),
+      title: 'No.',
+      dataIndex: 'index',
+      key: 'index',
+      render: (_, __, index) => (currentPage - 1) * pageSize + index + 1,
     },
     {
-      title: 'Category',
-      dataIndex: ['category', 'name'],
-      key: 'category',
+      title: 'Title',
+      dataIndex: 'title',
+      key: 'title',
+      sorter: (a, b) => a.title.localeCompare(b.title),
     },
     {
-      title: 'Manufacturer',
-      dataIndex: ['manufacturer', 'name'],
-      key: 'manufacturer',
+      title: 'Content',
+      dataIndex: 'content',
+      key: 'content',
+      render: (text) => (
+        <div style={{ maxWidth: 300, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          {text}
+        </div>
+      ),
     },
-    {
-      title: 'Price',
-      dataIndex: 'price',
-      key: 'price',
-      render: (price) =>
-        price ? `${new Intl.NumberFormat('en-US').format(price)} ` : 'N/A',
-      sorter: (a, b) => a.price! - b.price!,
-    },
-    {
-      title: 'Recommended Age',
-      key: 'recommendedAge',
-      render: (_, record) =>
-        `${record.startRecommendedAge} - ${record.endRecommendedAge} years`,
-    },
-    {
-      title: 'Dosage',
-      dataIndex: 'dosage',
-      key: 'dosage',
-    },
+  
     {
       title: 'Actions',
       key: 'actions',
@@ -87,17 +77,17 @@ const ManagerBlogList: React.FC = () => {
         <Button
           type='primary'
           icon={<EyeOutlined />}
-          onClick={() => navigate(`/manager/vaccine/${record.id}`)}
+          onClick={() => navigate(`/manager/blog/${record.id}`)}
         >
           Details
         </Button>
       ),
     },
-  ]
+  ];
 
   return (
     <div style={{ padding: '24px' }}>
-      <Title level={2}>Vaccine List</Title>
+      <Title level={2}>Blog List</Title>
 
       <div
         style={{
@@ -108,7 +98,7 @@ const ManagerBlogList: React.FC = () => {
         }}
       >
         <Input
-          placeholder='Search by vaccine name'
+          placeholder='Search by blog title'
           prefix={<SearchOutlined />}
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
@@ -118,40 +108,36 @@ const ManagerBlogList: React.FC = () => {
         <Button
           type='primary'
           icon={<PlusOutlined />}
-          onClick={() => navigate('/manager/vaccine/create')}
+          onClick={() => navigate('/manager/blog/create')}
         >
-          Create Vaccine
+          Create Blog
         </Button>
       </div>
 
       {isLoading ? (
         <Spin />
       ) : (
-        <>
-          <Table
-            dataSource={data?.data.items}
-            columns={columns}
-            rowKey='id'
-            pagination={false}
-            loading={isFetching}
-          />
-          {!isLoading && (
-            <Pagination
-              current={pageNumber}
-              pageSize={pageSize}
-              total={data?.data.totalItems}
-              style={{ textAlign: 'center' }}
-              align='center'
-              onChange={(page, size) => {
-                setPageNumber(page)
-                setPageSize(size)
-              }}
-            />
-          )}
-        </>
+        <Table
+          columns={columns}
+          dataSource={blogs.map((item, index) => ({
+            ...item,
+            key: item.id,
+            index: (currentPage - 1) * pageSize + index + 1,
+          }))}
+          loading={isFetching}
+          bordered
+          pagination={{
+            current: currentPage,
+            pageSize: pageSize,
+            total: totalItems,
+            onChange: (page) => {
+              setCurrentPage(page);
+            },
+          }}
+        />
       )}
     </div>
-  )
-}
+  );
+};
 
-export default ManagerBlogList
+export default ManagerBlogList;
