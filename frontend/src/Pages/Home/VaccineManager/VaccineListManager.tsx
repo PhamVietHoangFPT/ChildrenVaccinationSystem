@@ -3,8 +3,6 @@ import { Table, Button, Input, Typography, Spin, Pagination } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { EyeOutlined, SearchOutlined, PlusOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
-
-// Import your API hooks
 import { useGetVaccineListMiniMalQuery } from '../../../features/vaccine/vaccineAPI'
 import { Vaccines } from '../../../types/vaccine'
 
