@@ -94,15 +94,28 @@ namespace ChildrenVaccinationSystem.API.Controllers
             ));
         }
 
-        [HttpDelete("{packageId}/remove-vaccine/{vaccineId}")]
-        public async Task<IActionResult> RemoveVaccineFromPackage(string packageId, string vaccineId)
+        [HttpDelete("{id}/{vaccineId}")]
+        public async Task<IActionResult> RemoveVaccineFromPackage(string id, string vaccineId)
         {
-            await _packageService.RemoveVaccineFromPackage(packageId, vaccineId);
+            await _packageService.RemoveVaccineFromPackage(id, vaccineId);
 
             return Ok(new BaseResponse<object>(
                 statusCode: StatusCodeEnum.OK,
                 code: StatusCodeEnum.OK.ToString(),
-                message: "Xóa vaccine thành công",
+                message: "Xóa vaccine khỏi gói thành công",
+                data: null
+            ));
+        }
+
+        [HttpPost("{id}/{vaccineId}")]
+        public async Task<IActionResult> AddVaccineToPackage(string id, string vaccineId)
+        {
+            await _packageService.AddVaccineToPackage(id, vaccineId);
+
+            return Ok(new BaseResponse<object>(
+                statusCode: StatusCodeEnum.OK,
+                code: StatusCodeEnum.OK.ToString(),
+                message: "Thêm vaccine vào gói thành công",
                 data: null
             ));
         }
