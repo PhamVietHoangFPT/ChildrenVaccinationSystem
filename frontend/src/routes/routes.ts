@@ -28,6 +28,7 @@ import VaccinatorHomePage from '../Pages/Vaccinator/VaccinatorHomePage'
 import CustomerListVaccinator from '../Pages/Home/Vaccinator/CustomerListVaccinator'
 import RegisterCustomer from '../Pages/Staff/RegisterCustomer/registerCustomer'
 import StaffVaccination from '../Pages/Staff/Vaccination/StaffVaccination'
+import ManagerBlogList from '../Pages/Home/BlogManager/BlogListManager'
 
 const routes: LayoutRoute[] = [
   {
@@ -144,6 +145,12 @@ const routes: LayoutRoute[] = [
       {
         path: '/manager/vaccine/create',
         component: CreateVaccine,
+        exact: true,
+        role: ['Manager'],
+      },
+      {
+        path: '/manager/blog',
+        component: ManagerBlogList,
         exact: true,
         role: ['Manager'],
       },
