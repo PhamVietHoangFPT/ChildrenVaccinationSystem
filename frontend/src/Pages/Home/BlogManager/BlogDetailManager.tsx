@@ -10,6 +10,9 @@ import {
 } from 'antd';
 import { useGetBlogsDetailQuery, useUpdateBlogsMutation, useDeleteBlogsMutation } from '../../../features/blogs/blogsAPI';
 import { Blogs } from '../../../types/blog';
+import { useState } from 'react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const { Title } = Typography;
 
@@ -23,6 +26,7 @@ interface BlogDetailResponse {
 const BlogDetail: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const [content, setContent] = useState('');
 
   const { data, isLoading } = useGetBlogsDetailQuery<BlogDetailResponse>(id as string);
   const [updateBlog] = useUpdateBlogsMutation();
@@ -103,10 +107,11 @@ const BlogDetail: React.FC = () => {
 
         <Form.Item
           label="Content"
-          name="content"
+          name='content'
           rules={[{ required: true, message: 'Please enter the blog content' }]}
         >
-          <Input.TextArea rows={6} />
+          {/* <Input.TextArea rows={6} /> */}
+          <ReactQuill value={content} onChange={setContent} />
         </Form.Item>
 
 
