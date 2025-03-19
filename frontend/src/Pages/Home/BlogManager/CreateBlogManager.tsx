@@ -7,6 +7,9 @@ import {
   message,
 } from 'antd';
 import { useCreateBlogsMutation } from '../../../features/blogs/blogsAPI';
+import { useState } from 'react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const { Title } = Typography;
 
@@ -14,6 +17,7 @@ const CreateBlog: React.FC = () => {
   const navigate = useNavigate();
 
   const [createBlog] = useCreateBlogsMutation();
+   const [content, setContent] = useState('');
 
   const [form] = Form.useForm();
 
@@ -58,7 +62,8 @@ const CreateBlog: React.FC = () => {
           name="content"
           rules={[{ required: true, message: 'Please enter the blog content' }]}
         >
-          <Input.TextArea rows={6} />
+          {/* <Input.TextArea rows={6} /> */}
+          <ReactQuill value={content} onChange={setContent} />
         </Form.Item>
 
 
