@@ -5,6 +5,7 @@ import { EyeOutlined, SearchOutlined, PlusOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useGetBlogsListQuery } from '../../../features/blogs/blogsAPI';
 import { Blogs } from '../../../types/blog';
+import parse from 'html-react-parser';
 
 const { Title } = Typography;
 
@@ -65,7 +66,7 @@ const ManagerBlogList: React.FC = () => {
       key: 'content',
       render: (text) => (
         <div style={{ maxWidth: 300, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-          {text}
+          {parse(text)}
         </div>
       ),
     },

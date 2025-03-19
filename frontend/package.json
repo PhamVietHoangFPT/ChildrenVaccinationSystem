@@ -20,6 +20,7 @@
     "async-mutex": "^0.5.0",
     "axios": "^1.7.9",
     "formik": "^2.4.6",
+    "html-react-parser": "^5.2.2",
     "js-cookie": "^3.0.5",
     "jwt-decode": "^4.0.0",
     "moment": "^2.30.1",
