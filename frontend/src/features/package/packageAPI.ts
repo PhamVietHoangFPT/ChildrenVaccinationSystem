@@ -1,4 +1,4 @@
-import { apiSlice } from '../../apis/apiSlice'
+import { apiSlice } from '../../apis/apiSlice';
 
 export const packagesApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -65,8 +65,24 @@ export const packagesApi = apiSlice.injectEndpoints({
       transformResponse: (res) => res,
       invalidatesTags: ['packages'],
     }),
+    addVaccineToPackage: builder.mutation({
+      query: ({ id, vaccineId }) => ({
+        url: `/packages/${id}/${vaccineId}`,
+        method: 'POST',
+      }),
+      transformResponse: (res) => res,
+      invalidatesTags: ['packages'],
+    }),
+    deleteVaccineFromPackage: builder.mutation({
+      query: ({ id, vaccineId }) => ({
+        url: `/packages/${id}/${vaccineId}`,
+        method: 'DELETE',
+      }),
+      transformResponse: (res) => res,
+      invalidatesTags: ['packages'],
+    }),
   }),
-})
+});
 
 export const {
   useGetPackageListQuery,
@@ -75,4 +91,6 @@ export const {
   useGetPackageDetailQuery,
   useUpdatePackageMutation,
   useDeletePackageMutation,
-} = packagesApi
+  useAddVaccineToPackageMutation,
+  useDeleteVaccineFromPackageMutation,
+} = packagesApi;

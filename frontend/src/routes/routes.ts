@@ -28,6 +28,8 @@ import VaccinatorHomePage from '../Pages/Vaccinator/VaccinatorHomePage'
 import CustomerListVaccinator from '../Pages/Home/Vaccinator/CustomerListVaccinator'
 import RegisterCustomer from '../Pages/Staff/RegisterCustomer/registerCustomer'
 import StaffVaccination from '../Pages/Staff/Vaccination/StaffVaccination'
+import ManagerPackageList from '../Pages/Home/Package/PackageListManager'
+import ManagerPackageDetail from '../Pages/Home/Package/PackageDetailManager'
 
 const routes: LayoutRoute[] = [
   {
@@ -143,6 +145,24 @@ const routes: LayoutRoute[] = [
       },
       {
         path: '/manager/vaccine/create',
+        component: CreateVaccine,
+        exact: true,
+        role: ['Manager'],
+      },
+      {
+        path: '/manager/package',
+        component: ManagerPackageList,
+        exact: true,
+        role: ['Manager'],
+      },
+      {
+        path: '/manager/package/:id',
+        component: ManagerPackageDetail,
+        exact: true,
+        role: ['Manager'],
+      },
+      {
+        path: '/manager/package/create',
         component: CreateVaccine,
         exact: true,
         role: ['Manager'],
