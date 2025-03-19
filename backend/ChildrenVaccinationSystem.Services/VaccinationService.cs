@@ -38,11 +38,11 @@ namespace ChildrenVaccinationSystem.Services
 		}
 
 
-		public async Task<BasePaginatedList<VaccinationViewDto>> GetVaccinations(string? childId, DateOnly? scheduleFrom, DateOnly? scheduleTo, VaccinationStatusEnum? status, int pageNumber, int pageSize)
+		public async Task<BasePaginatedList<VaccinationViewDto>> GetVaccinations(string? childId, string? childCode, DateOnly? scheduleFrom, DateOnly? scheduleTo, VaccinationStatusEnum? status, int pageNumber, int pageSize)
 		{
 			IQueryable<Vaccination> query = _unitOfWork.GetRepository<Vaccination>().Entities
-				.Where(v => (string.IsNullOrWhiteSpace(childId) || v.ChildId == childId) && (status == null || v.Status == status) && (scheduleFrom == null || scheduleTo == null || (v.Schedule >= scheduleFrom && v.Schedule <= scheduleTo)))
-				.OrderByDescending(v => v.CreatedTime);
+				.Where(v => (string.IsNullOrWhiteSpace(childId) || v.ChildId == childId) && (string.IsNullOrWhiteSpace(childCode) || v.Child.ChildCode == childCode) && (status == null || v.Status == status) && (scheduleFrom == null || scheduleTo == null || (v.Schedule >= scheduleFrom && v.Schedule <= scheduleTo)))
+				.OrderByDescending(v => v.Schedule);
 
 			BasePaginatedList<Vaccination> resultQuery = (pageNumber <= 0 || pageSize <= 0)
 				? await _unitOfWork.GetRepository<Vaccination>().GetPaging(query, 1, query.Count())
@@ -53,11 +53,11 @@ namespace ChildrenVaccinationSystem.Services
 			return new BasePaginatedList<VaccinationViewDto>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
 		}
 
-		public async Task<BasePaginatedList<object>> GetVaccinationsMinimal(string? childId, DateOnly? scheduleFrom, DateOnly? scheduleTo, VaccinationStatusEnum? status, int pageNumber, int pageSize)
+		public async Task<BasePaginatedList<object>> GetVaccinationsMinimal(string? childId, string? childCode, DateOnly? scheduleFrom, DateOnly? scheduleTo, VaccinationStatusEnum? status, int pageNumber, int pageSize)
 		{
 			IQueryable<Vaccination> query = _unitOfWork.GetRepository<Vaccination>().Entities
-				.Where(v => (string.IsNullOrWhiteSpace(childId) || v.ChildId == childId) && (status == null || v.Status == status) && (scheduleFrom == null || scheduleTo == null || (v.Schedule >= scheduleFrom && v.Schedule <= scheduleTo)))
-				.OrderByDescending(v => v.CreatedTime);
+				.Where(v => (string.IsNullOrWhiteSpace(childId) || v.ChildId == childId) && (string.IsNullOrWhiteSpace(childCode) || v.Child.ChildCode == childCode) && (status == null || v.Status == status) && (scheduleFrom == null || scheduleTo == null || (v.Schedule >= scheduleFrom && v.Schedule <= scheduleTo)))
+				.OrderByDescending(v => v.Schedule);
 
 			BasePaginatedList<Vaccination> resultQuery = (pageNumber <= 0 || pageSize <= 0)
 				? await _unitOfWork.GetRepository<Vaccination>().GetPaging(query, 1, query.Count())

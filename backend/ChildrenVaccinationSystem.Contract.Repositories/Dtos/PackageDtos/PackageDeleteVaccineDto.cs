@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace ChildrenVaccinationSystem.Contract.Repositories.Dtos.PackageDtos
 {
-    public class PackageUpdateDto
+    public class PackageDeleteVaccineDto
     {
-        public string? Name { get; set; }
-        public double? Price { get; set; }
-
+        public ICollection<PackageItemViewDto>? PackageItems { get; set; }
     }
 }
