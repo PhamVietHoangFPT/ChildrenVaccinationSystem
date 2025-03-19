@@ -67,7 +67,7 @@ const ManagerPackageDetail: React.FC = () => {
 
       const packageData = {
         name: values.name,
-        price: calculateTotalPrice(), // Automatically calculated based on vaccine prices
+        price: calculateTotalPrice(), 
         description: values.description || '',
       };
 
@@ -83,20 +83,22 @@ const ManagerPackageDetail: React.FC = () => {
   };
 
   const handleAddVaccine = () => {
-    // Kiểm tra dữ liệu vaccine và package
     console.log('Vaccine Data:', vaccineData);
     console.log('Package Vaccines:', data?.data.vaccines);
+  
+    // Lọc các vaccine chưa có trong package
+    const availableVaccines = vaccineData?.data.items.filter(
+      (v) => !data?.data.vaccines?.some((pv) => pv.id === v.id)
+    );
+  
+    console.log('Available Vaccines:', availableVaccines);
   
     Modal.info({
       title: 'Thêm Vaccine vào Package',
       content: (
         <div>
           <Table
-            dataSource={
-              vaccineData?.data.items.filter(
-                (v) => !data?.data.vaccines?.some((pv) => pv.id === v.id)
-              )
-            }
+            dataSource={availableVaccines}
             rowKey="id"
             columns={[
               {
@@ -124,7 +126,7 @@ const ManagerPackageDetail: React.FC = () => {
                         .then(() => {
                           message.success('Thêm vaccine thành công');
                           Modal.destroyAll();
-                          refetch(); // Gọi lại API để cập nhật danh sách vaccine
+                          refetch();
                         })
                         .catch((err) => {
                           message.error('Lỗi khi thêm vaccine: ' + err.message);
@@ -158,13 +160,16 @@ const ManagerPackageDetail: React.FC = () => {
           }).unwrap();
           
           message.success('Xóa vaccine thành công');
-          refetch(); // Gọi lại API để cập nhật danh sách vaccine
+          refetch(); 
         } catch (error: any) {
           message.error('Lỗi khi xóa vaccine: ' + error.message);
         }
       },
     });
   };
+
+  const transformedVaccines = data?.data.packageItems?.map((item) => item.vaccine) || [];
+  console.log('Transformed Vaccines:', transformedVaccines);
 
   const calculateTotalPrice = () => {
     if (!data?.data.vaccines || data.data.vaccines.length === 0) {
@@ -228,7 +233,7 @@ const ManagerPackageDetail: React.FC = () => {
           </div>
           
           <Table
-            dataSource={data.data.vaccines}
+            dataSource={transformedVaccines}
             rowKey="id"
             columns={[
               {
