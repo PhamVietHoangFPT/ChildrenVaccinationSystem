@@ -7,7 +7,7 @@ import {
   message,
 } from 'antd';
 import { useCreateBlogsMutation } from '../../../features/blogs/blogsAPI';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
@@ -17,7 +17,9 @@ const CreateBlog: React.FC = () => {
   const navigate = useNavigate();
 
   const [createBlog] = useCreateBlogsMutation();
-   const [content, setContent] = useState('');
+
+    const [content, setContent] = useState('');
+    const reactQuillRef = useRef<ReactQuill>(null);
 
   const [form] = Form.useForm();
 
@@ -63,7 +65,51 @@ const CreateBlog: React.FC = () => {
           rules={[{ required: true, message: 'Please enter the blog content' }]}
         >
           {/* <Input.TextArea rows={6} /> */}
-          <ReactQuill value={content} onChange={setContent} />
+          <ReactQuill
+                ref={reactQuillRef}
+                theme="snow"
+                placeholder="Start writing..."
+                modules={{
+                  toolbar: {
+                    container: [
+                      [{ header: "1" }, { header: "2" }, { font: [] }],
+                      [{ size: [] }],
+                      ["bold", "italic", "underline", "strike", "blockquote"],
+                      [
+                        { list: "ordered" },
+                        { list: "bullet" },
+                        { indent: "-1" },
+                        { indent: "+1" },
+                      ],
+                      ["link", "image", "video"],
+                      ["code-block"],
+                      ["clean"],
+                    ],
+                  },
+                  clipboard: {
+                    matchVisual: false,
+                  },
+                }}
+                formats={[
+                  "header",
+                  "font",
+                  "size",
+                  "bold",
+                  "italic",
+                  "underline",
+                  "strike",
+                  "blockquote",
+                  "list",
+                  "bullet",
+                  "indent",
+                  "link",
+                  "image",
+                  "video",
+                  "code-block",
+                ]}
+                value={content}
+                onChange={setContent}
+              />
         </Form.Item>
 
 
