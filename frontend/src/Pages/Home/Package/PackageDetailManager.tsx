@@ -83,22 +83,16 @@ const ManagerPackageDetail: React.FC = () => {
   };
 
   const handleAddVaccine = () => {
+
     console.log('Vaccine Data:', vaccineData);
     console.log('Package Vaccines:', data?.data.vaccines);
-  
-    // Lọc các vaccine chưa có trong package
-    const availableVaccines = vaccineData?.data.items.filter(
-      (v) => !data?.data.vaccines?.some((pv) => pv.id === v.id)
-    );
-  
-    console.log('Available Vaccines:', availableVaccines);
   
     Modal.info({
       title: 'Thêm Vaccine vào Package',
       content: (
         <div>
           <Table
-            dataSource={availableVaccines}
+            dataSource={transformedVaccines}
             rowKey="id"
             columns={[
               {
@@ -110,31 +104,21 @@ const ManagerPackageDetail: React.FC = () => {
                 title: 'Giá',
                 dataIndex: 'price',
                 key: 'price',
-                render: (price) => `${new Intl.NumberFormat('en-US').format(price)} `,
+                render: (price) => `${new Intl.NumberFormat('en-US').format(price || 0)} `,
               },
               {
                 title: 'Hành động',
                 key: 'action',
                 render: (_, record) => (
-                  <Button
-                    type="primary"
-                    onClick={() => {
-                      addVaccineToPackage({
-                        id: id as string,
-                        vaccineId: record.id,
-                      })
-                        .then(() => {
-                          message.success('Thêm vaccine thành công');
-                          Modal.destroyAll();
-                          refetch();
-                        })
-                        .catch((err) => {
-                          message.error('Lỗi khi thêm vaccine: ' + err.message);
-                        });
-                    }}
-                  >
-                    Thêm
-                  </Button>
+                  <Space size="middle">
+                    <Button
+                      danger
+                      icon={<DeleteOutlined />}
+                      onClick={() => handleDeleteVaccine(record.id)}
+                    >
+                      Xóa
+                    </Button>
+                  </Space>
                 ),
               },
             ]}
