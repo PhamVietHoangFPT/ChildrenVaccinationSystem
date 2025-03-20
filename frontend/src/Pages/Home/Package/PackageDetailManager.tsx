@@ -83,16 +83,22 @@ const ManagerPackageDetail: React.FC = () => {
   };
 
   const handleAddVaccine = () => {
-
-    console.log('Vaccine Data:', vaccineData);
-    console.log('Package Vaccines:', data?.data.vaccines);
+    // Get the IDs of vaccines that are already in the package
+    const existingVaccineIds = new Set(
+      data?.data.packageItems?.map(item => item.vaccine.id) || []
+    );
+  
+    // Filter out vaccines that are already in the package
+    const availableVaccines = vaccineData?.data.items.filter(
+      vaccine => !existingVaccineIds.has(vaccine.id)
+    ) || [];
   
     Modal.info({
       title: 'Thêm Vaccine vào Package',
       content: (
         <div>
           <Table
-            dataSource={transformedVaccines}
+            dataSource={availableVaccines}
             rowKey="id"
             columns={[
               {
@@ -112,11 +118,10 @@ const ManagerPackageDetail: React.FC = () => {
                 render: (_, record) => (
                   <Space size="middle">
                     <Button
-                      danger
-                      icon={<DeleteOutlined />}
-                      onClick={() => handleDeleteVaccine(record.id)}
+                      type="primary"
+                      onClick={() => handleAddVaccineToPackage(record.id)}
                     >
-                      Xóa
+                      Thêm
                     </Button>
                   </Space>
                 ),
@@ -127,6 +132,22 @@ const ManagerPackageDetail: React.FC = () => {
       ),
       width: 800,
     });
+  };
+  
+  // Add this function to handle adding a vaccine to the package
+  const handleAddVaccineToPackage = async (vaccineId) => {
+    try {
+      await addVaccineToPackage({
+        id: id as string,
+        vaccineId: vaccineId,
+      }).unwrap();
+      
+      message.success('Thêm vaccine thành công');
+      Modal.destroyAll(); // Close all modals
+      refetch(); // Refresh the data
+    } catch (error) {
+      message.error('Lỗi khi thêm vaccine: ' + (error.message || 'Unknown error'));
+    }
   };
 
   const handleDeleteVaccine = (vaccineId: string) => {
@@ -156,11 +177,16 @@ const ManagerPackageDetail: React.FC = () => {
   console.log('Transformed Vaccines:', transformedVaccines);
 
   const calculateTotalPrice = () => {
-    if (!data?.data.vaccines || data.data.vaccines.length === 0) {
+    if (!data?.data.packageItems || data.data.packageItems.length === 0) {
       return 0;
     }
     
-    return data.data.vaccines.reduce((sum, vaccine) => sum + (vaccine.price || 0), 0);
+    return data.data.packageItems.reduce((sum, item) => {
+      if (item.vaccine && typeof item.vaccine.price === 'number') {
+        return sum + item.vaccine.price;
+      }
+      return sum;
+    }, 0);
   };
 
   if (isLoading) {

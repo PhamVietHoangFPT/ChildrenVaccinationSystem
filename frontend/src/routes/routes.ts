@@ -30,6 +30,7 @@ import RegisterCustomer from '../Pages/Staff/RegisterCustomer/registerCustomer'
 import StaffVaccination from '../Pages/Staff/Vaccination/StaffVaccination'
 import ManagerPackageList from '../Pages/Home/Package/PackageListManager'
 import ManagerPackageDetail from '../Pages/Home/Package/PackageDetailManager'
+import ManagerPackageCreate from '../Pages/Home/Package/CreatePackageManager'
 
 const routes: LayoutRoute[] = [
   {
@@ -163,7 +164,7 @@ const routes: LayoutRoute[] = [
       },
       {
         path: '/manager/package/create',
-        component: CreateVaccine,
+        component: ManagerPackageCreate,
         exact: true,
         role: ['Manager'],
       },
