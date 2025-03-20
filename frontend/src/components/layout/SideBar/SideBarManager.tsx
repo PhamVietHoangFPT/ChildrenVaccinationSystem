@@ -58,7 +58,7 @@ export const SideBar = () => {
       key: 'manager/staff',
       icon: <HomeOutlined />,
       label: 'Manage Staff',
-      onClick: () => navigate('/manager/staff'),
+      onClick: () => navigate('/manager/personnel'),
     },
     {
       key: 'manager/view',

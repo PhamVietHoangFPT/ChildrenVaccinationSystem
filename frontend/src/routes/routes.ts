@@ -4,7 +4,6 @@ import { ManagerLayout } from '../components/layout/ManagerLayout'
 import StaffLayout from '../components/layout/StaffLayout'
 import ManagerCustomerList from '../Pages/Home/Customer/CustomerListManager'
 import Homepage from '../Pages/Home/Home'
-import ManagerStaffList from '../Pages/Home/Staff/StaffListManager'
 import ManagerVaccineList from '../Pages/Home/VaccineManager/VaccineListManager'
 import Login from '../Pages/Login/Login'
 import ManagerHomePage from '../Pages/Manager/ManagerHomePage'
@@ -31,6 +30,7 @@ import StaffVaccination from '../Pages/Staff/Vaccination/StaffVaccination'
 import ManagerBlogList from '../Pages/Home/BlogManager/BlogListManager'
 import BlogDetail from '../Pages/Home/BlogManager/BlogDetailManager'
 import CreateBlog from '../Pages/Home/BlogManager/CreateBlogManager'
+import ManagerPersonelList from '../Pages/Home/Personel/PersonelListManager'
 
 const routes: LayoutRoute[] = [
   {
@@ -121,8 +121,8 @@ const routes: LayoutRoute[] = [
         role: ['Manager'],
       },
       {
-        path: '/manager/staff',
-        component: ManagerStaffList,
+        path: '/manager/personnel',
+        component: ManagerPersonelList,
         exact: true,
         role: ['Manager'],
       },

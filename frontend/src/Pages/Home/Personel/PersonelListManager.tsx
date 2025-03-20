@@ -16,7 +16,7 @@ const staffData: Staff[] = [
   { id: 3, name: 'Lê Văn C', position: 'Staff', email: 'c@example.com' },
 ]
 
-const ManagerStaffList: React.FC = () => {
+const ManagerPersonelList: React.FC = () => {
   const handleView = (record: Staff) => {
     Modal.info({
       title: 'Staff Details',
@@ -115,10 +115,10 @@ const ManagerStaffList: React.FC = () => {
 
   return (
     <div style={{ padding: 24 }}>
-      <h2>Staff List</h2>
+      <h2>Staff List haahhaha</h2>
       <Table dataSource={staffData} columns={columns} rowKey='id' />
     </div>
   )
 }
 
-export default ManagerStaffList
+export default ManagerPersonelList
