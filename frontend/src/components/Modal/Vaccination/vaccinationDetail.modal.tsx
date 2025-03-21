@@ -12,6 +12,7 @@ import { LoadingOutlined } from '@ant-design/icons'
 import dayjs from 'dayjs'
 import { Vaccination } from '../../../types/vaccination'
 import { useGetVaccinationDetailQuery, useUpdateVaccinationMutation } from '../../../features/vaccinations/vaccinationAPI'
+import Cookies from 'js-cookie'
 
 interface VaccinationDetailResponse {
     data: {
@@ -21,7 +22,6 @@ interface VaccinationDetailResponse {
     isFetching: boolean
     error: any
 }
-
 interface VaccinationUpdateModalProps {
     visible: boolean
     id: string | null
@@ -35,6 +35,12 @@ const VaccinationUpdateModal: React.FC<VaccinationUpdateModalProps> = ({
     id,
     onClose,
 }) => {
+
+    const userData = Cookies.get('userData')
+        ? JSON.parse(Cookies.get('userData') as string)
+        : null
+    console.log(userData)
+
     const {
         data: vaccinationDetailData,
         isLoading: vaccinationDetailLoading,
