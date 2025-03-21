@@ -7,12 +7,15 @@ import {
     message,
     Input,
     DatePicker,
+    Select,
 } from 'antd'
 import { LoadingOutlined } from '@ant-design/icons'
 import dayjs from 'dayjs'
 import { Vaccination } from '../../../types/vaccination'
 import { useGetVaccinationDetailQuery, useUpdateVaccinationMutation } from '../../../features/vaccinations/vaccinationAPI'
 import Cookies from 'js-cookie'
+import { Staff } from '../../../types/staff'
+import { useGetStaffListQuery } from '../../../features/staff/staffAPI'
 
 interface VaccinationDetailResponse {
     data: {
@@ -27,19 +30,58 @@ interface VaccinationUpdateModalProps {
     id: string | null
     onClose: () => void
 }
+interface StaffListResponse {
+    data: {
+        data: {
+            items: Staff[]
+            totalItems: number
+        }
+    }
+    isLoading: boolean
+    isFetching: boolean
+    error: any
+}
 
 const { Text } = Typography
+const { Option } = Select
 
 const VaccinationUpdateModal: React.FC<VaccinationUpdateModalProps> = ({
     visible,
     id,
     onClose,
 }) => {
-
     const userData = Cookies.get('userData')
         ? JSON.parse(Cookies.get('userData') as string)
         : null
-    console.log(userData)
+    const facilityId = userData?.Facility || ''
+
+    // Fetch doctors (role: 2)
+    const {
+        data: doctorData,
+        isFetching: doctorFetching,
+        isLoading: doctorLoading,
+        error: doctorError,
+    } = useGetStaffListQuery<StaffListResponse>({
+        role: 2,
+        facilityId: facilityId,
+        pageNumber: -1,
+        pageSize: -1,
+    }, { skip: !facilityId })
+    const dataDoctor = doctorData?.data?.items || []
+
+    // Fetch vaccinators (role: 3)
+    const {
+        data: vaccinatorData,
+        isFetching: vaccinatorFetching,
+        isLoading: vaccinatorLoading,
+        error: vaccinatorError,
+    } = useGetStaffListQuery<StaffListResponse>({
+        role: 3,
+        facilityId: facilityId,
+        pageNumber: -1,
+        pageSize: -1,
+    }, { skip: !facilityId })
+    const dataVaccinator = vaccinatorData?.data?.items || []
 
     const {
         data: vaccinationDetailData,
@@ -58,31 +100,31 @@ const VaccinationUpdateModal: React.FC<VaccinationUpdateModalProps> = ({
 
     useEffect(() => {
         if (vaccinationDetail) {
+            console.log('Vaccination Detail:', vaccinationDetail) // Debug log
             form.setFieldsValue({
                 price: vaccinationDetail.price || 0,
                 schedule: vaccinationDetail.schedule ? dayjs(vaccinationDetail.schedule) : null,
                 note: vaccinationDetail.note || '',
                 childName: vaccinationDetail.child?.name || '',
                 vaccineName: vaccinationDetail.vaccine?.name || '',
-                doctorName: vaccinationDetail.doctor?.name || '',
-                vaccinatorName: vaccinationDetail.vaccinator?.name || '',
+                doctorId: vaccinationDetail.doctor?.id || undefined,
+                vaccinatorId: vaccinationDetail.vaccinator?.id || undefined,
             })
         }
     }, [vaccinationDetail, form])
 
     const handleUpdate = async (values: any) => {
-        if (!id) return
-        const inputValues = {
-            price: Number(values.price),
-            schedule: values.schedule ? dayjs(values.schedule).format('YYYY-MM-DD') : null,
-            note: values.note,
-            doctor: {
-                name: values.doctorName
-            },
-            vaccinator: {
-                name: values.vaccinatorName
-            },
+        if (!id) {
+            message.error('No vaccination ID provided')
+            return
         }
+        const inputValues = {
+            schedule: values.schedule ? dayjs(values.schedule).format('YYYY-MM-DD') : null,
+            note: values.note || '',
+            doctorId: values.doctorId,
+            vaccinatorId: values.vaccinatorId,
+        }
+        console.log('Submitting values:', inputValues) // Debug log
 
         try {
             await updateVaccination({
@@ -92,16 +134,13 @@ const VaccinationUpdateModal: React.FC<VaccinationUpdateModalProps> = ({
             message.success('Vaccination updated successfully!')
             onClose()
         } catch (err: any) {
-            console.error('API Error:', err)
+            console.error('Update Error:', err) // Debug log
             message.error(err.data?.message || 'Failed to update vaccination')
         }
     }
 
-    if (vaccinationDetailError) {
-        const errorMessage =
-            'status' in vaccinationDetailError
-                ? vaccinationDetailError.status
-                : vaccinationDetailError.message
+    if (vaccinationDetailError || doctorError || vaccinatorError) {
+        const errorMessage = vaccinationDetailError?.status || doctorError?.status || vaccinatorError?.status || 'Unknown error'
         return (
             <Modal
                 title='Error'
@@ -113,6 +152,7 @@ const VaccinationUpdateModal: React.FC<VaccinationUpdateModalProps> = ({
             </Modal>
         )
     }
+
     return (
         <Modal
             title='Update Vaccination Details'
@@ -147,28 +187,19 @@ const VaccinationUpdateModal: React.FC<VaccinationUpdateModalProps> = ({
                         note: vaccinationDetail.note,
                         childName: vaccinationDetail.child?.name,
                         vaccineName: vaccinationDetail.vaccine?.name,
-                        doctorName: vaccinationDetail.doctor?.name,
-                        vaccinatorName: vaccinationDetail.vaccinator?.name,
+                        doctorId: vaccinationDetail.doctor?.id,
+                        vaccinatorId: vaccinationDetail.vaccinator?.id,
                     }}
                 >
-                    <Form.Item
-                        label='Child Name'
-                        name='childName'
-                    >
+                    <Form.Item label='Child Name' name='childName'>
                         <Input disabled />
                     </Form.Item>
 
-                    <Form.Item
-                        label='Vaccine Name'
-                        name='vaccineName'
-                    >
+                    <Form.Item label='Vaccine Name' name='vaccineName'>
                         <Input disabled />
                     </Form.Item>
 
-                    <Form.Item
-                        label='Price'
-                        name='price'
-                    >
+                    <Form.Item label='Price' name='price'>
                         <Input disabled />
                     </Form.Item>
 
@@ -186,22 +217,51 @@ const VaccinationUpdateModal: React.FC<VaccinationUpdateModalProps> = ({
 
                     <Form.Item
                         label='Doctor'
-                        name='doctorName'
+                        name='doctorId'
+                        rules={[{ required: true, message: 'Please select a doctor' }]}
                     >
-                        <Input placeholder='Enter doctor name' />
+                        <Select
+                            showSearch
+                            placeholder='Select a doctor'
+                            optionFilterProp='children'
+                            filterOption={(input, option) =>
+                                (option?.children as unknown as string)?.toLowerCase().includes(input.toLowerCase())
+                            }
+                            loading={doctorLoading || doctorFetching}
+                            notFoundContent={doctorLoading ? 'Loading...' : 'No doctors found'}
+                        >
+                            {dataDoctor.map((doctor) => (
+                                <Option key={doctor.id} value={doctor.id}>
+                                    {doctor.name}
+                                </Option>
+                            ))}
+                        </Select>
                     </Form.Item>
 
                     <Form.Item
-                        label='Vaccinator Name'
-                        name='vaccinatorName'
+                        label='Vaccinator'
+                        name='vaccinatorId'
+                        rules={[{ required: true, message: 'Please select a vaccinator' }]}
                     >
-                        <Input placeholder='Enter vaccinator name' />
+                        <Select
+                            showSearch
+                            placeholder='Select a vaccinator'
+                            optionFilterProp='children'
+                            filterOption={(input, option) =>
+                                (option?.children as unknown as string)?.toLowerCase().includes(input.toLowerCase())
+                            }
+                            loading={vaccinatorLoading || vaccinatorFetching}
+                            notFoundContent={vaccinatorLoading ? 'Loading...' : 'No vaccinators found'}
+                        >
+                            {dataVaccinator.map((vaccinator) => (
+                                <Option key={vaccinator.id} value={vaccinator.id}>
+                                    {vaccinator.name}
+                                </Option>
+                            ))}
+                        </Select>
                     </Form.Item>
 
-                    <Form.Item
-                        label='Note'
-                        name='note'
-                    >
+                    <Form.Item label='Note' name='note'>
                         <Input.TextArea rows={3} />
                     </Form.Item>
 
