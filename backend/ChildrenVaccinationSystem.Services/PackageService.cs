@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static ChildrenVaccinationSystem.Core.Base.BaseException;
 
 namespace ChildrenVaccinationSystem.Services
 {
@@ -30,6 +31,13 @@ namespace ChildrenVaccinationSystem.Services
 
         public async Task CreatePackage(PackageCreateDto packageCreateDto)
         {
+            var existingPackage = _unitOfWork.GetRepository<Package>().Entities.Where(p => p.Name == packageCreateDto.Name && p.DeletedBy == null).FirstOrDefault();
+
+            if (existingPackage != null)
+            {
+                throw new ErrorException(400, "bad_request", "Tên vaccine đã tồn tại");
+            }
+
             Package package = new Package();
             _mapper.Map(packageCreateDto, package);
             _authenticationService.UpdateAudits(package, true);

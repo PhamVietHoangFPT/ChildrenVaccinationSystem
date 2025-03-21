@@ -9,6 +9,5 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Dtos.PackageDtos
     public class PackageCreateDto
     {
         public string Name { get; set; } = default!;
-        public double Price { get; set; }
     }
 }
