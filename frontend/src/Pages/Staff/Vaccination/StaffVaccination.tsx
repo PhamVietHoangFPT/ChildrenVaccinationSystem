@@ -184,43 +184,58 @@ const StaffVaccination: React.FC = () => {
             dataIndex: 'child.name',
             key: 'childName',
             render: (_: string | undefined, record: Vaccination) =>
-                record.child?.name ?? 'N/A',
+                <span style={{ fontSize: '12px' }}>{record.child?.name ?? 'N/A'}</span>,
+        },
+        {
+            title: 'Vaccine',
+            dataIndex: 'vaccine.name',
+            key: 'vaccineName',
+            render: (_: string | undefined, record: Vaccination) =>
+                <span style={{ fontSize: '12px' }}>{record.vaccine?.name ?? 'N/A'}</span>,
         },
         {
             title: 'Schedule',
             dataIndex: 'schedule',
             key: 'schedule',
             render: (schedule: Date | undefined) =>
-                schedule ? dayjs(schedule).format('YYYY-MM-DD') : 'N/A',
+                <span style={{ fontSize: '12px' }}>{schedule ? dayjs(schedule).format('YYYY-MM-DD') : 'N/A'}</span>,
         },
         {
             title: 'Status',
             dataIndex: 'status',
             key: 'status',
             render: (status: number | undefined) => {
+                const tagStyle: React.CSSProperties = {
+                    width: '80px', // string is fine for widt
+                    textAlign: 'center', // explicitly use a valid TextAlign value
+                    display: 'inline-flex', // valid display value
+                    alignItems: 'center', // valid align-items value
+                    justifyContent: 'center', // valid justify-content value
+                };
+        
                 switch (status) {
                     case 0:
-                        return <Tag color="geekblue">Pending</Tag>;
+                        return <Tag color="geekblue" style={tagStyle}>Pending</Tag>;
                     case 1:
-                        return <Tag color="processing">Paid</Tag>;
+                        return <Tag color="processing" style={tagStyle}>Paid</Tag>;
                     case 2:
-                        return <Tag color="purple">Consulting</Tag>;
+                        return <Tag color="purple" style={tagStyle}>Consulting</Tag>;
                     case 3:
-                        return <Tag color="blue" icon={<SyncOutlined spin />}>Queued</Tag>;
+                        return <Tag color="blue" icon={<SyncOutlined spin />} style={tagStyle}>Queued</Tag>;
                     case 4:
-                        return <Tag color="magenta" icon={<ExclamationCircleOutlined />}>Injecting</Tag>;
+                        return <Tag color="magenta" icon={<ExclamationCircleOutlined />} style={tagStyle}>Injecting</Tag>;
                     case 5:
-                        return <Tag color="orange" icon={<ExclamationCircleOutlined />}>Monitoring</Tag>;
+                        return <Tag color="orange" icon={<ExclamationCircleOutlined />} style={tagStyle}>Monitoring</Tag>;
                     case 6:
-                        return <Tag color="success" icon={<CheckCircleOutlined />}>Completed</Tag>;
+                        return <Tag color="success" icon={<CheckCircleOutlined />} style={tagStyle}>Completed</Tag>;
                     case 7:
-                        return <Tag color="error" icon={<ClockCircleOutlined />}>Emergency</Tag>;
+                        return <Tag color="error" icon={<ClockCircleOutlined />} style={tagStyle}>Emergency</Tag>;
                     case 8:
-                        return <Tag color="red" icon={<MinusCircleOutlined />}>Canceled</Tag>;
+                        return <Tag color="red" icon={<MinusCircleOutlined />} style={tagStyle}>Canceled</Tag>;
                     case 9:
-                        return <Tag color="red">Refunded</Tag>;
+                        return <Tag color="red" style={tagStyle}>Refunded</Tag>;
                     default:
-                        return <Tag color="gray">Unknown</Tag>;
+                        return <Tag color="gray" style={tagStyle}>Unknown</Tag>;
                 }
             },
         },
@@ -246,6 +261,7 @@ const StaffVaccination: React.FC = () => {
                     {record.status === 1 && (
                         <div style={{ display: 'flex', gap: '8px' }}>
                             <Button
+                                size="small"
                                 type="primary"
                                 loading={isUpdating}
                                 onClick={() => handleStatusChangeClick(record.id, 2, record)}
@@ -254,6 +270,7 @@ const StaffVaccination: React.FC = () => {
                                 Consulting
                             </Button>
                             <Button
+                                size="small"
                                 type="primary"
                                 danger
                                 loading={isUpdating}
@@ -266,6 +283,7 @@ const StaffVaccination: React.FC = () => {
                     )}
                     {record.status === 3 && (
                         <Button
+                            size="small"
                             type="primary"
                             loading={isUpdating}
                             onClick={() => handleStatusChangeClick(record.id, 4, record)}
@@ -277,6 +295,7 @@ const StaffVaccination: React.FC = () => {
                     {record.status === 5 && (
                         <div style={{ display: 'flex', gap: '8px' }}>
                             <Button
+                                size="small"
                                 type="primary"
                                 loading={isUpdating}
                                 onClick={() => handleStatusChangeClick(record.id, 6, record)}
@@ -285,6 +304,7 @@ const StaffVaccination: React.FC = () => {
                                 Completed
                             </Button>
                             <Button
+                                size="small"
                                 type="default"
                                 danger
                                 loading={isUpdating}
@@ -297,6 +317,7 @@ const StaffVaccination: React.FC = () => {
                     )}
                     {record.status === 7 && (
                         <Button
+                            size="small"
                             type="primary"
                             danger
                             loading={isUpdating}
