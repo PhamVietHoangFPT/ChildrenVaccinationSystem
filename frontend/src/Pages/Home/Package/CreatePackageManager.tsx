@@ -1,30 +1,8 @@
 import { useNavigate } from 'react-router-dom'
-import {
-  Form,
-  Input,
-  Button,
-  Typography,
-  message,
-  Spin,
-} from 'antd'
-import { useMutation } from '@reduxjs/toolkit/query/react'
+import { Form, Input, Button, Typography, message, Spin } from 'antd'
+import { useCreatePackageMutation } from '../../../features/package/packageAPI'
 
 const { Title } = Typography
-
-const packageApi = baseApi.injectEndpoints({
-  endpoints: (builder) => ({
-    createPackage: builder.mutation({
-      query: (data) => ({
-        url: '/api/packages',
-        method: 'POST',
-        body: data,
-      }),
-    }),
-  }),
-  overrideExisting: false,
-})
-
-export const { useCreatePackageMutation } = packageApi
 
 const ManagerPackageCreate: React.FC = () => {
   const navigate = useNavigate()
@@ -36,15 +14,18 @@ const ManagerPackageCreate: React.FC = () => {
     try {
       const packageData = {
         name: values.name,
-        price: Number(values.price), 
+        price: Number(values.price),
       }
 
       const createResponse = await createPackage(packageData).unwrap()
 
-      message.success(createResponse.message || 'Package created successfully')
+      message.success((createResponse as { message: string }).message)
+
       navigate('/manager/package')
     } catch (error: any) {
-      message.error('Error creating package: ' + (error.message || 'Unknown error'))
+      message.error(
+        'Error creating package: ' + (error.message || 'Unknown error')
+      )
     }
   }
 
@@ -53,18 +34,16 @@ const ManagerPackageCreate: React.FC = () => {
       <Title level={2}>Create Package</Title>
       {isLoading ? (
         <div style={{ textAlign: 'center', marginTop: '50px' }}>
-          <Spin size="large" />
+          <Spin size='large' />
         </div>
       ) : (
-        <Form
-          form={form}
-          layout='vertical'
-          onFinish={handleSave}
-        >
+        <Form form={form} layout='vertical' onFinish={handleSave}>
           <Form.Item
             label='Package Name'
             name='name'
-            rules={[{ required: true, message: 'Please enter the package name' }]}
+            rules={[
+              { required: true, message: 'Please enter the package name' },
+            ]}
           >
             <Input />
           </Form.Item>
@@ -98,9 +77,7 @@ const ManagerPackageCreate: React.FC = () => {
               <Button type='primary' htmlType='submit'>
                 Save
               </Button>
-              <Button onClick={() => navigate('/manager/package')}>
-                Back
-              </Button>
+              <Button onClick={() => navigate('/manager/package')}>Back</Button>
             </div>
           </Form.Item>
         </Form>

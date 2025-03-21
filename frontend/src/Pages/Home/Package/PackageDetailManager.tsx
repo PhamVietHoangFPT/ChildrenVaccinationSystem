@@ -9,8 +9,9 @@ import {
   Spin,
   Table,
   Space,
+  Pagination,
 } from 'antd';
-import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { DeleteOutlined } from '@ant-design/icons';
 import {
   useGetPackageDetailQuery,
   useUpdatePackageMutation,
@@ -21,38 +22,48 @@ import { useGetVaccineListMiniMalQuery } from '../../../features/vaccine/vaccine
 
 import { Packages } from '../../../types/package';
 import { Vaccines } from '../../../types/vaccine';
+import {  useState } from 'react';
 
 const { Title } = Typography;
 
 interface PackageDetailResponse {
   data: {
     data: Packages;
+    totalItems: number;
   };
   isLoading: boolean;
 }
 
+
 interface VaccinesListResponse {
   data: {
+    
     data: {
       items: Vaccines[];
       totalItems: number;
     };
   };
   isLoading: boolean;
+  isFetching: boolean;
 }
 
 const ManagerPackageDetail: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const [loadingAddVaccine, setLoadingAddVaccine] = useState<boolean>(false);
 
   const { data, isLoading, refetch } = useGetPackageDetailQuery<PackageDetailResponse>(
     id as string
   );
 
-  const { data: vaccineData, isLoading: vaccineLoading } =
+    const [pageNumber, setPageNumber] = useState(1)
+    const [pageSize, setPageSize] = useState(7)
+
+
+  const { data: vaccineData, isLoading: vaccineDataLoading, isFetching: vaccineDataFetching } =
     useGetVaccineListMiniMalQuery<VaccinesListResponse>({
-      pageNumber: -1,
-      pageSize: -1,
+      pageNumber: pageNumber,
+      pageSize: pageSize,
     });
 
   const [updatePackage] = useUpdatePackageMutation();
@@ -82,71 +93,20 @@ const ManagerPackageDetail: React.FC = () => {
     }
   };
 
-  const handleAddVaccine = () => {
-    // Get the IDs of vaccines that are already in the package
-    const existingVaccineIds = new Set(
-      data?.data.packageItems?.map(item => item.vaccine.id) || []
-    );
-  
-    // Filter out vaccines that are already in the package
-    const availableVaccines = vaccineData?.data.items.filter(
-      vaccine => !existingVaccineIds.has(vaccine.id)
-    ) || [];
-  
-    Modal.info({
-      title: 'Thêm Vaccine vào Package',
-      content: (
-        <div>
-          <Table
-            dataSource={availableVaccines}
-            rowKey="id"
-            columns={[
-              {
-                title: 'Tên',
-                dataIndex: 'name',
-                key: 'name',
-              },
-              {
-                title: 'Giá',
-                dataIndex: 'price',
-                key: 'price',
-                render: (price) => `${new Intl.NumberFormat('en-US').format(price || 0)} `,
-              },
-              {
-                title: 'Hành động',
-                key: 'action',
-                render: (_, record) => (
-                  <Space size="middle">
-                    <Button
-                      type="primary"
-                      onClick={() => handleAddVaccineToPackage(record.id)}
-                    >
-                      Thêm
-                    </Button>
-                  </Space>
-                ),
-              },
-            ]}
-          />
-        </div>
-      ),
-      width: 800,
-    });
-  };
-  
-  // Add this function to handle adding a vaccine to the package
-  const handleAddVaccineToPackage = async (vaccineId) => {
+  const handleAddVaccineToPackage = async (vaccineId : string) => {
     try {
+      setLoadingAddVaccine(true);
       await addVaccineToPackage({
         id: id as string,
         vaccineId: vaccineId,
       }).unwrap();
       
       message.success('Thêm vaccine thành công');
-      Modal.destroyAll(); // Close all modals
-      refetch(); // Refresh the data
-    } catch (error) {
+      // refetch(); // Refresh the data
+    } catch (error : any) {
       message.error('Lỗi khi thêm vaccine: ' + (error.message || 'Unknown error'));
+    } finally {
+      setLoadingAddVaccine(false)
     }
   };
 
@@ -177,9 +137,6 @@ const ManagerPackageDetail: React.FC = () => {
   console.log('Transformed Vaccines:', transformedVaccines);
 
   const calculateTotalPrice = () => {
-    if (!data?.data.packageItems || data.data.packageItems.length === 0) {
-      return 0;
-    }
     
     return data.data.packageItems.reduce((sum, item) => {
       if (item.vaccine && typeof item.vaccine.price === 'number') {
@@ -234,17 +191,69 @@ const ManagerPackageDetail: React.FC = () => {
           <Input.TextArea rows={3} />
         </Form.Item>
 
+        <div>
+          <Table
+            dataSource={vaccineData?.data.items}
+            loading={vaccineDataLoading|| vaccineDataFetching }
+            rowKey="id"
+            pagination={false}
+            columns={[
+              {
+                title: 'Tên',
+                dataIndex: 'name',
+                key: 'name',
+              },
+              {
+                title: 'Giá',
+                dataIndex: 'price',
+                key: 'price',
+                render: (price) => `${new Intl.NumberFormat('en-US').format(price || 0)} `,
+              },
+              {
+                title: 'Hành động',
+                key: 'action',
+                render: (_, record) => (
+                  <Space size="middle">
+                    <Button
+                      type="primary"
+                      onClick={() => handleAddVaccineToPackage(record.id)}
+                      disabled={transformedVaccines?.some(
+                        (transformedVaccine) => transformedVaccine.id === record.id
+                      )}
+                      loading={loadingAddVaccine}
+                    >
+                      Thêm
+                    </Button>
+                  </Space>
+                ),
+              }
+              
+            ]}
+          />
+          {!vaccineDataLoading && (
+        <Pagination
+          current={pageNumber}
+          pageSize={pageSize}
+          total={vaccineData?.data.totalItems}
+          style={{ textAlign: 'center' }}
+          align='center'
+          onChange={(page, size) => {
+            setPageNumber(page)
+            setPageSize(size)
+          }}
+        />
+      )}
+        </div>
+
         <div style={{ marginBottom: '20px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
             <Title level={4}>Danh sách Vaccine</Title>
-            <Button type="primary" icon={<PlusOutlined />} onClick={handleAddVaccine}>
-              Thêm Vaccine
-            </Button>
           </div>
           
           <Table
             dataSource={transformedVaccines}
             rowKey="id"
+
             columns={[
               {
                 title: 'Tên',
@@ -274,6 +283,8 @@ const ManagerPackageDetail: React.FC = () => {
               },
             ]}
           />
+        
+      
         </div>
 
         <Form.Item>
