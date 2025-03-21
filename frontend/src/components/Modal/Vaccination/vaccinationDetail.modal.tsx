@@ -107,7 +107,6 @@ const VaccinationUpdateModal: React.FC<VaccinationUpdateModalProps> = ({
             </Modal>
         )
     }
-
     return (
         <Modal
             title='Update Vaccination Details'
