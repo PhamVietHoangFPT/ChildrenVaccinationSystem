@@ -210,13 +210,6 @@ const StaffVaccination: React.FC = () => {
             },
         },
         {
-            title: 'Gender',
-            dataIndex: 'child.gender',
-            key: 'gender',
-            render: (gender: boolean | undefined) =>
-                gender === undefined ? 'N/A' : gender ? 'Male' : 'Female',
-        },
-        {
             title: 'Update',
             key: 'update',
             render: (_: any) => (
