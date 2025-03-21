@@ -55,7 +55,6 @@ const VaccinationUpdateModal: React.FC<VaccinationUpdateModalProps> = ({
         : null
     const facilityId = userData?.Facility || ''
 
-    // Fetch doctors (role: 2)
     const {
         data: doctorData,
         isFetching: doctorFetching,
@@ -69,7 +68,6 @@ const VaccinationUpdateModal: React.FC<VaccinationUpdateModalProps> = ({
     }, { skip: !facilityId })
     const dataDoctor = doctorData?.data?.items || []
 
-    // Fetch vaccinators (role: 3)
     const {
         data: vaccinatorData,
         isFetching: vaccinatorFetching,
@@ -100,7 +98,7 @@ const VaccinationUpdateModal: React.FC<VaccinationUpdateModalProps> = ({
 
     useEffect(() => {
         if (vaccinationDetail) {
-            console.log('Vaccination Detail:', vaccinationDetail) // Debug log
+            console.log('Vaccination Detail:', vaccinationDetail)
             form.setFieldsValue({
                 price: vaccinationDetail.price || 0,
                 schedule: vaccinationDetail.schedule ? dayjs(vaccinationDetail.schedule) : null,
@@ -124,7 +122,7 @@ const VaccinationUpdateModal: React.FC<VaccinationUpdateModalProps> = ({
             doctorId: values.doctorId,
             vaccinatorId: values.vaccinatorId,
         }
-        console.log('Submitting values:', inputValues) // Debug log
+        console.log('Submitting values:', inputValues)
 
         try {
             await updateVaccination({
@@ -134,12 +132,12 @@ const VaccinationUpdateModal: React.FC<VaccinationUpdateModalProps> = ({
             message.success('Vaccination updated successfully!')
             onClose()
         } catch (err: any) {
-            console.error('Update Error:', err) // Debug log
+            console.error('Update Error:', err)
             message.error(err.data?.message || 'Failed to update vaccination')
         }
     }
 
-    if (vaccinationDetailError || doctorError || vaccinatorError) {
+    if (vaccinationDetailError ||    doctorError || vaccinatorError) {
         const errorMessage = vaccinationDetailError?.status || doctorError?.status || vaccinatorError?.status || 'Unknown error'
         return (
             <Modal
@@ -152,6 +150,10 @@ const VaccinationUpdateModal: React.FC<VaccinationUpdateModalProps> = ({
             </Modal>
         )
     }
+
+    // Determine if doctor and vaccinator should be disabled based on status
+    const isDoctorDisabled = vaccinationDetail?.status !== 1
+    const isVaccinatorDisabled = vaccinationDetail?.status !== 3
 
     return (
         <Modal
@@ -218,7 +220,7 @@ const VaccinationUpdateModal: React.FC<VaccinationUpdateModalProps> = ({
                     <Form.Item
                         label='Doctor'
                         name='doctorId'
-                        rules={[{ required: true, message: 'Please select a doctor' }]}
+                        rules={[{ required: !isDoctorDisabled, message: 'Please select a doctor' }]}
                     >
                         <Select
                             showSearch
@@ -228,6 +230,7 @@ const VaccinationUpdateModal: React.FC<VaccinationUpdateModalProps> = ({
                                 (option?.children as unknown as string)?.toLowerCase().includes(input.toLowerCase())
                             }
                             loading={doctorLoading || doctorFetching}
+                            disabled={isDoctorDisabled}
                             notFoundContent={doctorLoading ? 'Loading...' : 'No doctors found'}
                         >
                             {dataDoctor.map((doctor) => (
@@ -241,7 +244,6 @@ const VaccinationUpdateModal: React.FC<VaccinationUpdateModalProps> = ({
                     <Form.Item
                         label='Vaccinator'
                         name='vaccinatorId'
-                        rules={[{ required: true, message: 'Please select a vaccinator' }]}
                     >
                         <Select
                             showSearch
@@ -251,6 +253,7 @@ const VaccinationUpdateModal: React.FC<VaccinationUpdateModalProps> = ({
                                 (option?.children as unknown as string)?.toLowerCase().includes(input.toLowerCase())
                             }
                             loading={vaccinatorLoading || vaccinatorFetching}
+                            disabled={isVaccinatorDisabled}
                             notFoundContent={vaccinatorLoading ? 'Loading...' : 'No vaccinators found'}
                         >
                             {dataVaccinator.map((vaccinator) => (
@@ -280,4 +283,4 @@ const VaccinationUpdateModal: React.FC<VaccinationUpdateModalProps> = ({
     )
 }
 
-export default VaccinationUpdateModal
+export default VaccinationUpdateModal   

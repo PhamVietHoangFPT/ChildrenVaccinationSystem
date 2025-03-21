@@ -10,8 +10,8 @@ import {
     MinusCircleOutlined,
     SyncOutlined,
 } from '@ant-design/icons';
-import { Button, Table, Tag, AutoComplete } from 'antd'; // Replaced Input with AutoComplete
-import { useGetVaccinationListQuery } from '../../../features/vaccinations/vaccinationAPI';
+import { Button, Table, Tag, AutoComplete, message } from 'antd'; // Replaced Input with AutoComplete
+import { useGetVaccinationListQuery, useUpdateVaccinationStatusMutation } from '../../../features/vaccinations/vaccinationAPI';
 import dayjs, { Dayjs } from 'dayjs';
 import VaccinationDateFilter from '../../../components/VaccinationFilter/VaccinationFilter';
 import { Children } from '../../../types/children';
@@ -78,7 +78,7 @@ const StaffVaccination: React.FC = () => {
 
     const dateVaccinations = vaccinations?.data.items ?? [];
     const totalVaccinations = vaccinations?.data.totalItems ?? 0;
-
+    const [updateVaccinationStatus, { isLoading: isUpdating }] = useUpdateVaccinationStatusMutation();
     // Fetch children list for childCode options
     const {
         data: children,
@@ -137,7 +137,26 @@ const StaffVaccination: React.FC = () => {
         value: child.childCode || undefined, // Assuming childCode is a property in Children type
         label: `${child.childCode} - ${child.name || 'N/A'}`, // Optional: Enhance display with name
     }));
+    const handleStatusChangeClick = async (id: string, newStatus: number, vaccination: Vaccination) => {
+        try {
+            // Check if changing to Consulting (status 2) and doctor doesn't exist
+            if (newStatus === 2 && (!vaccination.doctor || !vaccination.doctor.id)) {
+                message.error('Cannot set to Consulting: No doctor assigned');
+                return;
+            }
+            // Check for Injecting (status 4) - vaccinator required
+            if (newStatus === 4 && (!vaccination.vaccinator || !vaccination.vaccinator.id)) {
+                message.error('Cannot set to Injecting: No vaccinator assigned');
+                return;
+            }
 
+            await updateVaccinationStatus({ id, status: newStatus }).unwrap();
+            message.success('Status updated successfully');
+        } catch (error) {
+            console.error('Failed to update status:', error);
+            message.error('Failed to update status');
+        }
+    };
     // Loading state for the table
     if (vaccinationLoading && !vaccinationFetching) {
         return (
@@ -175,12 +194,6 @@ const StaffVaccination: React.FC = () => {
                 schedule ? dayjs(schedule).format('YYYY-MM-DD') : 'N/A',
         },
         {
-            title: 'Note',
-            dataIndex: 'note',
-            key: 'note',
-            render: (note: string) => note ? note : 'None'
-        },
-        {
             title: 'Status',
             dataIndex: 'status',
             key: 'status',
@@ -205,7 +218,7 @@ const StaffVaccination: React.FC = () => {
                     case 8:
                         return <Tag color="red" icon={<MinusCircleOutlined />}>Canceled</Tag>;
                     case 9:
-                        return <Tag color="purple">Refunded</Tag>;
+                        return <Tag color="red">Refunded</Tag>;
                     default:
                         return <Tag color="gray">Unknown</Tag>;
                 }
@@ -223,6 +236,77 @@ const StaffVaccination: React.FC = () => {
                         setIsDetailModalVisible(true) // Show the modal
                     }}
                 />
+            ),
+        },
+        {
+            title: 'Change Status',
+            key: 'changeStatus',
+            render: (_: any, record: Vaccination) => (
+                <>
+                    {record.status === 1 && (
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                            <Button
+                                type="primary"
+                                loading={isUpdating}
+                                onClick={() => handleStatusChangeClick(record.id, 2, record)}
+                                disabled={isUpdating}
+                            >
+                                Consulting
+                            </Button>
+                            <Button
+                                type="primary"
+                                danger
+                                loading={isUpdating}
+                                onClick={() => handleStatusChangeClick(record.id, 9, record)}
+                                disabled={isUpdating}
+                            >
+                                Refunded
+                            </Button>
+                        </div>
+                    )}
+                    {record.status === 3 && (
+                        <Button
+                            type="primary"
+                            loading={isUpdating}
+                            onClick={() => handleStatusChangeClick(record.id, 4, record)}
+                            disabled={isUpdating}
+                        >
+                            Injecting
+                        </Button>
+                    )}
+                    {record.status === 5 && (
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                            <Button
+                                type="primary"
+                                loading={isUpdating}
+                                onClick={() => handleStatusChangeClick(record.id, 6, record)}
+                                disabled={isUpdating}
+                            >
+                                Completed
+                            </Button>
+                            <Button
+                                type="default"
+                                danger
+                                loading={isUpdating}
+                                onClick={() => handleStatusChangeClick(record.id, 7, record)}
+                                disabled={isUpdating}
+                            >
+                                Emergency
+                            </Button>
+                        </div>
+                    )}
+                    {record.status === 7 && (
+                        <Button
+                            type="primary"
+                            danger
+                            loading={isUpdating}
+                            onClick={() => handleStatusChangeClick(record.id, 4, record)}
+                            disabled={isUpdating}
+                        >
+                            Refunded
+                        </Button>
+                    )}
+                </>
             ),
         },
     ];
