@@ -22,7 +22,7 @@ import { useGetVaccineListMiniMalQuery } from '../../../features/vaccine/vaccine
 
 import { Packages } from '../../../types/package';
 import { Vaccines } from '../../../types/vaccine';
-import {  useState } from 'react';
+import { useState } from 'react';
 
 const { Title } = Typography;
 
@@ -34,10 +34,8 @@ interface PackageDetailResponse {
   isLoading: boolean;
 }
 
-
 interface VaccinesListResponse {
   data: {
-    
     data: {
       items: Vaccines[];
       totalItems: number;
@@ -56,9 +54,8 @@ const ManagerPackageDetail: React.FC = () => {
     id as string
   );
 
-    const [pageNumber, setPageNumber] = useState(1)
-    const [pageSize, setPageSize] = useState(7)
-
+  const [pageNumber, setPageNumber] = useState(1);
+  const [pageSize, setPageSize] = useState(7);
 
   const { data: vaccineData, isLoading: vaccineDataLoading, isFetching: vaccineDataFetching } =
     useGetVaccineListMiniMalQuery<VaccinesListResponse>({
@@ -72,13 +69,18 @@ const ManagerPackageDetail: React.FC = () => {
 
   const [form] = Form.useForm();
 
+  const [discountPercent, setDiscountPercent] = useState<number>(0);
+
   const handleSave = async (values: any) => {
     try {
-      console.log('Form values:', values);
+      if (discountPercent < 1 || discountPercent > 10) {
+        message.error('Chỉ được giảm từ 1% đến 10%');
+        return;
+      }
 
       const packageData = {
         name: values.name,
-        price: calculateTotalPrice(), 
+        price: getDiscountedPrice(),
         description: values.description || '',
       };
 
@@ -93,20 +95,20 @@ const ManagerPackageDetail: React.FC = () => {
     }
   };
 
-  const handleAddVaccineToPackage = async (vaccineId : string) => {
+  const handleAddVaccineToPackage = async (vaccineId: string) => {
     try {
       setLoadingAddVaccine(true);
       await addVaccineToPackage({
         id: id as string,
         vaccineId: vaccineId,
       }).unwrap();
-      
+
       message.success('Thêm vaccine thành công');
-      // refetch(); // Refresh the data
-    } catch (error : any) {
+      refetch();
+    } catch (error: any) {
       message.error('Lỗi khi thêm vaccine: ' + (error.message || 'Unknown error'));
     } finally {
-      setLoadingAddVaccine(false)
+      setLoadingAddVaccine(false);
     }
   };
 
@@ -123,9 +125,9 @@ const ManagerPackageDetail: React.FC = () => {
             id: id as string,
             vaccineId: vaccineId,
           }).unwrap();
-          
+
           message.success('Xóa vaccine thành công');
-          refetch(); 
+          refetch();
         } catch (error: any) {
           message.error('Lỗi khi xóa vaccine: ' + error.message);
         }
@@ -134,16 +136,20 @@ const ManagerPackageDetail: React.FC = () => {
   };
 
   const transformedVaccines = data?.data.packageItems?.map((item) => item.vaccine) || [];
-  console.log('Transformed Vaccines:', transformedVaccines);
 
   const calculateTotalPrice = () => {
-    
     return data.data.packageItems.reduce((sum, item) => {
       if (item.vaccine && typeof item.vaccine.price === 'number') {
         return sum + item.vaccine.price;
       }
       return sum;
     }, 0);
+  };
+
+  const getDiscountedPrice = () => {
+    const total = calculateTotalPrice();
+    const discount = discountPercent || 0;
+    return total - total * (discount / 100);
   };
 
   if (isLoading) {
@@ -165,6 +171,7 @@ const ManagerPackageDetail: React.FC = () => {
   return (
     <div style={{ padding: '24px' }}>
       <Title level={2}>Thông tin Package</Title>
+
       <Form
         form={form}
         layout="vertical"
@@ -183,77 +190,90 @@ const ManagerPackageDetail: React.FC = () => {
           <Input />
         </Form.Item>
 
-        <Form.Item label="Giá tự động (dựa trên giá vaccine)">
-          <Input value={new Intl.NumberFormat('en-US').format(calculateTotalPrice())} disabled />
-        </Form.Item>
-
         <Form.Item label="Mô tả" name="description">
           <Input.TextArea rows={3} />
         </Form.Item>
 
-        <div>
-          <Table
-            dataSource={vaccineData?.data.items}
-            loading={vaccineDataLoading|| vaccineDataFetching }
-            rowKey="id"
-            pagination={false}
-            columns={[
-              {
-                title: 'Tên',
-                dataIndex: 'name',
-                key: 'name',
-              },
-              {
-                title: 'Giá',
-                dataIndex: 'price',
-                key: 'price',
-                render: (price) => `${new Intl.NumberFormat('en-US').format(price || 0)} `,
-              },
-              {
-                title: 'Hành động',
-                key: 'action',
-                render: (_, record) => (
-                  <Space size="middle">
-                    <Button
-                      type="primary"
-                      onClick={() => handleAddVaccineToPackage(record.id)}
-                      disabled={transformedVaccines?.some(
-                        (transformedVaccine) => transformedVaccine.id === record.id
-                      )}
-                      loading={loadingAddVaccine}
-                    >
-                      Thêm
-                    </Button>
-                  </Space>
-                ),
+        <Form.Item label="Giảm giá (%)">
+          <Input
+            type="number"
+            min={1}
+            max={10}
+            value={discountPercent}
+            onChange={(e) => {
+              const value = Number(e.target.value);
+              if (value >= 1 && value <= 10) {
+                setDiscountPercent(value);
+              } else {
+                message.warning('Chỉ cho phép từ 1% đến 10%');
               }
-              
-            ]}
+            }}
+            style={{ width: '150px' }}
           />
-          {!vaccineDataLoading && (
-        <Pagination
-          current={pageNumber}
-          pageSize={pageSize}
-          total={vaccineData?.data.totalItems}
-          style={{ textAlign: 'center' }}
-          align='center'
-          onChange={(page, size) => {
-            setPageNumber(page)
-            setPageSize(size)
-          }}
-        />
-      )}
-        </div>
+        </Form.Item>
 
-        <div style={{ marginBottom: '20px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-            <Title level={4}>Danh sách Vaccine</Title>
-          </div>
-          
+        <Form.Item label="Giá sau giảm giá">
+          <Input
+            value={new Intl.NumberFormat('en-US').format(getDiscountedPrice())}
+            disabled
+          />
+        </Form.Item>
+
+        <Table
+          dataSource={vaccineData?.data.items}
+          loading={vaccineDataLoading || vaccineDataFetching}
+          rowKey="id"
+          pagination={false}
+          columns={[
+            {
+              title: 'Tên',
+              dataIndex: 'name',
+              key: 'name',
+            },
+            {
+              title: 'Giá',
+              dataIndex: 'price',
+              key: 'price',
+              render: (price) => `${new Intl.NumberFormat('en-US').format(price || 0)} `,
+            },
+            {
+              title: 'Hành động',
+              key: 'action',
+              render: (_, record) => (
+                <Space size="middle">
+                  <Button
+                    type="primary"
+                    onClick={() => handleAddVaccineToPackage(record.id)}
+                    disabled={transformedVaccines?.some(
+                      (transformedVaccine) => transformedVaccine.id === record.id
+                    )}
+                    loading={loadingAddVaccine}
+                  >
+                    Thêm
+                  </Button>
+                </Space>
+              ),
+            },
+          ]}
+        />
+        {!vaccineDataLoading && (
+          <Pagination
+            current={pageNumber}
+            pageSize={pageSize}
+            total={vaccineData?.data.totalItems}
+            style={{ textAlign: 'center' }}
+            onChange={(page, size) => {
+              setPageNumber(page);
+              setPageSize(size);
+            }}
+          />
+        )}
+
+        <div style={{ marginTop: '30px' }}>
+          <Title level={4}>Danh sách Vaccine đã chọn</Title>
           <Table
             dataSource={transformedVaccines}
             rowKey="id"
-
             columns={[
               {
                 title: 'Tên',
@@ -283,12 +303,11 @@ const ManagerPackageDetail: React.FC = () => {
               },
             ]}
           />
-        
-      
         </div>
 
+        {/* Nút Lưu ở dưới cùng */}
         <Form.Item>
-          <div style={{ display: 'flex', gap: '16px' }}>
+          <div style={{ display: 'flex', gap: '16px', marginTop: '24px' }}>
             <Button type="primary" htmlType="submit">
               Lưu
             </Button>
