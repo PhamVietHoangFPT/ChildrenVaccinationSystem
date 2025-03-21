@@ -16,6 +16,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import VaccinationDateFilter from '../../../components/VaccinationFilter/VaccinationFilter';
 import { Children } from '../../../types/children';
 import { useGetChildrenListQuery } from '../../../features/children/childrenAPI';
+import VaccinationUpdateModal from '../../../components/Modal/Vaccination/vaccinationDetail.modal';
 
 interface ChildrenListResponse {
     data: {
@@ -58,7 +59,9 @@ const StaffVaccination: React.FC = () => {
     const [childCode, setChildCode] = useState<string | undefined>(initialChildCode);
     const [searchValue, setSearchValue] = useState<string>(initialChildCode || ''); // For AutoComplete input
     const pageSize = 7;
-
+    // Modal state
+    const [isDetailModalVisible, setIsDetailModalVisible] = useState(false)
+    const [selectedVaccinationId, setSelectedVaccinationId] = useState<string | null>(null)
     // Fetch vaccination list with dynamic filters including childCode
     const {
         data: vaccinations,
@@ -172,11 +175,10 @@ const StaffVaccination: React.FC = () => {
                 schedule ? dayjs(schedule).format('YYYY-MM-DD') : 'N/A',
         },
         {
-            title: 'Vaccine Name',
-            dataIndex: 'vaccine.name',
-            key: 'vaccineName',
-            render: (_: string | undefined, record: Vaccination) =>
-                record.vaccine?.name ?? 'N/A',
+            title: 'Note',
+            dataIndex: 'note',
+            key: 'note',
+            render: (note: string) => note ? note : 'None'
         },
         {
             title: 'Status',
@@ -212,12 +214,23 @@ const StaffVaccination: React.FC = () => {
         {
             title: 'Update',
             key: 'update',
-            render: (_: any) => (
-                <Button type="primary" icon={<EditOutlined />} />
+            render: (_: any, record: Vaccination) => (
+                <Button
+                    type='primary'
+                    icon={<EditOutlined />}
+                    onClick={() => {
+                        setSelectedVaccinationId(record.id) // Set the selected customer ID
+                        setIsDetailModalVisible(true) // Show the modal
+                    }}
+                />
             ),
         },
     ];
-
+    // Handle modal close
+    const handleDetailModalClose = () => {
+        setIsDetailModalVisible(false)
+        setSelectedVaccinationId(null)
+    }
     return (
         <div style={{ padding: 20, background: '#fff', borderRadius: 8 }}>
             <div style={{ marginBottom: 16 }}>
@@ -237,12 +250,12 @@ const StaffVaccination: React.FC = () => {
                     allowClear
                     filterOption={(inputValue, option) =>
                         (option?.value?.toUpperCase() || '').indexOf(
-                          inputValue.toUpperCase()
+                            inputValue.toUpperCase()
                         ) !== -1 ||
                         (option?.label?.toString().toUpperCase() || '').indexOf(
-                          inputValue.toUpperCase()
+                            inputValue.toUpperCase()
                         ) !== -1
-                      }
+                    }
                 />
             </div>
             <VaccinationDateFilter
@@ -270,6 +283,11 @@ const StaffVaccination: React.FC = () => {
                         setCurrentPage(page);
                     },
                 }}
+            />
+            <VaccinationUpdateModal
+                visible={isDetailModalVisible}
+                id={selectedVaccinationId}
+                onClose={handleDetailModalClose}
             />
         </div>
     );

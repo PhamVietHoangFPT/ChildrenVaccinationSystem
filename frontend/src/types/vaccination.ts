@@ -11,6 +11,7 @@ export interface Vaccination {
     doctor?: Staff
     vaccinator?: Staff
     vaccine?: Vaccines
+    price?: number
 }
 
 interface Staff {
