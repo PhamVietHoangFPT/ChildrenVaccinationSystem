@@ -77,32 +77,42 @@ namespace ChildrenVaccinationSystem.Services
 			return new BasePaginatedList<object>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
 		}
 
-		//public async Task CreateVaccinationByStaffForVaccine(string childId, string vaccineId)
-		//{
-		//	Child? child = await _unitOfWork.GetRepository<Child>().Entities.Where(c => c.Id == childId && c.DeletedBy == null).FirstOrDefaultAsync();
-		//	if (child == null)
-		//		throw new ErrorException(404, "not_found", "Không tìm thấy child id");
+		public async Task<string> PayPendingVaccinations(HttpContext context, List<string> vaccinationIds)
+		{
+			List<Vaccination> vaccinations = new();
+			double price = 0;
+			foreach (string id in vaccinationIds)
+			{
+				Vaccination? vaccination = await _unitOfWork.GetRepository<Vaccination>().GetByIdAsync(id);
 
-		//	Vaccine? vaccine = await _unitOfWork.GetRepository<Vaccine>().Entities.Where(v => v.Id == vaccineId && v.DeletedBy == null).FirstOrDefaultAsync();
-		//	if (vaccine == null)
-		//		throw new ErrorException(404, "not_found", "Không tìm thấy vaccine id");
+				if (vaccination == null)
+					throw new ErrorException(401, "not_found", "Đơn tiêm chủng không tồn tại");
+				if (vaccination.Status != VaccinationStatusEnum.Pending)
+					throw new ErrorException(400, "bad_request", "Trạng thái không hợp lệ để thanh toán");
 
+				Vaccine? vaccine = await _unitOfWork.GetRepository<Vaccine>().Entities.Where(v => v.Id == vaccination.VaccineId && v.DeletedBy == null).FirstOrDefaultAsync();
+				if (vaccine == null)
+					throw new ErrorException(401, "bad_request", "Vaccine không tồn tại, yêu cầu hủy đơn tiêm chủng ngay lập tức");
 
-		//	Vaccination vaccination = new()
-		//	{
-		//		ChildId = childId,
-		//		Price = vaccine.Price,
-		//		Schedule = DateOnly.FromDateTime(DateTime.Now),
-		//		Note = "",
-		//		Status = VaccinationStatusEnum.Pending,
-		//		VaccinatorId = vaccineId,
-		//	};
+				price += vaccine.Price;
+				vaccinations.Add(new Vaccination
+				{
+					Id = id,
+					Price = vaccination.Price,
+					Schedule = vaccination.Schedule,
+					Note = vaccination.Note,
+					Status = vaccination.Status,
+					ChildId = vaccination.ChildId,
+					CreatedBy = vaccination.CreatedBy,
+					LastUpdatedBy = vaccination.LastUpdatedBy,
+					CreatedTime = vaccination.CreatedTime,
+					LastUpdatedTime = vaccination.LastUpdatedTime,
+					VaccineId = vaccination.VaccineId
+				});
+			}
 
-		//	_authenticationService.UpdateAudits(vaccine, true);
-
-		//	await _unitOfWork.GetRepository<Vaccination>().InsertAsync(vaccination);
-		//	await _unitOfWork.SaveAsync();
-		//}
+			return _vnPayService.CreatePaymentUrl(context, vaccinations, price, 2);
+		}
 
 
 		public async Task<string> RegisterVaccination(HttpContext context, VaccinationRegisterDto dto)
@@ -193,7 +203,7 @@ namespace ChildrenVaccinationSystem.Services
 			//await _unitOfWork.SaveAsync();
 			// Extracting a list of IDs
 
-			return _vnPayService.CreatePaymentUrl(context, vaccinations, price);
+			return _vnPayService.CreatePaymentUrl(context, vaccinations, price, 1);
 		}
 
 		public async Task UpdateVaccinationByStaff(string id, VaccinationUpdateDto dto)
