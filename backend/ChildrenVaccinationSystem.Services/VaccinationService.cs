@@ -140,6 +140,17 @@ namespace ChildrenVaccinationSystem.Services
 
 		public async Task<string> RegisterVaccination(HttpContext context, VaccinationRegisterDto dto)
 		{
+			if (!_unitOfWork.IsValid<Facility>(dto.FacilityId))
+			{
+				throw new ErrorException(404, "not_found", "KHông tìm thấy cơ sở");
+			}
+
+			if (!_unitOfWork.IsValid<Child>(dto.ChildId))
+			{
+				throw new ErrorException(404, "not_found", "KHông tìm thấy child id");
+			}
+
+
 			if (dto.PaymentChoice < 1 || dto.PaymentChoice > 3)
 			{
 				throw new ErrorException(400, "bad_request", "Phương thức không phù hợp");
@@ -169,6 +180,8 @@ namespace ChildrenVaccinationSystem.Services
 				foreach (string vaccineId in vaccineIds)
 				{
 					Vaccine vaccine = (await _unitOfWork.GetRepository<Vaccine>().GetByIdAsync(vaccineId))!;
+
+					await IsAvailable(vaccine, dto.FacilityId);
 					for (int i = 0; i < vaccine.Sequence; i++)
 					{
 						if (dto.PaymentChoice == 2)
@@ -202,6 +215,7 @@ namespace ChildrenVaccinationSystem.Services
 				foreach (string vaccineId in vaccineIds)
 				{
 					Vaccine vaccine = (await _unitOfWork.GetRepository<Vaccine>().GetByIdAsync(vaccineId))!;
+					await IsAvailable(vaccine, dto.FacilityId);
 
 					if (vaccine.DeletedBy != null)
 						continue;
@@ -227,6 +241,17 @@ namespace ChildrenVaccinationSystem.Services
 			// Extracting a list of IDs
 
 			return _vnPayService.CreatePaymentUrl(context, vaccinations, price, 1);
+		}
+
+		private async Task IsAvailable(Vaccine vaccine, string facilityId)
+		{
+			VaccineInventory? inventory = await _unitOfWork.GetRepository<VaccineInventory>().Entities.Where(i => i.FacilityId == facilityId && i.VaccineId == vaccine.Id && i.Stock > 0).FirstOrDefaultAsync();
+
+			if (inventory == null) 
+			{
+				//throw new ErrorException(400, "bad_request", $"Cơ sở hiện tại không đủ vaccine {vaccine.Name} {vaccine.Manufacturer.Name}");
+				throw new ErrorException(400, "bad_request", $"Cơ sở hiện tại không đủ vaccine {vaccine.Name} {vaccine.Manufacturer.Name}");
+			}
 		}
 
 		public async Task UpdateVaccinationByStaff(string id, VaccinationUpdateDto dto)

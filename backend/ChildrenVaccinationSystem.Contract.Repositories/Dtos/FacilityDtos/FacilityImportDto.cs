@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ChildrenVaccinationSystem.Contract.Repositories.Dtos.FacilityDtos
+﻿namespace ChildrenVaccinationSystem.Contract.Repositories.Dtos.FacilityDtos
 {
 	public class FacilityImportDto
 	{
+		public string FacilityId { get; set; } = default!;
 		public List<VaccineImport> VaccineImports { get; set; } = default!;
 
 	}
