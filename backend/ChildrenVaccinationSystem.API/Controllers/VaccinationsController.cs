@@ -46,6 +46,19 @@ namespace ChildrenVaccinationSystem.API.Controllers
 			));
 		}
 
+		[HttpGet("{id}")]
+		public async Task<IActionResult> GetVaccinationById(string id)
+		{
+			object vaccination = await _vaccinationService.GetVaccinationById(id);
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Lấy vaccination thành công",
+				data: vaccination
+			));
+
+		}
+
 		[HttpPatch("payment")]
 		public async Task<IActionResult> PayPendingVaccinations(List<string> vaccinationIds)
 		{

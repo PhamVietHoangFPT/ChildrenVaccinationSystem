@@ -96,7 +96,11 @@ namespace ChildrenVaccinationSystem.Services
             await _unitOfWork.SaveAsync();
 		}
 
+        public async Task ImportVaccines(FacilityImportDto facilityImportDto)
+        {
+            
 
+        }
 
 	}
 }

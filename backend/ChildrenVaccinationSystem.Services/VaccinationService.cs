@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ChildrenVaccinationSystem.Contract.Repositories.Dtos.BlogDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Dtos.VaccinationDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Dtos.VaccineDtos;
 using ChildrenVaccinationSystem.Contract.Repositories.Entities;
@@ -65,16 +66,38 @@ namespace ChildrenVaccinationSystem.Services
 			var responseItems = resultQuery.Items.Select(v => new
 			{
 				v.Id,
+				v.Price,
 				v.Schedule,
 				v.Note,
 				v.Status,
-				Child = new { v.Child.Name },
-				Doctor = new { v.Doctor?.Name },
-				Vaccinator = new { v.Vaccinator?.Name },
-				Vaccine = new { v.Vaccine.Name },
+				Child = new { v.Child.Id, v.Child.Name },
+				Doctor = new { v.Doctor?.Id, v.Doctor?.Name },
+				Vaccinator = new { v.Vaccinator?.Id, v.Vaccinator?.Name },
+				Vaccine = new { v.Vaccine.Id, v.Vaccine.Name },
 			}).ToList();
 
 			return new BasePaginatedList<object>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
+		}
+
+		public async Task<object> GetVaccinationById(string id)
+		{
+			Vaccination? vaccination = await _unitOfWork.GetRepository<Vaccination>().Entities.Where(v => v.Id == id && v.DeletedBy == null).FirstOrDefaultAsync();
+
+			if (vaccination == null)
+				throw new ErrorException(404, "not_found", "Không tìm thấy vaccine id");
+
+			return new
+			{
+				vaccination.Id,
+				vaccination.Price,
+				vaccination.Schedule,
+				vaccination?.Note,
+				vaccination?.Status,
+				Child = new { vaccination!.Child.Id, vaccination.Child.Name },
+				Doctor = new { vaccination.Doctor?.Id, vaccination.Doctor?.Name },
+				Vaccinator = new { vaccination.Vaccinator?.Id, vaccination.Vaccinator?.Name },
+				Vaccine = new { vaccination.Vaccine.Id, vaccination.Vaccine.Name },
+			};
 		}
 
 		public async Task<string> PayPendingVaccinations(HttpContext context, List<string> vaccinationIds)
