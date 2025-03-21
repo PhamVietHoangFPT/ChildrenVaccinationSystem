@@ -117,7 +117,7 @@ namespace ChildrenVaccinationSystem.Services
 				if (vaccine == null)
 					throw new ErrorException(401, "bad_request", "Vaccine không tồn tại, yêu cầu hủy đơn tiêm chủng ngay lập tức");
 
-				price += vaccine.Price;
+				price += vaccination.Price;
 				vaccinations.Add(new Vaccination
 				{
 					Id = id,
@@ -247,6 +247,13 @@ namespace ChildrenVaccinationSystem.Services
 				Account? doctor = await _unitOfWork.GetRepository<Account>().Entities.Where(d => d.Id == dto.DoctorId && d.Role == RoleEnum.Doctor && d.DeletedBy == null).FirstOrDefaultAsync();
 				if (doctor == null)
 					throw new ErrorException(404, "not_found", "Không tìm thấy doctor id");
+			}
+
+			if (dto.VaccinatorId != null)
+			{
+				Account? vaccinator = await _unitOfWork.GetRepository<Account>().Entities.Where(d => d.Id == dto.VaccinatorId && d.Role == RoleEnum.Vaccinator && d.DeletedBy == null).FirstOrDefaultAsync();
+				if (vaccinator == null)
+					throw new ErrorException(404, "not_found", "Không tìm thấy vaccinator id");
 			}
 
 			_mapper.Map(dto, vaccination);

@@ -98,9 +98,23 @@ namespace ChildrenVaccinationSystem.Services
 
         public async Task ImportVaccines(FacilityImportDto facilityImportDto)
         {
-            
+            string BatchNumber = GenerateBatchNumber();
+
+            foreach (var import in facilityImportDto.VaccineImports) 
+            {
+                Vaccine? vaccine = await _unitOfWork.GetRepository<Vaccine>().Entities.Where(v => v.Id == import.VaccineId && v.DeletedBy == null).FirstOrDefaultAsync();
+
+
+
+            }
 
         }
 
+        private string GenerateBatchNumber()
+		{
+			string time = DateTime.Now.ToString("mmss");
+			string randomDigits = new Random().Next(100, 999).ToString();
+			return $"B{time}{randomDigits}";
+		}
 	}
 }
