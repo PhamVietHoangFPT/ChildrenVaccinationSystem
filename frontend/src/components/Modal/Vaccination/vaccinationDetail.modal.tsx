@@ -164,7 +164,7 @@ const VaccinationUpdateModal: React.FC<VaccinationUpdateModalProps> = ({
                         label='Price'
                         name='price'
                     >
-                      <Input disabled />
+                        <Input disabled />
                     </Form.Item>
 
                     <Form.Item
@@ -200,9 +200,9 @@ const VaccinationUpdateModal: React.FC<VaccinationUpdateModalProps> = ({
                         <Input.TextArea rows={3} />
                     </Form.Item>
 
-                    <Button 
-                        type='primary' 
-                        htmlType='submit' 
+                    <Button
+                        type='primary'
+                        htmlType='submit'
                         loading={isUpdating}
                     >
                         Update Vaccination

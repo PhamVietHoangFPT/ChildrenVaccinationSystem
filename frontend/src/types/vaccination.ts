@@ -1,5 +1,5 @@
 import { Children } from "./children"
-import { Facilities } from "./facilities"
+import { Staff } from "./staff"
 import { Vaccines } from "./vaccine"
 
 export interface Vaccination {
@@ -14,11 +14,4 @@ export interface Vaccination {
     price?: number
 }
 
-interface Staff {
-    id: string;
-    name: string;
-    phoneNumber?: string;
-    email?: string;
-    gender?: boolean;
-    facility?: Facilities;
-}
+
