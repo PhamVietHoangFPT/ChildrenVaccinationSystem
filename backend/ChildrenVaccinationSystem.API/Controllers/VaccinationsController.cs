@@ -5,6 +5,7 @@ using ChildrenVaccinationSystem.Core.Base;
 using ChildrenVaccinationSystem.Core.Enum;
 using ChildrenVaccinationSystem.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace ChildrenVaccinationSystem.API.Controllers
 {
@@ -45,6 +46,20 @@ namespace ChildrenVaccinationSystem.API.Controllers
 				data: vaccinations
 			));
 		}
+
+		[HttpGet("history/{childId}")]
+		public async Task<IActionResult> GetVaccinationHistory(string childId, [Required]bool isUpcoming)
+		{
+			var vaccinations = await _vaccinationService.GetVaccinationHistory(childId, isUpcoming);
+
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Lấy vaccinations thành công",
+				data: vaccinations
+			));
+		}
+
 
 		[HttpGet("{id}")]
 		public async Task<IActionResult> GetVaccinationById(string id)
