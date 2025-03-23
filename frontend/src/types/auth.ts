@@ -10,6 +10,7 @@ export interface UserData {
   Name: string
   PhoneNumber: string
   exp: number
+  Facility: string
 }
 
 export interface AuthState {

@@ -254,7 +254,7 @@ const StaffVaccination: React.FC = () => {
     {
       title: 'Update',
       key: 'update',
-      render: (_: any) => <Button type='primary' icon={<EditOutlined />} />,
+      render: () => <Button type='primary' icon={<EditOutlined />} />,
     },
   ]
 

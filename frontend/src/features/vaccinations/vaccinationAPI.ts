@@ -34,10 +34,42 @@ export const vaccinationsApi = apiSlice.injectEndpoints({
       transformResponse: (res) => res,
       providesTags: ['vaccinations'],
     }),
+    getVaccinationDetail: build.query({
+      query: (id) => ({
+        url: `/vaccinations/${id}`,
+        method: 'GET',
+      }),
+      transformResponse: (res) => res,
+      providesTags: ['vaccinations'],
+    }),
+    updateVaccination: build.mutation({
+      query: ({ data, id }) => ({
+        url: `/vaccinations/${id}/staff`,
+        method: 'PUT',
+        body: data,
+      }),
+      transformResponse: (res) => res,
+      invalidatesTags: ['vaccinations'],
+    }),
+    updateVaccinationStatus: build.mutation({
+      query: ({ id, status }) => ({
+        url: `/vaccinations/${id}/${status}`,
+        method: 'PUT',
+        params: {
+          id,
+          status
+        },
+      }),
+      transformResponse: (res) => res,
+      invalidatesTags: ['vaccinations'],
+    }),
   }),
 })
 
 export const {
   useCreateRegisterVaccinationMutation,
   useGetVaccinationListQuery,
+  useGetVaccinationDetailQuery,
+  useUpdateVaccinationMutation,
+  useUpdateVaccinationStatusMutation
 } = vaccinationsApi
