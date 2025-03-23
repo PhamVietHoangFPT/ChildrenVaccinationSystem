@@ -25,7 +25,7 @@ import { Vaccines } from '../../types/vaccine'
 import { Packages, PackageDetails } from '../../types/package'
 import { Children } from '../../types/children'
 import { DeleteOutlined, LoadingOutlined, TagOutlined } from '@ant-design/icons'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import VaccineRegisterTutorial from '../../components/Vaccine/VaccineRegisterToturial'
 import { useCreateRegisterVaccinationMutation } from '../../features/vaccinations/vaccinationAPI'
 const { Option } = Select
@@ -281,7 +281,6 @@ export default function VaccineRegistrationCustomer() {
               setPaymentChoice('3')
               setSelectedPackages(record)
               setPreSelectedVaccine(null)
-              calculateTotalPriceAddVaccinePackage()
             }}
             disabled={selectedPackages !== null || selectedVaccines.length > 0}
             title={
@@ -354,13 +353,16 @@ export default function VaccineRegistrationCustomer() {
     setTotalPrice(total)
   }
 
-  const calculateTotalPriceAddVaccinePackage = () => {
+  useEffect(() => {
+    if (!packageDetail?.data?.packageItems) return // Tránh lỗi khi packageItems là undefined hoặc null
+
     let total = 0
     packageDetail.data.packageItems.forEach((v: any) => {
-      total += v.vaccine.price
+      total += v.vaccine?.price || 0 // Đảm bảo vaccine.price không bị undefined
     })
+
     setTotalPrice(total)
-  }
+  }, [packageDetail])
 
   const registerVaccinationHandler = async () => {
     const data = {
