@@ -28,7 +28,7 @@ export const vaccinationsApi = apiSlice.injectEndpoints({
           childCode,
           scheduleFrom,
           scheduleTo,
-          status
+          status,
         },
       }),
       transformResponse: (res) => res,

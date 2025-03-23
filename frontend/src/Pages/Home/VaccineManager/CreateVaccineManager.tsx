@@ -71,16 +71,15 @@ const CreateVaccine: React.FC = () => {
       formData.append('dosageInterval', values.dosageInterval)
       formData.append('categoryId', values.categoryId)
       formData.append('manufacturerId', values.manufacturerId)
-      
+
       formData.append('imageSource', values.imageSource[0].originFileObj)
-     
+
       const createResponse = (await createVaccine(formData).unwrap()) as {
         message: string
       }
 
       message.success(createResponse.message)
       navigate('/manager/vaccine')
-      
     } catch (error: any) {
       message.error('Error creating vaccine: ' + error.message)
     }
@@ -89,11 +88,7 @@ const CreateVaccine: React.FC = () => {
   return (
     <div style={{ padding: '24px' }}>
       <Title level={2}>Create Vaccine</Title>
-      <Form
-        form={form}
-        layout='vertical'
-        onFinish={handleSave}
-      >
+      <Form form={form} layout='vertical' onFinish={handleSave}>
         <Form.Item
           label='Name'
           name='name'
@@ -135,77 +130,79 @@ const CreateVaccine: React.FC = () => {
         </Form.Item>
 
         <Form.Item label='Recommended Age' style={{ marginBottom: 0 }}>
-  <Form.Item
-    name='startRecommendedAge'
-    style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}
-    rules={[
-      { required: true, message: 'Enter start age' },
-      ( ) => ({
-        validator(_, value) {
-          const num = Number(value)
-          if (isNaN(num)) {
-            return Promise.reject(new Error('Start age must be a number'))
-          }
-          if (num < 0 || num > 15) {
-            return Promise.reject(
-              new Error('Start age must be between 0 and 15')
-            )
-          }
-          return Promise.resolve()
-        },
-      }),
-    ]}
-  >
-    <Input placeholder='Start Age' />
-  </Form.Item>
-  <span
-    style={{
-      display: 'inline-block',
-      width: '16px',
-      textAlign: 'center',
-    }}
-  >
-    -
-  </span>
-  <Form.Item
-    name='endRecommendedAge'
-    dependencies={['startRecommendedAge']}
-    style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}
-    rules={[
-      { required: true, message: 'Enter end age' },
-      ({ getFieldValue }) => ({
-        validator(_, value) {
-          const startAge = Number(getFieldValue('startRecommendedAge'))
-          const endAge = Number(value)
+          <Form.Item
+            name='startRecommendedAge'
+            style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}
+            rules={[
+              { required: true, message: 'Enter start age' },
+              () => ({
+                validator(_, value) {
+                  const num = Number(value)
+                  if (isNaN(num)) {
+                    return Promise.reject(
+                      new Error('Start age must be a number')
+                    )
+                  }
+                  if (num < 0 || num > 15) {
+                    return Promise.reject(
+                      new Error('Start age must be between 0 and 15')
+                    )
+                  }
+                  return Promise.resolve()
+                },
+              }),
+            ]}
+          >
+            <Input placeholder='Start Age' />
+          </Form.Item>
+          <span
+            style={{
+              display: 'inline-block',
+              width: '16px',
+              textAlign: 'center',
+            }}
+          >
+            -
+          </span>
+          <Form.Item
+            name='endRecommendedAge'
+            dependencies={['startRecommendedAge']}
+            style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}
+            rules={[
+              { required: true, message: 'Enter end age' },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  const startAge = Number(getFieldValue('startRecommendedAge'))
+                  const endAge = Number(value)
 
-          if (isNaN(endAge)) {
-            return Promise.reject(new Error('End age must be a number'))
-          }
-          if (endAge < 1 || endAge > 16) {
-            return Promise.reject(
-              new Error('End age must be between 1 and 16')
-            )
-          }
-          if (endAge <= startAge) {
-            return Promise.reject(
-              new Error('End age must be greater than start age')
-            )
-          }
-          return Promise.resolve()
-        },
-      }),
-    ]}
-  >
-    <Input placeholder='End Age' />
-  </Form.Item>
-</Form.Item>
-
+                  if (isNaN(endAge)) {
+                    return Promise.reject(new Error('End age must be a number'))
+                  }
+                  if (endAge < 1 || endAge > 16) {
+                    return Promise.reject(
+                      new Error('End age must be between 1 and 16')
+                    )
+                  }
+                  if (endAge <= startAge) {
+                    return Promise.reject(
+                      new Error('End age must be greater than start age')
+                    )
+                  }
+                  return Promise.resolve()
+                },
+              }),
+            ]}
+          >
+            <Input placeholder='End Age' />
+          </Form.Item>
+        </Form.Item>
 
         <Form.Item
           label='Sequence'
           name='sequence'
-          rules={[{ required: true, message: 'Please enter sequence' },
-            
+          rules={[
+            { required: true, message: 'Please enter sequence' },
+
             {
               validator: (_, value) => {
                 const num = Number(value)
@@ -283,7 +280,7 @@ const CreateVaccine: React.FC = () => {
         <Form.Item
           label='Image Source'
           name='imageSource'
-          valuePropName="fileList" 
+          valuePropName='fileList'
           getValueFromEvent={(e) => {
             if (Array.isArray(e)) {
               return e
@@ -307,9 +304,7 @@ const CreateVaccine: React.FC = () => {
             <Button type='primary' htmlType='submit'>
               Save
             </Button>
-            <Button onClick={() => navigate('/manager/vaccine')}>
-              Back
-            </Button>
+            <Button onClick={() => navigate('/manager/vaccine')}>Back</Button>
           </div>
         </Form.Item>
       </Form>
