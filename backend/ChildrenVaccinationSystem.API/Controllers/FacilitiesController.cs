@@ -44,7 +44,34 @@ namespace ChildrenVaccinationSystem.API.Controllers
             ));
         }
 
-        [HttpPost]
+		[HttpGet("inventory/{id}")]
+		public async Task<IActionResult> GetFacilityInventory(string id)
+		{
+			var facility = await _facilityService.GetFacilityInventory(id);
+
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Lấy thông tin lưu trữ của facility thành công",
+				data: facility
+			));
+		}
+
+		[HttpGet("batches/{id}")]
+		public async Task<IActionResult> GetFacilityBatches(string id)
+		{
+			var facility = await _facilityService.GetFacilityBatches(id);
+
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Lấy thông tin lưu trữ của facility thành công",
+				data: facility
+			));
+		}
+
+
+		[HttpPost]
         public async Task<IActionResult> AddFacility(FacilityCreateDto facilityDto)
         {
             await _facilityService.CreateFacility(facilityDto);
@@ -82,5 +109,19 @@ namespace ChildrenVaccinationSystem.API.Controllers
                 data: null
             ));
         }
+
+		[HttpPost("import")]
+		public async Task<IActionResult> ImportVaccines(FacilityImportDto facilityImportDto)
+		{
+			await _facilityService.ImportVaccines(facilityImportDto);
+
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Thêm lô hàng mới thành công",
+				data: null
+			));
+		}
+
 	}
 }

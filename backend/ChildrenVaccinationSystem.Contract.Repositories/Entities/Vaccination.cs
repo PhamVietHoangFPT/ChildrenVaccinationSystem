@@ -12,6 +12,7 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Entities
 		public PaymentTypeEnum? PaymentType { get; set; }
 		public PaymentLocationEnum? PaymentLocation { get; set; }
 		public PaymentMethodEnum? PaymentMethod { get; set; }
+		public int CurrentSequence { get; set; }
 
 		public string ChildId { get; set; } = default!;
 		public virtual Child Child { get; set; } = default!;
@@ -19,7 +20,10 @@ namespace ChildrenVaccinationSystem.Contract.Repositories.Entities
 		public virtual Account? Doctor { get; set; }
 		public string? VaccinatorId { get; set; }
 		public virtual Account? Vaccinator { get; set; }
-		public string? VaccineId { get; set; }
+		public string VaccineId { get; set; } = default!;
 		public virtual Vaccine Vaccine { get; set; } = default!;
+		public string? FacilityId { get; set; } = default!;
+		public virtual Facility Facility { get; set; } = default!;
+
 	}
 }
