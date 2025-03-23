@@ -178,6 +178,19 @@ export default function VaccineRegistrationCustomer() {
   const disabledDate = (current: dayjs.Dayjs) => {
     return current.isBefore(dayjs().endOf('day'))
   }
+  
+  useEffect(() => {
+    let total = 0
+
+    if (packageDetail?.data?.packageItems?.length) {
+      total = packageDetail.data.packageItems.reduce(
+        (sum, v) => sum + (v.vaccine?.price || 0),
+        0
+      )
+    }
+
+    setTotalPrice(total) // ✅ Hook luôn được gọi, tránh lỗi conditionally
+  }, [packageDetail])
 
   const handleSearch = () => {
     setSearchParams({
@@ -337,7 +350,6 @@ export default function VaccineRegistrationCustomer() {
 
   const calculateTotalPriceAddSingleVaccine = (item: any) => {
     let total = 0
-    console.log(item)
     item.forEach((v: any) => {
       total += v.price
     })
@@ -352,17 +364,6 @@ export default function VaccineRegistrationCustomer() {
     })
     setTotalPrice(total)
   }
-
-  useEffect(() => {
-    if (!packageDetail?.data?.packageItems) return // Tránh lỗi khi packageItems là undefined hoặc null
-
-    let total = 0
-    packageDetail.data.packageItems.forEach((v: any) => {
-      total += v.vaccine?.price || 0 // Đảm bảo vaccine.price không bị undefined
-    })
-
-    setTotalPrice(total)
-  }, [packageDetail])
 
   const registerVaccinationHandler = async () => {
     const data = {
