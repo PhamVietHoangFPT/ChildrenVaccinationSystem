@@ -11,6 +11,7 @@ export interface Packages {
       }
     },
   ]
+  totalItems: number
 }
 
 export interface PackageDetails {

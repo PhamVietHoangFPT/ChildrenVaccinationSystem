@@ -88,7 +88,7 @@ export const SideBarVaccinator = () => {
         position: 'sticky',
         top: 0,
         left: 0,
-        backgroundColor: 'lightgray'
+        backgroundColor: 'lightgray',
       }}
     >
       {/* Logo and Title */}
@@ -101,7 +101,7 @@ export const SideBarVaccinator = () => {
           borderBottom: '1px solid #f0f0f0',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', }}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
           <MedicineBoxOutlined style={{ color: 'black', fontSize: 20 }} />
           {!collapsed && (
             <span style={{ marginLeft: 12, fontWeight: 600 }}>VacciTrack</span>

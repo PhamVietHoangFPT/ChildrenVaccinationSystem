@@ -37,6 +37,5 @@ export const customerAPI = apiSlice.injectEndpoints({
 export const {
   useGetCustomerListQuery,
   useGetCustomerDetailQuery,
-  useUpdateCustomerMutation
+  useUpdateCustomerMutation,
 } = customerAPI
-

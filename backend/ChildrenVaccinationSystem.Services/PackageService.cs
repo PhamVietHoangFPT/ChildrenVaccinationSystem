@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static ChildrenVaccinationSystem.Core.Base.BaseException;
 
 namespace ChildrenVaccinationSystem.Services
 {
@@ -30,6 +31,13 @@ namespace ChildrenVaccinationSystem.Services
 
         public async Task CreatePackage(PackageCreateDto packageCreateDto)
         {
+            var existingPackage = _unitOfWork.GetRepository<Package>().Entities.Where(p => p.Name == packageCreateDto.Name && p.DeletedBy == null).FirstOrDefault();
+
+            if (existingPackage != null)
+            {
+                throw new ErrorException(400, "bad_request", "Tên vaccine đã tồn tại");
+            }
+
             Package package = new Package();
             _mapper.Map(packageCreateDto, package);
             _authenticationService.UpdateAudits(package, true);
@@ -53,14 +61,15 @@ namespace ChildrenVaccinationSystem.Services
 
         public async Task UpdatePackage(string id, PackageUpdateDto packageUpdateDto)
         {
-
-            var package = await _unitOfWork.GetRepository<Package>().Entities
-                .Where(p => p.Id == id && p.DeletedBy == null)
-                .FirstOrDefaultAsync();
+            
+            var package = await _unitOfWork.GetRepository<Package>()
+                .Entities
+                .Include(p => p.PackageItems) 
+                .FirstOrDefaultAsync(p => p.Id == id && p.DeletedBy == null);
 
             if (package == null)
                 throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy package id");
-
+          
             _mapper.Map(packageUpdateDto, package);
             _authenticationService.UpdateAudits(package, false);
 
@@ -111,8 +120,76 @@ namespace ChildrenVaccinationSystem.Services
             if (package == null)
                 throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy package id");
 
-            // Map sang DTO
             return _mapper.Map<PackageViewDto>(package);
+        }
+
+        public async Task<PackageDeleteVaccineDto> RemoveVaccineFromPackage(string packageId, string vaccineId)
+        {
+            var package = await _unitOfWork.GetRepository<Package>()
+                .Entities
+                .Include(p => p.PackageItems) 
+                .FirstOrDefaultAsync(p => p.Id == packageId && p.DeletedBy == null);
+
+            if (package == null)
+                throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy package id");
+
+            var vaccineToRemove = package.PackageItems?
+                .FirstOrDefault(pi => pi.VaccineId == vaccineId);
+
+            if (vaccineToRemove == null)
+                throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy vaccine id trong package");
+
+            package.PackageItems?.Remove(vaccineToRemove);
+
+            _authenticationService.UpdateAudits(package, false);
+
+            await _unitOfWork.GetRepository<Package>().UpdateAsync(package);
+            await _unitOfWork.SaveAsync();
+
+            return _mapper.Map<PackageDeleteVaccineDto>(package);
+        }
+
+        Task IPackageService.RemoveVaccineFromPackage(string packageId, string vaccineId)
+        {
+            return RemoveVaccineFromPackage(packageId, vaccineId);
+        }
+
+        public async Task AddVaccineToPackage(string packageId, string vaccineId)
+        {
+            var package = await _unitOfWork.GetRepository<Package>()
+                .Entities
+                .Include(p => p.PackageItems)
+                .FirstOrDefaultAsync(p => p.Id == packageId && p.DeletedBy == null);
+
+            if (package == null)
+                throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy package id");
+
+            var vaccine = await _unitOfWork.GetRepository<Vaccine>()
+                .Entities
+                .FirstOrDefaultAsync(v => v.Id == vaccineId && v.DeletedBy == null);
+
+            if (vaccine == null)
+                throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy vaccine id");
+
+            var existingPackageItem = package.PackageItems?
+                .FirstOrDefault(pi => pi.VaccineId == vaccineId);
+
+            if (existingPackageItem != null)
+                throw new BaseException.ErrorException(400, "bad_request", "Vaccine đã tồn tại trong package");
+
+            var packageItem = new PackageItem
+            {
+                VaccineId = vaccineId,
+                PackageId = packageId
+            };
+
+            package.PackageItems ??= new List<PackageItem>();
+            package.PackageItems.Add(packageItem);
+
+            _authenticationService.UpdateAudits(package, false);
+
+            await _unitOfWork.GetRepository<Package>().UpdateAsync(package);
+            await _unitOfWork.SaveAsync();
         }
     }
 }

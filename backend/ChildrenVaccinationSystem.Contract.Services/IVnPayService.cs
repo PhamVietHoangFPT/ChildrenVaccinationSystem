@@ -10,16 +10,16 @@ namespace ChildrenVaccinationSystem.Contract.Services
 {
 	public interface IVnPayService
 	{
-		string CreatePaymentUrl(HttpContext context, List<Vaccination> vaccinations, double price);
+		string CreatePaymentUrl(HttpContext context, List<Vaccination> vaccinations, double price, int code);
 
 		VnPayResponseDto PaymentExecute(IQueryCollection collections);
-		Task InsertVaccinationsData(string key);
+		Task InsertVaccinationsData(string orderInfo);
 	}
 
 	public class VnPayResponseDto
 	{
 		public bool Success { get; set; }
-		public string vaccinationsJson { get; set; } = string.Empty;
+		public string OrderInfo { get; set; } = string.Empty;
 		public string VnPayResponseCode { get; set; } = string.Empty;
 	}
 }
