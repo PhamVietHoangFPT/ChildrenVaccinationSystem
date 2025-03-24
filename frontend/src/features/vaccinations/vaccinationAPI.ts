@@ -57,7 +57,7 @@ export const vaccinationsApi = apiSlice.injectEndpoints({
         method: 'PUT',
         params: {
           id,
-          status
+          status,
         },
       }),
       transformResponse: (res) => res,
@@ -71,5 +71,5 @@ export const {
   useGetVaccinationListQuery,
   useGetVaccinationDetailQuery,
   useUpdateVaccinationMutation,
-  useUpdateVaccinationStatusMutation
+  useUpdateVaccinationStatusMutation,
 } = vaccinationsApi
