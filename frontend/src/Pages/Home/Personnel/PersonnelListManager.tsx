@@ -1,124 +1,140 @@
-import React from 'react'
-import { Table, Button, Modal, message } from 'antd'
-import type { ColumnsType } from 'antd/es/table'
-import { EyeOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
+import React, { useEffect, useState } from 'react';
+import { Table, Button, Input, Typography, Spin, Pagination } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
+import { EyeOutlined, SearchOutlined, PlusOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
+import { useGetAccountPersonnelMinimalQuery } from '../../../features/account/accountAPI';
+import { Personnel } from '../../../types/personnel';
 
-interface Staff {
-  id: number
-  name: string
-  position: string
-  email: string
+const { Title } = Typography;
+
+interface PersonnelListResponse {
+  data: {
+    data: {
+      items: Personnel[];
+    totalItems: number;
+    }
+  };
+  isLoading: boolean;
+  isFetching: boolean;
 }
 
-const staffData: Staff[] = [
-  { id: 1, name: 'Nguyễn Văn A', position: 'Manager', email: 'a@example.com' },
-  { id: 2, name: 'Trần Thị B', position: 'Staff', email: 'b@example.com' },
-  { id: 3, name: 'Lê Văn C', position: 'Staff', email: 'c@example.com' },
-]
+const PersonnelListManager: React.FC = () => {
+  const navigate = useNavigate();
+  const [searchText, setSearchText] = useState<string>('');
+  const [pageNumber, setPageNumber] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
+  const [debouncedSearchText, setDebouncedSearchText] = useState<string>('');
 
-const ManagerPersonnelList: React.FC = () => {
-  const handleView = (record: Staff) => {
-    Modal.info({
-      title: 'Staff Details',
-      content: (
-        <div>
-          <p>
-            <strong>ID:</strong> {record.id}
-          </p>
-          <p>
-            <strong>Name:</strong> {record.name}
-          </p>
-          <p>
-            <strong>Position:</strong> {record.position}
-          </p>
-          <p>
-            <strong>Email:</strong> {record.email}
-          </p>
-        </div>
-      ),
-    })
-  }
+  const { data, isLoading, isFetching } = useGetAccountPersonnelMinimalQuery<PersonnelListResponse>({
+    pageNumber,
+    pageSize,
+    name: debouncedSearchText,
+  });
 
-  const handleEdit = (record: Staff) => {
-    Modal.warning({
-      title: 'Edit Staff',
-      content: `You clicked to edit ${record.name}. (This is a simulated action)`,
-    })
-  }
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchText(searchText);
+    }, 500); // debounce time
+    return () => clearTimeout(handler);
+  }, [searchText]);
 
-  const handleDelete = (record: Staff) => {
-    Modal.confirm({
-      title: 'Are you sure?',
-      content: `Do you really want to delete ${record.name}?`,
-      okText: 'Delete',
-      okType: 'danger',
-      cancelText: 'Cancel',
-      onOk() {
-        message.success(`${record.name} has been deleted.`)
-      },
-    })
-  }
-
-  const columns: ColumnsType<Staff> = [
-    {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-    },
+  const columns: ColumnsType<Personnel> = [
     {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
-    },
-    {
-      title: 'Position',
-      dataIndex: 'position',
-      key: 'position',
+      sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
       title: 'Email',
       dataIndex: 'email',
       key: 'email',
     },
+    
+    {
+      title: 'Facility',
+      dataIndex: ['facility', 'name'],
+      key: 'facility',
+    },
+    
+    {
+      title: 'Phone',
+      dataIndex: 'phoneNumber',
+      key: 'phoneNumber',
+      render: (phoneNumber) => (phoneNumber ? phoneNumber : 'N/A'),
+    },
     {
       title: 'Actions',
       key: 'actions',
       render: (_, record) => (
-        <>
-          <Button
-            type='primary'
-            icon={<EyeOutlined />}
-            onClick={() => handleView(record)}
-            style={{ marginRight: 8 }}
-          >
-            View
-          </Button>
-          <Button
-            icon={<EditOutlined />}
-            onClick={() => handleEdit(record)}
-            style={{ marginRight: 8 }}
-          >
-            Edit
-          </Button>
-          <Button
-            type='primary'
-            danger
-            icon={<DeleteOutlined />}
-            onClick={() => handleDelete(record)}
-          >
-            Delete
-          </Button>
-        </>
+        <Button
+          type="primary"
+          icon={<EyeOutlined />}
+          onClick={() => navigate(`/manager/personnel/${record.id}`)}
+        >
+          Details
+        </Button>
       ),
     },
-  ]
+  ];
 
   return (
-    <div style={{ padding: 24 }}>
-      <h2>Staff List haahhaha</h2>
-      <Table dataSource={staffData} columns={columns} rowKey='id' />
-    </div>
-  )
-}
+    <div style={{ padding: '24px' }}>
+      <Title level={2}>Personnel List</Title>
 
-export default ManagerPersonnelList
+      <div
+        style={{
+          marginBottom: 16,
+          display: 'flex',
+          justifyContent: 'space-between',
+          gap: 8,
+        }}
+      >
+        <Input
+          placeholder="Search by personnel name"
+          prefix={<SearchOutlined />}
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          style={{ width: 300 }}
+        />
+
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={() => navigate('/manager/personnel/create')}
+        >
+          Create Personnel
+        </Button>
+      </div>
+
+      {isLoading ? (
+        <Spin />
+      ) : (
+        <>
+          <Table
+            dataSource={data?.data.items}
+            columns={columns}
+            rowKey="id"
+            pagination={false}
+            loading={isFetching}
+          />
+          {!isLoading && (
+            <Pagination
+              current={pageNumber}
+              pageSize={pageSize}
+              total={data?.data.totalItems}
+              style={{ textAlign: 'center' }}
+              onChange={(page, size) => {
+                setPageNumber(page);
+                setPageSize(size);
+              }}
+            />
+          )}
+        </>
+      )}
+    </div>
+  );
+};
+
+export default PersonnelListManager;

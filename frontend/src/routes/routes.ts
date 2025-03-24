@@ -27,6 +27,9 @@ import VaccinatorHomePage from '../Pages/Vaccinator/VaccinatorHomePage'
 import CustomerListVaccinator from '../Pages/Home/Vaccinator/CustomerListVaccinator'
 import RegisterCustomer from '../Pages/Staff/RegisterCustomer/registerCustomer'
 import StaffVaccination from '../Pages/Staff/Vaccination/StaffVaccination'
+import PaymentLayout from '../components/layout/PaymentLayout'
+import PaymentSuccess from '../Pages/Payment/PaymentSuccess'
+import PaymentFail from '../Pages/Payment/PaymentFail'
 import ManagerPersonnelList from '../Pages/Home/Personnel/PersonnelListManager'
 
 const routes: LayoutRoute[] = [
@@ -180,6 +183,19 @@ const routes: LayoutRoute[] = [
         component: CustomerListVaccinator,
         exact: true,
         role: ['Vaccinator'],
+      },
+    ],
+  },
+  {
+    layout: PaymentLayout,
+    data: [
+      {
+        path: '/paymentSuccess',
+        component: PaymentSuccess,
+      },
+      {
+        path: '/paymentFail',
+        component: PaymentFail,
       },
     ],
   },

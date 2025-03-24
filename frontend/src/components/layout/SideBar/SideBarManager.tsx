@@ -187,7 +187,7 @@ export const SideBar = () => {
             onClick={() => {
               Cookies.remove('userData')
               Cookies.remove('userToken')
-              navigate('/')
+              navigate('/login')
             }}
             style={{ width: collapsed ? '100%' : '100%' }}
             size={collapsed ? 'middle' : 'middle'}

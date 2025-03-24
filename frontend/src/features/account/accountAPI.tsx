@@ -108,4 +108,8 @@ export const {
   useGetEmailResetValidQuery,
   useGetCustomerAccountsQuery,
   useGetMinimalCustomerAccountsQuery,
+  useGetAccountPersonnelMinimalQuery,
+  useCreateACcountPersonnelQuery,
+  useGetAccountPersonnelQuery,
+  useUpdateAccountPersonnelQuery,
 } = accountApi

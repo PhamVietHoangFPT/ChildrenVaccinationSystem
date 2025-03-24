@@ -5,7 +5,7 @@ export interface Personnel {
     phoneNumber?: string 
     email: string
     gender: boolean
-    role: string
+    role: number
     address?: string
     facility: {
       id: string
