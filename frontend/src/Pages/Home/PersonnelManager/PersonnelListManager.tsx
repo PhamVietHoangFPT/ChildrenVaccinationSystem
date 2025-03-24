@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Button, Input, Typography, Spin, Pagination } from 'antd';
+import { Table, Button, Input, Typography, Spin } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { EyeOutlined, SearchOutlined, PlusOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
@@ -22,14 +22,13 @@ interface PersonnelListResponse {
 const PersonnelListManager: React.FC = () => {
   const navigate = useNavigate();
   const [searchText, setSearchText] = useState<string>('');
-  const [pageNumber, setPageNumber] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(10);
+  const pageSize = 7
   const [filteredData, setFilteredData] = useState<Personnel[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   const { data, isLoading, isFetching } = useGetAccountPersonnelMinimalQuery<PersonnelListResponse>({
-    pageNumber,
-    pageSize,
+    pageNumber: currentPage,
+    pageSize: pageSize,
   });
 
   useEffect(() => {
@@ -41,6 +40,8 @@ const PersonnelListManager: React.FC = () => {
         setFilteredData(filtered);
       }
     }, [data, searchText]);
+
+    const totalItems = data?.data?.totalItems || 0;
 
   const columns: ColumnsType<Personnel> = [
     {
@@ -116,29 +117,24 @@ const PersonnelListManager: React.FC = () => {
       ) : (
         <>
           <Table
-            dataSource={filteredData.map((item, index) => ({
-              ...item,
-              key: item.id,
-              index: (currentPage - 1) * pageSize + index + 1,
-            }))}
-            columns={columns}
-            rowKey="id"
-            pagination={false}
-            loading={isFetching}
-          />
-          {!isLoading && (
-            <Pagination
-              current={pageNumber}
-              pageSize={pageSize}
-              total={data?.data.totalItems}
-              style={{ textAlign: 'center' }}
-              onChange={(page, size) => {
-                setPageNumber(page);
-                setPageSize(size);
-              }}
-              
-            />
-          )}
+                    columns={columns}
+                    dataSource={filteredData.map((item, index) => ({
+                      ...item,
+                      key: item.id,
+                      index: (currentPage - 1) * pageSize + index + 1,
+                    }))}
+                    loading={isFetching}
+                    bordered
+                    pagination={{
+                      current: currentPage,
+                      pageSize: pageSize,
+                      total: totalItems,
+                      onChange: (page) => {
+                        setCurrentPage(page);
+                      },
+                    }}
+                  />
+          
         </>
       )}
     </div>
