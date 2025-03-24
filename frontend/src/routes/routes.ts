@@ -30,7 +30,7 @@ import StaffVaccination from '../Pages/Staff/Vaccination/StaffVaccination'
 import PaymentLayout from '../components/layout/PaymentLayout'
 import PaymentSuccess from '../Pages/Payment/PaymentSuccess'
 import PaymentFail from '../Pages/Payment/PaymentFail'
-import ManagerPersonnelList from '../Pages/Home/Personnel/PersonnelListManager'
+import ManagerPersonnelList from '../Pages/Home/PersonnelManager/PersonnelListManager'
 
 const routes: LayoutRoute[] = [
   {

@@ -24,20 +24,23 @@ const PersonnelListManager: React.FC = () => {
   const [searchText, setSearchText] = useState<string>('');
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
-  const [debouncedSearchText, setDebouncedSearchText] = useState<string>('');
+  const [filteredData, setFilteredData] = useState<Personnel[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   const { data, isLoading, isFetching } = useGetAccountPersonnelMinimalQuery<PersonnelListResponse>({
     pageNumber,
     pageSize,
-    name: debouncedSearchText,
   });
 
   useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedSearchText(searchText);
-    }, 500); // debounce time
-    return () => clearTimeout(handler);
-  }, [searchText]);
+      if (data?.data?.items) {
+        // Filter thanh search
+        const filtered = data.data.items.filter((personnel) =>
+          personnel.name.toLowerCase().includes(searchText.toLowerCase())
+        );
+        setFilteredData(filtered);
+      }
+    }, [data, searchText]);
 
   const columns: ColumnsType<Personnel> = [
     {
@@ -113,7 +116,11 @@ const PersonnelListManager: React.FC = () => {
       ) : (
         <>
           <Table
-            dataSource={data?.data.items}
+            dataSource={filteredData.map((item, index) => ({
+              ...item,
+              key: item.id,
+              index: (currentPage - 1) * pageSize + index + 1,
+            }))}
             columns={columns}
             rowKey="id"
             pagination={false}
@@ -129,6 +136,7 @@ const PersonnelListManager: React.FC = () => {
                 setPageNumber(page);
                 setPageSize(size);
               }}
+              
             />
           )}
         </>
