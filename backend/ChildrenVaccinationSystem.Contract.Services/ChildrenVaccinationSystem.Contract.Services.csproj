@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="payOS" Version="1.0.9" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ChildrenVaccinationSystem.Repositories\ChildrenVaccinationSystem.Repositories.csproj" />
   </ItemGroup>
 
