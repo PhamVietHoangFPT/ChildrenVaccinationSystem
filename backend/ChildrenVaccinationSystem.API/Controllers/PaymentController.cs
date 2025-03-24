@@ -10,27 +10,29 @@ namespace ChildrenVaccinationSystem.API.Controllers
 	public class PaymentController : ControllerBase
 	{
 		private readonly IVnPayService _vnPayService;
-		public PaymentController(IVnPayService vnPayService)
+		private readonly IConfiguration _config;
+		public PaymentController(IVnPayService vnPayService, IConfiguration config)
 		{
 			_vnPayService = vnPayService;
+			_config = config;
 		}
 
 		[HttpGet]
 		[Route("vnpay-callback")]
 		public async Task<IActionResult> VnPayCallback()
 		{
-			var vnPayResponse = _vnPayService.PaymentExecute(Request.Query);
+			var vnPayResponse = _vnPayService.PaymentExecuteVnPay(Request.Query);
 
 			if (vnPayResponse.VnPayResponseCode != "00")
 			{
-				return Redirect("https://youtube.com");
+				return Redirect(_config["PaymentFail"]!);
 			}
 
 			Console.WriteLine("Localhost");
 
 			await _vnPayService.InsertVaccinationsData(vnPayResponse.OrderInfo);
 
-			return Redirect("https://google.com");
+			return Redirect(_config["PaymentSuccess"]!);
 		}
 
 	}
