@@ -9,6 +9,8 @@ import {
   DatePicker,
   message,
   Typography,
+  Input,
+  Space,
 } from 'antd'
 const { Text } = Typography
 import { useGetFacilitiesListQuery } from '../../features/facilities/facilitiesAPI'
@@ -23,12 +25,14 @@ import { Vaccines } from '../../types/vaccine'
 import { Packages, PackageDetails } from '../../types/package'
 import { Children } from '../../types/children'
 import { DeleteOutlined, LoadingOutlined, TagOutlined } from '@ant-design/icons'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import VaccineRegisterTutorial from '../../components/Vaccine/VaccineRegisterToturial'
 import { useCreateRegisterVaccinationMutation } from '../../features/vaccinations/vaccinationAPI'
 const { Option } = Select
 import Cookies from 'js-cookie'
 import dayjs from 'dayjs'
+import { useGetCategoriesListQuery } from '../../features/categories/categoriesAPI'
+import { Category } from '../../types/category'
 interface VaccineListResponse {
   data: {
     data: {
@@ -78,6 +82,15 @@ interface FacilitiesListResponse {
   }
   isLoading: boolean
 }
+
+interface CategoriesListResponse {
+  data: {
+    data: {
+      items: Category[]
+    }
+  }
+  isLoading: boolean
+}
 export default function VaccineRegistrationCustomer() {
   const [pageNumber, setPageNumber] = useState(1)
   const [pageSize, setPageSize] = useState(12)
@@ -95,17 +108,35 @@ export default function VaccineRegistrationCustomer() {
     null
   )
   const [registerVaccination] = useCreateRegisterVaccinationMutation()
-  const [paymentChoice, setPaymentChoice] = useState<string | null>(null)
+  const [paymentChoice, setPaymentChoice] = useState<'1' | '2' | '3' | null>(
+    null
+  )
+  const [searchCategory, setSearchCategory] = useState<string | null>(null)
+  const [searchName, setSearchName] = useState('')
+  const [searchParams, setSearchParams] = useState({
+    name: '',
+    category: '',
+  })
   const userData = Cookies.get('userData')
     ? JSON.parse(Cookies.get('userData') || '{}')
     : null
+
+  const { data: categories } =
+    useGetCategoriesListQuery<CategoriesListResponse>({
+      pageNumber: -1,
+      pageSize: -1,
+    })
+
   const {
     data: vaccines,
     isFetching: vaccineFetching,
     isLoading: vaccineLoading,
+    refetch: refetchVaccines,
   } = useGetVaccineListMiniMalQuery<VaccineListResponse>({
     pageSize: pageSize,
     pageNumber: pageNumber,
+    categoryName: searchParams.category,
+    name: searchParams.name,
   })
 
   const {
@@ -113,8 +144,8 @@ export default function VaccineRegistrationCustomer() {
     isFetching: packageFetching,
     isLoading: packageLoading,
   } = useGetPackageListMiniMalQuery<PackageListResponse>({
-    pageSize: pageSize,
-    pageNumber: pageNumber,
+    pageSize: pagePackageSize,
+    pageNumber: pagePackageNumber,
   })
 
   const { data: packageDetail, isFetching: packageDetailFetching } =
@@ -146,6 +177,29 @@ export default function VaccineRegistrationCustomer() {
   // Chặn ngày nhỏ hơn hoặc bằng hôm nay
   const disabledDate = (current: dayjs.Dayjs) => {
     return current.isBefore(dayjs().endOf('day'))
+  }
+  
+  useEffect(() => {
+    let total = 0
+
+    if (packageDetail?.data?.packageItems?.length) {
+      total = packageDetail.data.packageItems.reduce(
+        (sum, v) => sum + (v.vaccine?.price || 0),
+        0
+      )
+    }
+
+    setTotalPrice(total) // ✅ Hook luôn được gọi, tránh lỗi conditionally
+  }, [packageDetail])
+
+  const handleSearch = () => {
+    setSearchParams({
+      name: searchName,
+      category: searchCategory || '',
+    })
+
+    // Sau khi cập nhật, gọi API lại
+    refetchVaccines()
   }
 
   const columns = [
@@ -237,9 +291,9 @@ export default function VaccineRegistrationCustomer() {
         >
           <Button
             onClick={() => {
-              setSelectedPackages(record)
-              calculateTotalPriceAddVaccinePackage()
               setPaymentChoice('3')
+              setSelectedPackages(record)
+              setPreSelectedVaccine(null)
             }}
             disabled={selectedPackages !== null || selectedVaccines.length > 0}
             title={
@@ -296,7 +350,6 @@ export default function VaccineRegistrationCustomer() {
 
   const calculateTotalPriceAddSingleVaccine = (item: any) => {
     let total = 0
-    console.log(item)
     item.forEach((v: any) => {
       total += v.price
     })
@@ -308,14 +361,6 @@ export default function VaccineRegistrationCustomer() {
     let total = totalPrice
     item.forEach((v: any) => {
       total -= v.price
-    })
-    setTotalPrice(total)
-  }
-
-  const calculateTotalPriceAddVaccinePackage = () => {
-    let total = 0
-    packageDetail.data.packageItems.forEach((v: any) => {
-      total += v.vaccine.price
     })
     setTotalPrice(total)
   }
@@ -337,10 +382,23 @@ export default function VaccineRegistrationCustomer() {
         data: string
       }
       message.success(res.message)
+      setSelectedFacility(null)
+      clearSelected()
       window.open(res.data, '_blank')
     } catch (error: any) {
-      message.error(error.message)
+      console.log(error)
+      message.error(error.data.message)
     }
+  }
+
+  const clearSelected = () => {
+    setSelectedChild(null)
+    setSelectedDate(null)
+    setSelectedVaccines([])
+    setSelectedPackages(null)
+    setPaymentChoice(null)
+    setPreSelectedVaccine(null)
+    setTotalPrice(0)
   }
 
   return (
@@ -388,6 +446,40 @@ export default function VaccineRegistrationCustomer() {
               >
                 Chọn vaccine lẻ
               </h1>
+              <Space
+                direction='vertical'
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  gap: '16px',
+                  flexDirection: 'row',
+                }}
+              >
+                <Input
+                  value={searchName}
+                  onChange={(e) => setSearchName(e.target.value)}
+                  placeholder='Nhập tên vaccine'
+                  style={{ width: '300px', height: '100%' }}
+                />
+                <Select
+                  value={searchCategory}
+                  onChange={(e) => setSearchCategory(e)}
+                  size='large'
+                  placeholder='Chọn bệnh'
+                  style={{ width: '300px' }}
+                >
+                  {categories?.data.items.map((category) => (
+                    <Option key={category.id} value={category.name}>
+                      {category.name}
+                    </Option>
+                  ))}
+                  <Option value={null}>Tất cả các loại bệnh</Option>
+                </Select>
+                <Button type='primary' onClick={handleSearch} block>
+                  Tìm kiếm
+                </Button>
+              </Space>
               <Table
                 dataSource={vaccines.data.items}
                 columns={columns}
@@ -477,6 +569,8 @@ export default function VaccineRegistrationCustomer() {
                           setSelectedVaccines(
                             selectedVaccines.filter((v) => v !== vaccine)
                           )
+                          setPaymentChoice(null)
+
                           calculateTotalPriceRemoveSingleVaccine([vaccine])
                           const vaccineId = vaccine.id
                           if (preSelectedVaccine === vaccineId) {
@@ -543,8 +637,7 @@ export default function VaccineRegistrationCustomer() {
                         danger
                         icon={<DeleteOutlined />}
                         onClick={() => {
-                          setSelectedPackages(null)
-                          setTotalPrice(0)
+                          clearSelected()
                         }}
                       />
                     }
@@ -639,7 +732,7 @@ export default function VaccineRegistrationCustomer() {
                 marginBottom: '20px',
               }}
             >
-              <h2 style={{ textAlign: 'center' }}>Chọn con của bạn</h2>
+              <h2 style={{ textAlign: 'center' }}>Chọn trẻ muốn tiêm</h2>
               <Select
                 style={{
                   width: '50%',
@@ -651,7 +744,7 @@ export default function VaccineRegistrationCustomer() {
                 }}
                 size='large'
                 dropdownStyle={{ fontSize: '18px' }} // Tăng kích thước font cho dropdown
-                placeholder='Chọn con của bạn'
+                placeholder='Chọn trẻ muốn tiêm'
                 value={selectedChild}
                 onChange={(value) => setSelectedChild(value)}
               >
@@ -697,40 +790,79 @@ export default function VaccineRegistrationCustomer() {
                       <Option value='2'>Thanh toán hết</Option>
                     </Select>
                   </div>
-                  {paymentChoice === '1' && (
-                    <div
-                      style={{
-                        marginBottom: '20px',
-                      }}
-                    >
+                  <div
+                    style={{
+                      marginBottom: '20px',
+                    }}
+                  >
+                    {paymentChoice === '1' ? (
                       <h2 style={{ textAlign: 'center' }}>
                         Chọn vaccine thanh toán trước
                       </h2>
-                      <Select
-                        style={{
-                          width: '50%',
-                          margin: 'auto',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          gap: '16px',
-                          fontSize: '18px', // Tăng kích thước font cho Select
-                        }}
-                        size='large'
-                        dropdownStyle={{ fontSize: '18px' }} // Tăng kích thước font cho dropdown
-                        placeholder='Chọn vaccine thanh toán trước'
-                        value={preSelectedVaccine}
-                        onChange={(value) => setPreSelectedVaccine(value)}
-                      >
-                        {selectedVaccines.map((vaccine: any) => (
-                          <Option key={vaccine.id} value={vaccine.id}>
-                            {vaccine.name}
-                          </Option>
-                        ))}
-                      </Select>
-                    </div>
-                  )}
+                    ) : paymentChoice === '2' ? (
+                      <h2 style={{ textAlign: 'center' }}>
+                        Chọn vaccine tiêm trước
+                      </h2>
+                    ) : null}
+                    <Select
+                      style={{
+                        width: '50%',
+                        margin: 'auto',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '16px',
+                        fontSize: '18px', // Tăng kích thước font cho Select
+                      }}
+                      size='large'
+                      dropdownStyle={{ fontSize: '18px' }} // Tăng kích thước font cho dropdown
+                      placeholder={
+                        paymentChoice === '1'
+                          ? 'Chọn vaccine thanh toán trước'
+                          : paymentChoice === '2'
+                            ? 'Chọn vaccine tiêm trước'
+                            : ''
+                      }
+                      value={preSelectedVaccine}
+                      onChange={(value) => setPreSelectedVaccine(value)}
+                    >
+                      {selectedVaccines.map((vaccine: any) => (
+                        <Option key={vaccine.id} value={vaccine.id}>
+                          {vaccine.name}
+                        </Option>
+                      ))}
+                    </Select>
+                  </div>
                 </>
               )}
+            </>
+          )}
+
+          {selectedChild && selectedPackages && (
+            <>
+              <h2 style={{ textAlign: 'center' }}>Chọn vaccine tiêm trước</h2>
+              <Select
+                style={{
+                  width: '50%',
+                  margin: 'auto',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '16px',
+                  fontSize: '18px', // Tăng kích thước font cho Select
+                }}
+                size='large'
+                dropdownStyle={{ fontSize: '18px' }} // Tăng kích thước font cho dropdown
+                placeholder='Chọn vaccine tiêm trước'
+                value={preSelectedVaccine}
+                onChange={(value) => {
+                  setPreSelectedVaccine(value)
+                }}
+              >
+                {packageDetail.data.packageItems.map((vaccine: any) => (
+                  <Option key={vaccine.vaccine.id} value={vaccine.vaccine.id}>
+                    {vaccine.vaccine.name}
+                  </Option>
+                ))}
+              </Select>
             </>
           )}
 

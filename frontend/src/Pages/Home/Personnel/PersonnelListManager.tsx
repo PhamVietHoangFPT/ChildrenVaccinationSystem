@@ -16,7 +16,7 @@ const staffData: Staff[] = [
   { id: 3, name: 'Lê Văn C', position: 'Staff', email: 'c@example.com' },
 ]
 
-const ManagerPersonelList: React.FC = () => {
+const ManagerPersonnelList: React.FC = () => {
   const handleView = (record: Staff) => {
     Modal.info({
       title: 'Staff Details',
@@ -121,4 +121,4 @@ const ManagerPersonelList: React.FC = () => {
   )
 }
 
-export default ManagerPersonelList
+export default ManagerPersonnelList

@@ -3,11 +3,7 @@ import { apiSlice } from '../../apis/apiSlice'
 export const packagesApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getPackageList: builder.query({
-      query: ({
-        pageNumber,
-        pageSize,
-        name,
-      }) => ({
+      query: ({ pageNumber, pageSize, name }) => ({
         url: '/packages',
         method: 'GET',
         params: {
@@ -65,6 +61,23 @@ export const packagesApi = apiSlice.injectEndpoints({
       transformResponse: (res) => res,
       invalidatesTags: ['packages'],
     }),
+    addVaccineToPackage: builder.mutation({
+      query: ({ id, vaccineId }) => ({
+        url: `/packages/${id}/${vaccineId}`,
+        method: 'POST',
+      }),
+      transformResponse: (res) => res,
+      invalidatesTags: ['packages'],
+    }),
+    deleteVaccineFromPackage: builder.mutation({
+      query: ({ id, vaccineId }) => ({
+        url: `/packages/${id}/${vaccineId}`,
+        method: 'DELETE',
+      }),
+
+      transformResponse: (res) => res,
+      invalidatesTags: ['packages'],
+    }),
   }),
 })
 
@@ -75,4 +88,6 @@ export const {
   useGetPackageDetailQuery,
   useUpdatePackageMutation,
   useDeletePackageMutation,
+  useAddVaccineToPackageMutation,
+  useDeleteVaccineFromPackageMutation,
 } = packagesApi

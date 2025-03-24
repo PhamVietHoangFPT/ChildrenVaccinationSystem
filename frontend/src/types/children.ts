@@ -1,4 +1,4 @@
-import { Vaccination } from "./vaccination"
+import { Vaccination } from './vaccination'
 
 export interface Children {
   id: string

@@ -2,6 +2,7 @@
 using ChildrenVaccinationSystem.Contract.Repositories.IUOW;
 using ChildrenVaccinationSystem.Contract.Services;
 using ChildrenVaccinationSystem.Core.Base;
+using ChildrenVaccinationSystem.Core.Enum;
 using ChildrenVaccinationSystem.Core.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
@@ -12,6 +13,8 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using static ChildrenVaccinationSystem.Core.Base.BaseException;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ChildrenVaccinationSystem.Services
 {
@@ -29,7 +32,7 @@ namespace ChildrenVaccinationSystem.Services
 			_cache = cache;
 		}
 
-		public string CreatePaymentUrl(HttpContext context, List<Vaccination> vaccinations, double price)
+		public string CreatePaymentUrl(HttpContext context, List<Vaccination> vaccinations, double price, int code)
 		{
 			// Get logged in User
 			//User currentUser = await _userService.GetCurrentUserAsync();
@@ -41,6 +44,7 @@ namespace ChildrenVaccinationSystem.Services
 			//var cart = query.First();
 
 			string vaccinationsJson = JsonSerializer.Serialize(vaccinations);
+
 			string uniqueKey = Guid.NewGuid().ToString("N"); // Generate short key
 
 			// Store data in cache for 10 minutes
@@ -64,7 +68,7 @@ namespace ChildrenVaccinationSystem.Services
 			vnpay.AddRequestData("vnp_CurrCode", _config["VnPay:CurrCode"]!);
 			vnpay.AddRequestData("vnp_IpAddr", Utils.GetIpAddress(context));
 			vnpay.AddRequestData("vnp_Locale", _config["VnPay:Locale"]!);
-			vnpay.AddRequestData("vnp_OrderInfo", uniqueKey);
+			vnpay.AddRequestData("vnp_OrderInfo", $"{uniqueKey} {code}"); // code = 1: insert, code = 2: update
 			vnpay.AddRequestData("vnp_OrderType", "other");
 			vnpay.AddRequestData("vnp_ReturnUrl", _config["VnPay:ReturnUrl"]!);
 			vnpay.AddRequestData("vnp_ExpireDate", CoreHelper.SystemTimeNow.AddMinutes(5).ToString("yyyyMMddHHmmss"));
@@ -74,6 +78,53 @@ namespace ChildrenVaccinationSystem.Services
 
 			return paymentUrl;
 		}
+
+
+		//public string CreatePaymentUrl(HttpContext context, List<string> vaccinationIds)
+		//{
+		//	string vaccinationsJson = JsonSerializer.Serialize(vaccinationIds);
+		//	string uniqueKey = Guid.NewGuid().ToString("N"); // Generate short key
+
+		//	_cache.Set(uniqueKey, vaccinationsJson, TimeSpan.FromMinutes(5));
+
+
+
+		//	foreach (string id in vaccinationIds) 
+		//	{
+		//	}
+
+
+		//	var tick = DateTime.Now.Ticks.ToString();
+
+		//	VnPayHelper vnpay = new();
+
+
+		//	vnpay.AddRequestData("vnp_Version", _config["VnPay:Version"]!);
+		//	vnpay.AddRequestData("vnp_Command", _config["VnPay:Command"]!);
+		//	vnpay.AddRequestData("vnp_TmnCode", _config["VnPay:TmnCode"]!);
+		//	vnpay.AddRequestData("vnp_Amount", (price * 100).ToString());
+		//	//Số tiền thanh toán. Số tiền không 
+		//	//mang các ký tự phân tách thập phân, phần nghìn, ký tự tiền tệ. Để gửi số tiền thanh toán là 100,000 VND
+		//	//(một trăm nghìn VNĐ) thì merchant cần nhân thêm 100 lần(khử phần thập phân), sau đó gửi sang VNPAY
+		//	//là: 10000000
+
+		//	vnpay.AddRequestData("vnp_CreateDate", CoreHelper.SystemTimeNow.ToString("yyyyMMddHHmmss"));
+		//	vnpay.AddRequestData("vnp_CurrCode", _config["VnPay:CurrCode"]!);
+		//	vnpay.AddRequestData("vnp_IpAddr", Utils.GetIpAddress(context));
+		//	vnpay.AddRequestData("vnp_Locale", _config["VnPay:Locale"]!);
+		//	vnpay.AddRequestData("vnp_OrderInfo", uniqueKey);
+		//	vnpay.AddRequestData("vnp_OrderType", "other");
+		//	vnpay.AddRequestData("vnp_ReturnUrl", _config["VnPay:ReturnUrl"]!);
+		//	vnpay.AddRequestData("vnp_ExpireDate", CoreHelper.SystemTimeNow.AddMinutes(5).ToString("yyyyMMddHHmmss"));
+		//	vnpay.AddRequestData("vnp_TxnRef", $"{tick}");
+
+		//	var paymentUrl = vnpay.CreateRequestUrl(_config["VnPay:BaseUrl"]!, _config["VnPay:HashSecret"]!);
+
+		//	return paymentUrl;
+
+
+
+		//}
 
 		public VnPayResponseDto PaymentExecute(IQueryCollection collections)
 		{
@@ -86,7 +137,8 @@ namespace ChildrenVaccinationSystem.Services
 				}
 			}
 
-			var vnp_orderId = vnpay.GetResponseData("vnp_OrderInfo");
+			var vnp_OrderInfo = vnpay.GetResponseData("vnp_OrderInfo");
+			var vnp_OrderType = vnpay.GetResponseData("vnp_OrderType");
 			var vnp_SecureHash = collections.FirstOrDefault(p => p.Key == "vnp_SecureHash").Value.ToString();
 			var vnp_ResponseCode = vnpay.GetResponseData("vnp_ResponseCode");
 			bool checkSignature = vnpay.ValidateSignature(vnp_SecureHash, _config["VnPay:HashSecret"]!);
@@ -97,28 +149,48 @@ namespace ChildrenVaccinationSystem.Services
 					Success = false
 				};
 			}
+
 			return new VnPayResponseDto
 			{
 				Success = true,
-				vaccinationsJson = vnp_orderId.ToString(),
+				OrderInfo = vnp_OrderInfo,
 				VnPayResponseCode = vnp_ResponseCode
 			};
 
 		}
 
-		public async Task InsertVaccinationsData(string uniqueKey)
+		public async Task InsertVaccinationsData(string orderInfo)
 		{
+			string[] words = orderInfo.Split(' ');
+
+			Console.WriteLine(orderInfo);
+			string uniqueKey = words[0];
+			string code = words[1];
+
+			Console.WriteLine(uniqueKey);
+			Console.WriteLine(code);
 			if (_cache.TryGetValue(uniqueKey, out string? vaccinationsJson) && vaccinationsJson != null)
 			{
 				List<Vaccination> vaccinations = (JsonSerializer.Deserialize<List<Vaccination>>(vaccinationsJson))!;
-
-                foreach (var vaccination in vaccinations)
 				{
-					_unitOfWork.GetRepository<Vaccination>().InsertRange(vaccinations);
-				}
-				await _unitOfWork.SaveAsync();
-			}
-		}
+					if (code == "1")
+					{
+						_unitOfWork.GetRepository<Vaccination>().InsertRange(vaccinations);
+						await _unitOfWork.SaveAsync();
+					}
+					else
+					{
+						foreach (var vaccination in vaccinations)
+						{
+							vaccination.Status = VaccinationStatusEnum.Paid;
+							_unitOfWork.GetRepository<Vaccination>().Update(vaccination);
+						}
+						await _unitOfWork.SaveAsync();
+					}
 
+				}
+			}
+
+		}
 	}
 }

@@ -19,5 +19,6 @@ namespace ChildrenVaccinationSystem.Contract.Services
 
         Task UpdateVaccine(string id, VaccineUpdateDto vaccineUpdateDto);
         Task DeleteVaccine(string id);
+
     }
 }

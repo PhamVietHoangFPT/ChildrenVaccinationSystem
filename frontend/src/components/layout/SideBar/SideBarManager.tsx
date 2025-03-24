@@ -72,12 +72,6 @@ export const SideBar = () => {
       label: 'Manage Vaccines',
       onClick: () => navigate('/manager/vaccine'),
     },
-    {
-      key: 'manager/blog',
-      icon: <MedicineBoxOutlined />,
-      label: 'Manage Blog',
-      onClick: () => navigate('/manager/blog'),
-    },
   ]
 
   return (

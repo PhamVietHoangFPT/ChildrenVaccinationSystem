@@ -16,8 +16,8 @@ namespace ChildrenVaccinationSystem.Contract.Services
 	{
 		Task<BasePaginatedList<AccountViewDto>> GetCustomerAccounts(string? phoneNumber, int pageNumber, int pageSize);
 		Task<BasePaginatedList<object>> GetCustomerAccountsMinimal(string? phoneNumber, int pageNumber, int pageSize);
-		Task<BasePaginatedList<AccountViewDto>> GetPersonnelAccounts(RoleEnum? role, int pageNumber, int pageSize);
-		Task<BasePaginatedList<object>> GetPersonnelAccountsMinimal(RoleEnum? role, int pageNumber, int pageSize);
+		Task<BasePaginatedList<AccountViewDto>> GetPersonnelAccounts(string? facilityId, RoleEnum? role, int pageNumber, int pageSize);
+		Task<BasePaginatedList<object>> GetPersonnelAccountsMinimal(string? facilityId, RoleEnum? role, int pageNumber, int pageSize);
 		Task CreatePersonnelAccount(PersonnelCreateDto personnelCreateDto);
 		Task UpdatePersonnelAccount(string id, PersonnelUpdateDto personnelUpdateDto);
 		Task<AccountViewDto> GetAccountById(string id);

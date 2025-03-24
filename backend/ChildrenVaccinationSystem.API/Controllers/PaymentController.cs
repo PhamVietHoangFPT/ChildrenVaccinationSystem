@@ -26,7 +26,9 @@ namespace ChildrenVaccinationSystem.API.Controllers
 				return Redirect("https://youtube.com");
 			}
 
-			await _vnPayService.InsertVaccinationsData(vnPayResponse.vaccinationsJson);
+			Console.WriteLine("Localhost");
+
+			await _vnPayService.InsertVaccinationsData(vnPayResponse.OrderInfo);
 
 			return Redirect("https://google.com");
 		}
