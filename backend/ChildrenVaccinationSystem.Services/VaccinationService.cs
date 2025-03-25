@@ -103,8 +103,8 @@ namespace ChildrenVaccinationSystem.Services
 			}).ToList();
 
 			return new BasePaginatedList<object>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
-
 		}
+
 		public async Task<BasePaginatedList<object>> GetVaccinatorVaccinations(int pageNumber, int pageSize)
 		{
 			IQueryable<Vaccination> query = _unitOfWork.GetRepository<Vaccination>().Entities
