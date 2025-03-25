@@ -81,6 +81,52 @@ namespace ChildrenVaccinationSystem.Services
 
 			return new BasePaginatedList<object>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
 		}
+
+
+		public async Task<BasePaginatedList<object>> GetDoctorVaccinations(int pageNumber, int pageSize)
+		{
+			IQueryable<Vaccination> query = _unitOfWork.GetRepository<Vaccination>().Entities
+				.Where(v => v.DoctorId == _authenticationService.GetCurrentAccountId() && v.Status == VaccinationStatusEnum.Consulting)
+				.OrderByDescending(v => v.LastUpdatedTime);
+			BasePaginatedList<Vaccination> resultQuery = (pageNumber <= 0 || pageSize <= 0)
+				? await _unitOfWork.GetRepository<Vaccination>().GetPaging(query, 1, query.Count())
+				: await _unitOfWork.GetRepository<Vaccination>().GetPaging(query, pageNumber, pageSize);
+			var responseItems = resultQuery.Items.Select(v => new
+			{
+				v.Id,
+				v.Schedule,
+				v.Note,
+				v.Status,
+				v.CurrentSequence,
+				Child = new { v.Child.Id, v.Child.Name },
+				Vaccine = new { v.Vaccine.Id, v.Vaccine.Name },
+			}).ToList();
+
+			return new BasePaginatedList<object>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
+
+		}
+		public async Task<BasePaginatedList<object>> GetVaccinatorVaccinations(int pageNumber, int pageSize)
+		{
+			IQueryable<Vaccination> query = _unitOfWork.GetRepository<Vaccination>().Entities
+				.Where(v => v.VaccinatorId == _authenticationService.GetCurrentAccountId() && v.Status == VaccinationStatusEnum.Injecting)
+				.OrderByDescending(v => v.LastUpdatedTime);
+			BasePaginatedList<Vaccination> resultQuery = (pageNumber <= 0 || pageSize <= 0)
+				? await _unitOfWork.GetRepository<Vaccination>().GetPaging(query, 1, query.Count())
+				: await _unitOfWork.GetRepository<Vaccination>().GetPaging(query, pageNumber, pageSize);
+			var responseItems = resultQuery.Items.Select(v => new
+			{
+				v.Id,
+				v.Schedule,
+				v.Note,
+				v.Status,
+				v.CurrentSequence,
+				Child = new { v.Child.Id, v.Child.Name },
+				Vaccine = new { v.Vaccine.Id, v.Vaccine.Name },
+			}).ToList();
+
+			return new BasePaginatedList<object>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
+		}
+
 		public async Task<object> GetVaccinationHistory(string childId, bool isUpcoming)
 		{
 			if (!_unitOfWork.IsValid<Child>(childId))
