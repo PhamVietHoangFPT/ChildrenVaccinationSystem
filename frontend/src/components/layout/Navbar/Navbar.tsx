@@ -50,24 +50,7 @@ const Navbar: React.FC = () => {
         key: 'appointments',
         icon: <CalendarOutlined />,
         label: 'Lịch hẹn',
-        url: '/vaccineRegistration',
-      },
-      {
-        key: 'about',
-        icon: <InfoCircleOutlined />,
-        label: 'Về chúng tôi',
-        children: [
-          {
-            key: 'about1',
-            label: 'About us 1',
-            url: '/abouts/abouts2',
-          },
-          {
-            key: 'service2',
-            label: 'About us 2',
-            url: '/abouts/abouts2',
-          },
-        ],
+        url: '/vaccine-registration',
       },
       {
         key: userData ? 'profile' : 'login',

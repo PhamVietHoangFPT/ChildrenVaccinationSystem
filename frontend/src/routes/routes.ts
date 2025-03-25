@@ -58,11 +58,11 @@ const routes: LayoutRoute[] = [
         component: VaccineDetailsCustomer,
       },
       {
-        path: '/vaccineRegistration',
+        path: '/vaccine-registration',
         component: VaccineRegistrationCustomer,
       },
       {
-        path: '/forceUpdate',
+        path: '/force-update',
         component: ForceUpdateAccount,
       },
       {

@@ -5,6 +5,10 @@ import { CalendarOutlined, LoadingOutlined } from '@ant-design/icons'
 import Logo from '../../assets/Logo.png'
 import { Vaccines } from '../../types/vaccine'
 import { VaccineSlider } from '../Vaccine/VaccineSlider'
+import { Blogs } from '../../types/blog'
+import { useGetBlogsMinimalListQuery } from '../../features/blogs/blogsAPI'
+import { BlogSlider } from '../Blogs/BlogSlider'
+import { useNavigate } from 'react-router-dom'
 interface VaccineListResponse {
   data: {
     data: {
@@ -14,15 +18,32 @@ interface VaccineListResponse {
   isLoading: boolean
 }
 
+interface BlogListResponse {
+  data: {
+    data: {
+      items: Blogs[]
+    }
+  }
+  isLoading: boolean
+}
+
 const { Title, Paragraph } = Typography
 
 const Homepage: React.FC = () => {
+  const navigate = useNavigate()
   const { data, isLoading } = useGetVaccineListQuery<VaccineListResponse>({
     pageNumber: 1,
     pageSize: 5,
   })
 
+  const { data: dataBlog, isLoading: isLoadingBlog } =
+    useGetBlogsMinimalListQuery<BlogListResponse>({
+      pageNumber: 1,
+      pageSize: 5,
+    })
+
   const dataVaccine = data?.data.items ?? []
+  const allDataBlog = dataBlog?.data.items ?? []
 
   return (
     <div
@@ -59,7 +80,14 @@ const Homepage: React.FC = () => {
                 build community immunity.
               </Paragraph>
               <Space>
-                <Button type='primary' size='large' icon={<CalendarOutlined />}>
+                <Button
+                  type='primary'
+                  size='large'
+                  icon={<CalendarOutlined />}
+                  onClick={() => {
+                    navigate('vaccine-registration')
+                  }}
+                >
                   Schedule Appointment
                 </Button>
                 <Button size='large'>Learn More</Button>
@@ -85,7 +113,7 @@ const Homepage: React.FC = () => {
             level={2}
             style={{ textAlign: 'center', marginBottom: '32px' }}
           >
-            Popular Vaccines
+            Một số loại vaccine
           </Title>
           {isLoading ? (
             <LoadingOutlined
@@ -99,6 +127,29 @@ const Homepage: React.FC = () => {
             />
           ) : (
             <VaccineSlider vaccines={dataVaccine as Vaccines[]} />
+          )}
+        </div>
+
+        {/* Danh sach blog */}
+        <div style={{ marginBottom: '48px' }}>
+          <Title
+            level={2}
+            style={{ textAlign: 'center', marginBottom: '32px' }}
+          >
+            Các bài viết mớimới
+          </Title>
+          {isLoadingBlog ? (
+            <LoadingOutlined
+              style={{
+                fontSize: '50px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '30vh',
+              }}
+            />
+          ) : (
+            <BlogSlider blogs={allDataBlog as Blogs[]} />
           )}
         </div>
       </div>
