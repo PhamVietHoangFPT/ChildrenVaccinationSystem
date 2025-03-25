@@ -47,6 +47,7 @@ const SideBarDoctor: React.FC = () => {
         key: 'sub0',
         label: `Welcome, ${userData?.Name}`,
         icon: <SmileOutlined />,
+        url: '/staff/customer-account',
       },
       {
         key: 'sub5',
