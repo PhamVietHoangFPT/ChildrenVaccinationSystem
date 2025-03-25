@@ -7,6 +7,7 @@ namespace ChildrenVaccinationSystem.Contract.Services
 	public interface IBlogService
 	{
 		Task<BasePaginatedList<BlogViewDto>> GetBlogs(int pageNumber, int pageSize);
+		Task<BasePaginatedList<object>> GetBlogsMinimal(int pageNumber, int pageSize);
 		Task<BlogViewDto> GetBlogById(string id);
 		Task CreateBlog(BlogCreateDto blog);
 		Task UpdateBlog(string id, BlogUpdateDto blogUpdateDto);
