@@ -1,6 +1,9 @@
-import { Outlet, useNavigate } from 'react-router-dom'
-import { Layout, Typography } from 'antd'
-import {} from '@ant-design/icons'
+import { Outlet, useNavigate, Link } from 'react-router-dom'
+import { Avatar, Dropdown, Layout, Menu, Typography } from 'antd'
+import {
+  LogoutOutlined,
+  UserOutlined,
+} from '@ant-design/icons'
 import { SideBarDoctor } from './SideBarDoctor/SideBarDoctor'
 import Cookies from 'js-cookie'
 import { useEffect } from 'react'
@@ -34,6 +37,22 @@ export const DoctorLayout = () => {
     }
   }, [navigate])
 
+  const userMenu = (
+    <Menu>
+      <Menu.Item
+        key='logout'
+        icon={<LogoutOutlined />}
+        onClick={() => {
+          Cookies.remove('userData')
+          Cookies.remove('userToken')
+          navigate('/')
+        }}
+      >
+        Logout
+      </Menu.Item>
+    </Menu>
+  )
+
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <SideBarDoctor />
@@ -52,6 +71,62 @@ export const DoctorLayout = () => {
           <Title level={4} style={{ margin: 0 }}>
             Vaccination Doctor
           </Title>
+
+        
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+              gap: '24px',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '16px',
+                marginRight: '16px',
+              }}
+            >
+              <Link
+                to='/doctor/dashboard'
+                style={{
+                  color: '#333',
+                  textDecoration: 'none',
+                  fontSize: '16px',
+                  fontWeight: '500',
+                  padding: '8px 10px',
+                  borderRadius: '4px',
+                  transition: 'all 0.3s',
+                }}
+              >
+                Dashboard
+              </Link>
+              <Link
+                to='/doctor/appointments'
+                style={{
+                  color: '#333',
+                  textDecoration: 'none',
+                  fontSize: '16px',
+                  fontWeight: '500',
+                  padding: '8px 10px',
+                  borderRadius: '4px',
+                  transition: 'all 0.3s',
+                }}
+              >
+                Appointments
+              </Link>
+            </div>
+
+            <Dropdown overlay={userMenu} placement='bottomRight'>
+              <Avatar
+                size='large'
+                icon={<UserOutlined />}
+                style={{ cursor: 'pointer', backgroundColor: '#87d068' }}
+              />
+            </Dropdown>
+          </div>
         </Header>
 
         <Content style={{ margin: '24px' }}>
@@ -69,7 +144,7 @@ export const DoctorLayout = () => {
 
         <Footer style={{ textAlign: 'center', padding: '12px 50px' }}>
           <Text type='secondary'>
-            © 2025 VacciTrack Admin Portal. All rights reserved.
+            © 2025 VacciTrack Doctor Portal. All rights reserved.
           </Text>
         </Footer>
       </Layout>

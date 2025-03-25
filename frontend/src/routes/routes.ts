@@ -4,7 +4,6 @@ import { ManagerLayout } from '../components/layout/ManagerLayout'
 import StaffLayout from '../components/layout/StaffLayout'
 import ManagerCustomerList from '../Pages/Home/Customer/CustomerListManager'
 import Homepage from '../Pages/Home/Home'
-import ManagerStaffList from '../Pages/Home/Staff/StaffListManager'
 import ManagerVaccineList from '../Pages/Home/VaccineManager/VaccineListManager'
 import Login from '../Pages/Login/Login'
 import ManagerHomePage from '../Pages/Manager/ManagerHomePage'
@@ -28,12 +27,10 @@ import VaccinatorHomePage from '../Pages/Vaccinator/VaccinatorHomePage'
 import CustomerListVaccinator from '../Pages/Home/Vaccinator/CustomerListVaccinator'
 import RegisterCustomer from '../Pages/Staff/RegisterCustomer/registerCustomer'
 import StaffVaccination from '../Pages/Staff/Vaccination/StaffVaccination'
-import ManagerPackageList from '../Pages/Home/Package/PackageListManager'
-import ManagerPackageDetail from '../Pages/Home/Package/PackageDetailManager'
-import ManagerPackageCreate from '../Pages/Home/Package/CreatePackageManager'
 import PaymentLayout from '../components/layout/PaymentLayout'
 import PaymentSuccess from '../Pages/Payment/PaymentSuccess'
 import PaymentFail from '../Pages/Payment/PaymentFail'
+import ManagerPersonnelList from '../Pages/Home/PersonnelManager/PersonnelListManager'
 import VaccinationsHistory from '../Pages/Vaccinations/VaccinationsHistory'
 
 const routes: LayoutRoute[] = [
@@ -129,8 +126,8 @@ const routes: LayoutRoute[] = [
         role: ['Manager'],
       },
       {
-        path: '/manager/staff',
-        component: ManagerStaffList,
+        path: '/manager/personnel',
+        component: ManagerPersonnelList,
         exact: true,
         role: ['Manager'],
       },
@@ -155,24 +152,6 @@ const routes: LayoutRoute[] = [
       {
         path: '/manager/vaccine/create',
         component: CreateVaccine,
-        exact: true,
-        role: ['Manager'],
-      },
-      {
-        path: '/manager/package',
-        component: ManagerPackageList,
-        exact: true,
-        role: ['Manager'],
-      },
-      {
-        path: '/manager/package/:id',
-        component: ManagerPackageDetail,
-        exact: true,
-        role: ['Manager'],
-      },
-      {
-        path: '/manager/package/create',
-        component: ManagerPackageCreate,
         exact: true,
         role: ['Manager'],
       },
