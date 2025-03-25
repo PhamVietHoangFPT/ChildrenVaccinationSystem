@@ -26,7 +26,6 @@ import CustomerDetail from '../Pages/Staff/CustomerProfile/CustomerDetail'
 import { VaccinatorLayout } from '../components/layout/VaccinatorLayout'
 import VaccinatorHomePage from '../Pages/Vaccinator/VaccinatorHomePage'
 import CustomerListVaccinator from '../Pages/Home/Vaccinator/CustomerListVaccinator'
-import RegisterCustomer from '../Pages/Staff/RegisterCustomer/registerCustomer'
 import StaffVaccination from '../Pages/Staff/Vaccination/StaffVaccination'
 import ManagerPackageList from '../Pages/Home/Package/PackageListManager'
 import ManagerPackageDetail from '../Pages/Home/Package/PackageDetailManager'
@@ -35,6 +34,8 @@ import PaymentLayout from '../components/layout/PaymentLayout'
 import PaymentSuccess from '../Pages/Payment/PaymentSuccess'
 import PaymentFail from '../Pages/Payment/PaymentFail'
 import VaccinationsHistory from '../Pages/Vaccinations/VaccinationsHistory'
+import RegiterVaccinationStaff from '../Pages/Staff/RegisterCustomer/registerVaccination'
+import RegisterCustomer from '../Pages/Staff/RegisterCustomer/registerCustomer'
 
 const routes: LayoutRoute[] = [
   {
@@ -99,8 +100,14 @@ const routes: LayoutRoute[] = [
         role: ['Staff'],
       },
       {
-        path: '/staff/vaccination-record',
+        path: '/staff/vaccination/vaccination-record',
         component: StaffVaccination,
+        exact: true,
+        role: ['Staff'],
+      },
+      {
+        path: '/staff/vaccination/register-vaccination',
+        component: RegiterVaccinationStaff,
         exact: true,
         role: ['Staff'],
       },
