@@ -36,6 +36,7 @@ import PaymentSuccess from '../Pages/Payment/PaymentSuccess'
 import PaymentFail from '../Pages/Payment/PaymentFail'
 import ManagerFacilityList from '../Pages/Home/Facility/FacilityListManager'
 import ManagerFacilityDetail from '../Pages/Home/Facility/FacilityDetailManager'
+import ManagerFacilityInventory from '../Pages/Home/Facility/FacilityInventoryManager'
 
 const routes: LayoutRoute[] = [
   {
@@ -182,6 +183,12 @@ const routes: LayoutRoute[] = [
       {
         path: '/manager/facility/:id',
         component: ManagerFacilityDetail,
+        exact: true,
+        role: ['Manager'],
+      },
+      {
+        path: '/manager/facility/inventory/:id',
+        component: ManagerFacilityInventory,
         exact: true,
         role: ['Manager'],
       },
