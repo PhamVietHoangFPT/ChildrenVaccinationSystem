@@ -112,8 +112,8 @@ const ChildrenDetailModal: React.FC<ChilrenDetailModalProps> = ({
 
   return (
     <Modal
-      title='Customer Details'
-      visible={visible}
+      title='Child Details'
+      open={visible}
       onCancel={onClose}
       footer={[
         <Button key='close' onClick={onClose}>
