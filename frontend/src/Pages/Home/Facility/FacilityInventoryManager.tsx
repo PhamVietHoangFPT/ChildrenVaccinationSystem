@@ -8,13 +8,10 @@ const { TabPane } = Tabs;
 const ManagerFacilityInventory: React.FC = () => {
   const { id } = useParams();  
 
-  // Fetching Inventory Data
   const { data: inventoryData, isLoading: inventoryLoading, isFetching: inventoryFetching } = useGetFacilitiesInventoryQuery(id as string);
 
-  // Fetching Batch Data
   const { data: batchData, isLoading: batchLoading, isFetching: batchFetching } = useGetFacilitiesBatchesQuery(id as string);
 
-  // Loading State
   if (inventoryLoading || inventoryFetching || batchLoading || batchFetching) {
     return (
       <div style={{ textAlign: 'center', marginTop: '50px' }}>
@@ -23,7 +20,6 @@ const ManagerFacilityInventory: React.FC = () => {
     );
   }
 
-  // Inventory Columns
   const inventoryColumns = [
     {
       title: 'Vaccine',
@@ -37,7 +33,6 @@ const ManagerFacilityInventory: React.FC = () => {
     },
   ];
 
-  // Batch Columns with Date Formatting
   const batchColumns = [
     {
       title: 'Batch Number',
@@ -48,25 +43,25 @@ const ManagerFacilityInventory: React.FC = () => {
       title: 'Import Date',
       dataIndex: 'importDate',
       key: 'importDate',
-      render: (text) => text ? new Date(text).toLocaleDateString() : '-',
+      render: (text: string | number | Date) => text ? new Date(text).toLocaleDateString() : '-',
     },
     {
       title: 'Expire Date',
       dataIndex: 'expireDate',
       key: 'expireDate',
-      render: (text) => text ? new Date(text).toLocaleDateString() : '-',
+      render: (text: string | number | Date) => text ? new Date(text).toLocaleDateString() : '-',
     },
     {
       title: 'Vaccine Name',
       dataIndex: 'vaccine.name',
       key: 'vaccineName',
-      render: (text, record) => record.vaccines[0]?.name || '-', // Access vaccine name from the vaccines array
+      render: (text: any, record: { vaccines: { name: any; }[]; }) => record.vaccines[0]?.name || '-', 
     },
     {
       title: 'Stock',
       dataIndex: 'vaccines.stock',
       key: 'stock',
-      render: (text, record) => record.vaccines[0]?.stock || '-', // Access stock from the vaccines array
+      render: (text: any, record: { vaccines: { stock: any; }[]; }) => record.vaccines[0]?.stock || '-', 
     },
   ];
 
@@ -78,7 +73,7 @@ const ManagerFacilityInventory: React.FC = () => {
         <TabPane tab="Inventory" key="1">
           <Table
             columns={inventoryColumns}
-            dataSource={inventoryData?.data}  // Ensure `data` exists
+            dataSource={inventoryData?.data}  
             rowKey="vaccine.id"
             pagination={false}
             loading={inventoryFetching}
@@ -88,7 +83,7 @@ const ManagerFacilityInventory: React.FC = () => {
         <TabPane tab="Batch" key="2">
           <Table
             columns={batchColumns}
-            dataSource={batchData?.data}  // Ensure `data` exists
+            dataSource={batchData?.data} 
             rowKey="batchNumber"
             pagination={false}
             loading={batchFetching}
