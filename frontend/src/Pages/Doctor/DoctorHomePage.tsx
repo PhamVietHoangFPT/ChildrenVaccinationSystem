@@ -13,6 +13,7 @@ import {
 } from '@ant-design/icons';
 import dayjs from 'dayjs'
 import { Button, Table, Tag } from 'antd';
+import ChildrenDetailModalDoctor from '../../components/Modal/ChildrenDoctor.modal';
 interface VaccinationListResponse {
   data: {
     data: {
@@ -29,11 +30,15 @@ const DoctorHomePage: React.FC = () => {
   const initialPage = parseInt(searchParams.get('page') || '1', 10);
   const [currentPage, setCurrentPage] = useState(initialPage);
   const pageSize = 7;
+  // Modal state
+  const [isDetailModalVisible, setIsDetailModalVisible] = useState(false)
+  const [selectedChildId, setSelectedChildId] = useState<string | null>(null)
 
   const {
     data: vaccinations,
     isFetching: vaccinationFetching,
     isLoading: vaccinationLoading,
+    refetch,
   } = useGetVaccinationListDoctorQuery<VaccinationListResponse>({
     pageNumber: currentPage,
     pageSize: pageSize,
@@ -77,21 +82,21 @@ const DoctorHomePage: React.FC = () => {
       dataIndex: 'child.name',
       key: 'childName',
       render: (_: string | undefined, record: Vaccination) =>
-        <span style={{ fontSize: '12px' }}>{record.child?.name ?? 'N/A'}</span>,
+        <span>{record.child?.name ?? 'N/A'}</span>,
     },
     {
       title: 'Vaccine',
       dataIndex: 'vaccine.name',
       key: 'vaccineName',
       render: (_: string | undefined, record: Vaccination) =>
-        <span style={{ fontSize: '12px' }}>{record.vaccine?.name ?? 'N/A'}</span>,
+        <span>{record.vaccine?.name ?? 'N/A'}</span>,
     },
     {
       title: 'Schedule',
       dataIndex: 'schedule',
       key: 'schedule',
       render: (schedule: Date | undefined) =>
-        <span style={{ fontSize: '12px' }}>{schedule ? dayjs(schedule).format('YYYY-MM-DD') : 'N/A'}</span>,
+        <span>{schedule ? dayjs(schedule).format('YYYY-MM-DD') : 'N/A'}</span>,
     },
     {
       title: 'Status',
@@ -135,15 +140,31 @@ const DoctorHomePage: React.FC = () => {
     {
       title: 'Update',
       key: 'update',
-      render: (_: any,) => (
+      render: (_: any, record: Vaccination) => (
         <Button
-          type='primary'
+          type="primary"
           icon={<EditOutlined />}
+          onClick={() => {
+            if (record.child?.id) { // Check if child and child.id exist
+              setSelectedChildId(record.child.id); // Set the selected child ID
+              setIsDetailModalVisible(true); // Show the modal
+            }
+          }}
         />
       ),
     },
 
   ];
+
+  // Handle modal close and refetch data after update
+  const handleDetailModalClose = (updated: boolean = false) => {
+    setIsDetailModalVisible(false);
+    setSelectedChildId(null);
+    if (updated) {
+      refetch(); // Trigger refetch after successful update
+    }
+  };
+
   return (
     <>
       <Table
@@ -162,6 +183,11 @@ const DoctorHomePage: React.FC = () => {
             setCurrentPage(page);
           },
         }}
+      />
+      <ChildrenDetailModalDoctor
+        visible={isDetailModalVisible}
+        id={selectedChildId}
+        onClose={handleDetailModalClose}
       />
     </>
   )
