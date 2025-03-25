@@ -127,6 +127,12 @@ const routes: LayoutRoute[] = [
         role: ['Manager'],
       },
       {
+        path: '/manager/personnel/:id',
+        component: ManagerPersonnelList,
+        exact: true,
+        role: ['Manager'],
+      },
+      {
         path: '/manager/view',
         component: ManagerCustomerList,
         exact: true,
