@@ -38,8 +38,8 @@ const Homepage: React.FC = () => {
 
   const { data: dataBlog, isLoading: isLoadingBlog } =
     useGetBlogsMinimalListQuery<BlogListResponse>({
-      pageNumber: 1,
-      pageSize: 5,
+      pageNumber: -1,
+      pageSize: -1,
     })
 
   const dataVaccine = data?.data.items ?? []
@@ -72,12 +72,12 @@ const Homepage: React.FC = () => {
                 level={1}
                 style={{ marginBottom: '24px', color: '#1890ff' }}
               >
-                Protect Yourself and Your Loved Ones with Vaccination
+                Bảo vệ bạn và những người thân yêu bằng tiêm chủng
               </Title>
               <Paragraph style={{ fontSize: '16px', marginBottom: '24px' }}>
-                Vaccination is one of the most effective ways to prevent
-                diseases. Get vaccinated today to protect yourself and help
-                build community immunity.
+                Tiêm chủng là một trong những cách hiệu quả nhất để phòng ngừa
+                bệnh tật. Hãy tiêm chủng ngay hôm nay để bảo vệ bản thân và giúp
+                xây dựng miễn dịch cộng đồng.
               </Paragraph>
               <Space>
                 <Button
@@ -88,9 +88,8 @@ const Homepage: React.FC = () => {
                     navigate('vaccine-registration')
                   }}
                 >
-                  Schedule Appointment
+                  Đặt lịch hẹn
                 </Button>
-                <Button size='large'>Learn More</Button>
               </Space>
             </div>
           </Col>
@@ -136,7 +135,7 @@ const Homepage: React.FC = () => {
             level={2}
             style={{ textAlign: 'center', marginBottom: '32px' }}
           >
-            Các bài viết mớimới
+            Các bài viết mới
           </Title>
           {isLoadingBlog ? (
             <LoadingOutlined

@@ -32,6 +32,7 @@ import PaymentSuccess from '../Pages/Payment/PaymentSuccess'
 import PaymentFail from '../Pages/Payment/PaymentFail'
 import ManagerPersonnelList from '../Pages/Home/PersonnelManager/PersonnelListManager'
 import VaccinationsHistory from '../Pages/Vaccinations/VaccinationsHistory'
+import BlogDetails from '../Pages/Blogs/BlogDetails'
 
 const routes: LayoutRoute[] = [
   {
@@ -66,6 +67,7 @@ const routes: LayoutRoute[] = [
         path: '/vaccinations-history',
         component: VaccinationsHistory,
       },
+      { path: '/blogs/:id', component: BlogDetails },
     ],
   },
   {

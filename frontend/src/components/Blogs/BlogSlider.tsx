@@ -1,4 +1,4 @@
-import { Typography, Carousel, Card } from 'antd'
+import { Typography, Card, List } from 'antd'
 import { FC } from 'react'
 import { Blogs } from '../../types/blog'
 import { useNavigate } from 'react-router-dom'
@@ -11,41 +11,27 @@ interface BlogSliderProps {
 export const BlogSlider: FC<BlogSliderProps> = ({ blogs }) => {
   const navigate = useNavigate()
   return (
-    <Carousel
-      autoplay
-      dots={false}
-      infinite
-      slidesToShow={4} // Hiển thị 4 items trên màn hình lớn
-      slidesToScroll={1}
-      responsive={[
-        { breakpoint: 1024, settings: { slidesToShow: 2 } }, // Tablet
-        { breakpoint: 768, settings: { slidesToShow: 1 } }, // Mobile
-      ]}
-    >
-      {blogs.map((blog) => (
-        <div key={blog.id}>
+    <List
+      grid={{ gutter: 16, column: 2 }} // Hiển thị 2 cột
+      dataSource={blogs}
+      renderItem={(blog) => (
+        <List.Item>
           <Card
             hoverable
-            onClick={() => {
-              navigate(`/blogs/${blog.id}`)
-            }}
+            onClick={() => navigate(`/blogs/${blog.id}`)}
             style={{
-              borderRadius: '12px',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-              margin: '8px',
-              minHeight: '400px', // Giữ chiều cao đồng đều
-              display: 'flex',
-              flexDirection: 'column',
+              borderRadius: '8px',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+              minHeight: '100px',
+              maxWidth: '100%', // Đảm bảo chiếm toàn bộ chiều rộng của cột
             }}
           >
-            <div
-              style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}
-            >
-              <Title level={4}>{blog.title}</Title>
-            </div>
+            <Title level={5} style={{ fontSize: '16px' }}>
+              {blog.title}
+            </Title>
           </Card>
-        </div>
-      ))}
-    </Carousel>
+        </List.Item>
+      )}
+    />
   )
 }
