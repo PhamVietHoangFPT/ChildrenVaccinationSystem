@@ -178,7 +178,7 @@ export default function VaccineRegistrationCustomer() {
   const disabledDate = (current: dayjs.Dayjs) => {
     return current.isBefore(dayjs().endOf('day'))
   }
-  
+
   useEffect(() => {
     let total = 0
 
