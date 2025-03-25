@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Children } from '../../../types/children'
 import { useSearchParams } from 'react-router-dom'
 import { useGetChildrenListQuery } from '../../../features/children/childrenAPI'
-import { LoadingOutlined, SearchOutlined } from '@ant-design/icons'
+import { LoadingOutlined } from '@ant-design/icons'
 import { Input, Table, Button } from 'antd'
 import RegisterCustomerModal from '../../../components/Modal/RegisterCustomerModal'
 interface ChildrenListResponse {
@@ -97,7 +97,7 @@ const RegisterCustomer: React.FC = () => {
       render: (gender: boolean) => (gender ? 'Male' : 'Female'),
     },
     {
-      title: 'Action',
+      title: 'Vaccination',
       key: 'action',
       render: (record: Children) => (
         <Button
@@ -112,53 +112,53 @@ const RegisterCustomer: React.FC = () => {
       ),
     },
   ]
-
+  if (chilrenLoading) {
+    return (
+      <LoadingOutlined
+        style={{
+          fontSize: '50px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '30vh',
+        }}
+      />
+    )
+  }
   return (
     <div style={{ padding: 20, background: '#fff', borderRadius: 8 }}>
       <div style={{ display: 'flex' }}>
         <Input.Search
           placeholder='Search by phone number'
           allowClear
-          enterButton={<SearchOutlined />}
           onSearch={(value) => setSearchPhoneTerm(value)}
-          style={{
-            width: 320,
-            padding: '8px 12px',
-            borderRadius: 8,
-          }}
+          style={{ marginBottom: 16, width: 300 }}
         />
         <Input.Search
-          placeholder='Search by children name'
+          placeholder='Search by chidren name'
           allowClear
-          enterButton={<SearchOutlined />}
           onSearch={(value) => setSearchNameTerm(value)}
-          style={{
-            width: 320,
-            padding: '8px 12px',
-            borderRadius: 8,
-          }}
+          style={{ marginBottom: 16, width: 300 }}
         />
       </div>
-      {(searchNameTerm || searchPhoneTerm) && (
-        <Table
-          columns={columns}
-          dataSource={dataChildren.map((item, index) => ({
-            ...item,
-            key: item.id,
-            index: (currentPage - 1) * pageSize + index + 1,
-            children: undefined,
-          }))}
-          bordered
-          pagination={{
-            current: currentPage,
-            pageSize: pageSize,
-            total: totalChildren,
-            onChange: (page) => {
-              setCurrentPage(page)
-            },
-          }}
-        />
-      )}
+      <Table
+        columns={columns}
+        dataSource={dataChildren.map((item, index) => ({
+          ...item,
+          key: item.id,
+          index: (currentPage - 1) * pageSize + index + 1,
+          children: undefined,
+        }))}
+        bordered
+        pagination={{
+          current: currentPage,
+          pageSize: pageSize,
+          total: totalChildren,
+          onChange: (page) => {
+            setCurrentPage(page)
+          },
+        }}
+      />
       <RegisterCustomerModal
         onClose={closeModel}
         visible={modelVisible}
