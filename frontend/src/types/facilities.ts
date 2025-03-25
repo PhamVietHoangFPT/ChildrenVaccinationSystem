@@ -13,3 +13,16 @@ export interface Facilities {
   address: string;
   facilityItems?: FacilityItem[]; 
 }
+
+export interface FacilityDetails {
+  id: string;
+  name: string;
+  price: number;
+  packageItems: {
+    vaccine: {
+      id: string;
+      name: string;
+      price: number;
+    };
+  }[]; 
+}
