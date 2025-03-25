@@ -78,6 +78,12 @@ export const SideBar = () => {
       label: 'Manage Package',
       onClick: () => navigate('/manager/package'),
     },
+    {
+      key: 'manager/facility',
+      icon: <HomeOutlined />,
+      label: 'Manage Facility',
+      onClick: () => navigate('/manager/facility'),
+    },
   ]
 
   return (

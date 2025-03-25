@@ -34,6 +34,7 @@ import ManagerPackageCreate from '../Pages/Home/Package/CreatePackageManager'
 import PaymentLayout from '../components/layout/PaymentLayout'
 import PaymentSuccess from '../Pages/Payment/PaymentSuccess'
 import PaymentFail from '../Pages/Payment/PaymentFail'
+import ManagerFacilityList from '../Pages/Home/Facility/ManagerFacilityList'
 
 const routes: LayoutRoute[] = [
   {
@@ -168,6 +169,12 @@ const routes: LayoutRoute[] = [
       {
         path: '/manager/package/create',
         component: ManagerPackageCreate,
+        exact: true,
+        role: ['Manager'],
+      },
+      {
+        path: '/manager/facility',
+        component: ManagerFacilityList,
         exact: true,
         role: ['Manager'],
       },
