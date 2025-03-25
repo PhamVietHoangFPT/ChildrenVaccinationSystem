@@ -58,7 +58,7 @@ export const SideBar = () => {
       key: 'manager/staff',
       icon: <HomeOutlined />,
       label: 'Manage Staff',
-      onClick: () => navigate('/manager/staff'),
+      onClick: () => navigate('/manager/personnel'),
     },
     {
       key: 'manager/view',
@@ -71,12 +71,6 @@ export const SideBar = () => {
       icon: <MedicineBoxOutlined />,
       label: 'Manage Vaccines',
       onClick: () => navigate('/manager/vaccine'),
-    },
-    {
-      key: 'manager/package',
-      icon: <HomeOutlined />,
-      label: 'Manage Package',
-      onClick: () => navigate('/manager/package'),
     },
   ]
 
