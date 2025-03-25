@@ -32,6 +32,9 @@ import PaymentSuccess from '../Pages/Payment/PaymentSuccess'
 import PaymentFail from '../Pages/Payment/PaymentFail'
 import ManagerPersonnelList from '../Pages/Home/Personnel/PersonnelListManager'
 import PersonnelDetailManager from '../Pages/Home/Personnel/PersonnelDetailManager'
+import BlogDetail from '../Pages/Home/BlogManager/BlogDetailManager'
+import ManagerBlogList from '../Pages/Home/BlogManager/BlogListManager'
+import CreateBlog from '../Pages/Home/BlogManager/CreateBlogManager'
 
 const routes: LayoutRoute[] = [
   {
@@ -154,6 +157,24 @@ const routes: LayoutRoute[] = [
       {
         path: '/manager/vaccine/create',
         component: CreateVaccine,
+        exact: true,
+        role: ['Manager'],
+      },
+      {
+        path: '/manager/blog/create',
+        component: CreateBlog,
+        exact: true,
+        role: ['Manager'],
+      },
+      {
+        path: '/manager/blog',
+        component:  ManagerBlogList,
+        exact: true,
+        role: ['Manager'],
+      },
+      {
+        path: '/manager/blog/:id',
+        component: BlogDetail,
         exact: true,
         role: ['Manager'],
       },

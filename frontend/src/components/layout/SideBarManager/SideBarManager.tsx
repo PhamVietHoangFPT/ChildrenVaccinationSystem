@@ -60,6 +60,12 @@ export const SideBar = () => {
       onClick: () => navigate('/manager/personnel'),
     },
     {
+      key: 'manager/blog',
+      icon: <HomeOutlined />,
+      label: 'Manage Blogs',
+      onClick: () => navigate('/manager/blog'),
+    },
+    {
       key: 'manager/vaccine',
       icon: <MedicineBoxOutlined />,
       label: 'Manage Vaccines',
