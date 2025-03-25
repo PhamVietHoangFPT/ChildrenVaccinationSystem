@@ -78,7 +78,7 @@ const SideBarStaff: React.FC = () => {
             key: '3',
             label: 'Register Vaccination ',
             icon: <FormOutlined />,
-            url: '/staff',
+            url: '/staff/register-vaccination',
           },
         ],
       },
