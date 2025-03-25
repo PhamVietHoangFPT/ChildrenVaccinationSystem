@@ -15,15 +15,12 @@ import AllVaccinesCustomer from '../Pages/Vaccines/AllVaccinesCustomer'
 import VaccineDetail from '../Pages/Home/VaccineManager/VaccineDetailManager'
 import CreateVaccine from '../Pages/Home/VaccineManager/CreateVaccineManager'
 import DoctorHomePage from '../Pages/Doctor/DoctorHomePage'
-import CustomerListDoctor from '../Pages/Home/Doctor/CustomerListDoctor'
 import VaccineDetailsCustomer from '../Pages/Vaccines/VaccineDetailsCustomer'
 import VaccineRegistrationCustomer from '../Pages/Vaccines/VaccineRegistrationCustomer'
 import ForceUpdateAccount from '../Pages/Register/ForgeUpdateRegister'
 import ChildrenPage from '../Pages/Staff/ChildrenProfile/Children'
 import CustomerDetail from '../Pages/Staff/CustomerProfile/CustomerDetail'
-import { VaccinatorLayout } from '../components/layout/VaccinatorLayout'
 import VaccinatorHomePage from '../Pages/Vaccinator/VaccinatorHomePage'
-import CustomerListVaccinator from '../Pages/Home/Vaccinator/CustomerListVaccinator'
 import StaffVaccination from '../Pages/Staff/Vaccination/StaffVaccination'
 import PaymentLayout from '../components/layout/PaymentLayout'
 import PaymentSuccess from '../Pages/Payment/PaymentSuccess'
@@ -173,26 +170,14 @@ const routes: LayoutRoute[] = [
         exact: true,
         role: ['Doctor'],
       },
-      {
-        path: '/doctor/view',
-        component: CustomerListDoctor,
-        exact: true,
-        role: ['Doctor'],
-      },
     ],
   },
   {
-    layout: VaccinatorLayout,
+    layout: DoctorLayout,
     data: [
       {
         path: '/vaccinator',
         component: VaccinatorHomePage,
-        exact: true,
-        role: ['Vaccinator'],
-      },
-      {
-        path: '/vaccinator/view',
-        component: CustomerListVaccinator,
         exact: true,
         role: ['Vaccinator'],
       },
