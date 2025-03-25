@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom'
 import { Layout } from 'antd'
-import SideBarStaff from './SiderBarStaff/SideBarStaff'
+import SideBarDoctor from './SideBarDoctor/SideBarDoctor'
 
 const { Content } = Layout
 
@@ -12,7 +12,7 @@ function DoctorLayout() {
         overflow: 'hidden',
       }}
     >
-      <SideBarStaff></SideBarStaff>
+      <SideBarDoctor></SideBarDoctor>
       <Content
         style={{
           margin: '24px',
