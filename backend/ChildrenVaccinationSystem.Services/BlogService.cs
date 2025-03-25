@@ -79,8 +79,24 @@ namespace ChildrenVaccinationSystem.Services
             return new BasePaginatedList<BlogViewDto>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
 		}
 
+		public async Task<BasePaginatedList<object>> GetBlogsMinimal(int pageNumber, int pageSize)
+		{
+			IQueryable<Blog> query = _unitOfWork.GetRepository<Blog>().Entities.Where(b => b.DeletedBy == null);
 
-        public async Task UpdateBlog(string id, BlogUpdateDto blogUpdateDto)
+			BasePaginatedList<Blog> resultQuery = (pageNumber <= 0 || pageSize <= 0)
+				? await _unitOfWork.GetRepository<Blog>().GetPaging(query, 1, query.Count())
+				: await _unitOfWork.GetRepository<Blog>().GetPaging(query, pageNumber, pageSize);
+
+			var responseItems = resultQuery.Items.Select(v => new
+			{
+				v.Id,
+				v.Title
+			}).ToList();
+
+			return new BasePaginatedList<object>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
+		}
+
+		public async Task UpdateBlog(string id, BlogUpdateDto blogUpdateDto)
 		{
             Blog? blog = await _unitOfWork.GetRepository<Blog>().Entities
                 .Where(b => b.Id == id && b.DeletedBy == null)
