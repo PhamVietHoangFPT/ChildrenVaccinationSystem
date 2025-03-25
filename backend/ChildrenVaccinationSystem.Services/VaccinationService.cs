@@ -191,7 +191,7 @@ namespace ChildrenVaccinationSystem.Services
 				});
 			}
 
-			return _vnPayService.CreatePaymentUrl(context, vaccinations, price, 2);
+			return _vnPayService.CreatePaymentUrlVnPay(context, vaccinations, price, 2);
 		}
 
 
@@ -304,7 +304,7 @@ namespace ChildrenVaccinationSystem.Services
 			//await _unitOfWork.SaveAsync();
 			// Extracting a list of IDs
 
-			return _vnPayService.CreatePaymentUrl(context, vaccinations, price, 1);
+			return _vnPayService.CreatePaymentUrlVnPay(context, vaccinations, price, 1);
 		}
 
 		private async Task IsAvailable(Vaccine vaccine, string facilityId, bool updateQuantity = false)

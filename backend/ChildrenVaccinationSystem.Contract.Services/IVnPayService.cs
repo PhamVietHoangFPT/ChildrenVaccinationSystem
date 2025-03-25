@@ -10,9 +10,9 @@ namespace ChildrenVaccinationSystem.Contract.Services
 {
 	public interface IVnPayService
 	{
-		string CreatePaymentUrl(HttpContext context, List<Vaccination> vaccinations, double price, int code);
+		string CreatePaymentUrlVnPay(HttpContext context, List<Vaccination> vaccinations, double price, int code);
 
-		VnPayResponseDto PaymentExecute(IQueryCollection collections);
+		VnPayResponseDto PaymentExecuteVnPay(IQueryCollection collections);
 		Task InsertVaccinationsData(string orderInfo);
 	}
 
