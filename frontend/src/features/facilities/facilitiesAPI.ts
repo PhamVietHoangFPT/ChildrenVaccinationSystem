@@ -4,7 +4,7 @@ const facilitiesApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getFacilitiesList: builder.query({
       query: ({ pageNumber, pageSize }) => ({
-        url: '/api/facilities',
+        url: '/facilities',
         method: 'GET',
         params: {
           pageNumber,
@@ -16,7 +16,7 @@ const facilitiesApi = apiSlice.injectEndpoints({
     }),
     createFacilities: builder.mutation({
       query: (data) => ({
-        url: '/api/facilities',
+        url: '/facilities',
         method: 'POST',
         body: data,
       }),
@@ -25,7 +25,7 @@ const facilitiesApi = apiSlice.injectEndpoints({
     }),
     getFacilitiesDetail: builder.query({
       query: (id) => ({
-        url: `/api/facilities/${id}`,
+        url: `/facilities/${id}`,
         method: 'GET',
       }),
       transformResponse: (res) => res,
@@ -33,7 +33,7 @@ const facilitiesApi = apiSlice.injectEndpoints({
     }),
     updateFacilities: builder.mutation({
       query: ({ data, id }) => ({
-        url: `/api/facilities/${id}`,
+        url: `/facilities/${id}`,
         method: 'PUT',
         body: data,
       }),
@@ -42,33 +42,8 @@ const facilitiesApi = apiSlice.injectEndpoints({
     }),
     deleteFacilities: builder.mutation({
       query: (id) => ({
-        url: `/api/facilities/${id}`,
+        url: `/facilities/${id}`,
         method: 'DELETE',
-      }),
-      transformResponse: (res) => res,
-      invalidatesTags: ['facilities'],
-    }),
-    getFacilitiesInventory: builder.query({
-      query: (id) => ({
-        url: `/api/facilities/inventory/${id}`,
-        method: 'GET',
-      }),
-      transformResponse: (res) => res,
-      providesTags: ['facilities'],
-    }),
-    getFacilitiesBatches: builder.query({
-      query: (id) => ({
-        url: `/api/facilities/batches/${id}`,
-        method: 'GET',
-      }),
-      transformResponse: (res) => res,
-      providesTags: ['facilities'],
-    }),
-    importFacilities: builder.mutation({
-      query: (data) => ({
-        url: '/api/facilities/import',
-        method: 'POST',
-        body: data,
       }),
       transformResponse: (res) => res,
       invalidatesTags: ['facilities'],
@@ -82,7 +57,4 @@ export const {
   useGetFacilitiesDetailQuery,
   useUpdateFacilitiesMutation,
   useDeleteFacilitiesMutation,
-  useGetFacilitiesInventoryQuery,
-  useGetFacilitiesBatchesQuery,
-  useImportFacilitiesMutation,
 } = facilitiesApi

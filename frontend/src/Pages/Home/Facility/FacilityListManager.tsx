@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { Table, Button, Input, Typography, Spin, Pagination } from 'antd'
+import { Table, Button, Input, Typography, Spin, Pagination, Space } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
-import { EyeOutlined, SearchOutlined, PlusOutlined } from '@ant-design/icons'
+import { EyeOutlined, SearchOutlined, PlusOutlined, ContainerOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 
 import { useGetFacilitiesListQuery } from '../../../features/facilities/facilitiesAPI'
@@ -50,16 +50,24 @@ const ManagerFacilityList: React.FC = () => {
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
-      title: 'Actions',
       key: 'actions',
       render: (_, record) => (
-        <Button
-          type="primary"
-          icon={<EyeOutlined />}
-          onClick={() => navigate(`/manager/facility/${record.id}`)}
-        >
-          Details
-        </Button>
+        <Space size="middle" style={{ justifyContent: 'right', width: '100%', marginLeft: '-65px' }}>
+          <Button
+            type="primary"
+            icon={<EyeOutlined />}
+            onClick={() => navigate(`/manager/facility/${record.id}`)}
+          >
+            Details
+          </Button>
+          <Button
+            type="primary"
+            icon={<ContainerOutlined />}  
+            onClick={() => navigate(`/manager/facility/inventory/${record.id}`)}
+          >
+            Inventory
+          </Button>
+        </Space>
       ),
     },
   ]
