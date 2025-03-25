@@ -4,7 +4,7 @@ export const accountApi = apiSlice.injectEndpoints({
   endpoints: (build) => ({
     forceUpdateAccount: build.mutation({
       query: (body) => ({
-        url: 'accounts/force-update',
+        url: '/accounts/force-update',
         method: 'POST',
         body: body,
       }),
@@ -13,7 +13,7 @@ export const accountApi = apiSlice.injectEndpoints({
 
     getProfileUpdateValid: build.query({
       query: () => ({
-        url: 'accounts/profile-update-valid',
+        url: '/accounts/profile-update-valid',
         method: 'GET',
       }),
       providesTags: ['account'],
@@ -21,7 +21,7 @@ export const accountApi = apiSlice.injectEndpoints({
 
     getEmailResetValid: build.query({
       query: () => ({
-        url: 'accounts/email-reset-valid',
+        url: '/accounts/email-reset-valid',
         method: 'GET',
       }),
       providesTags: ['account'],
@@ -29,7 +29,7 @@ export const accountApi = apiSlice.injectEndpoints({
 
     getCustomerAccounts: build.query({
       query: ({ pageNumber, pageSize }) => ({
-        url: 'accounts/customer',
+        url: '/accounts/customer',
         method: 'GET',
         params: {
           pageNumber,
@@ -41,13 +41,62 @@ export const accountApi = apiSlice.injectEndpoints({
 
     getMinimalCustomerAccounts: build.query({
       query: ({ pageNumber, pageSize }) => ({
-        url: 'accounts/customer/minimal',
+        url: '/accounts/customer/minimal',
         method: 'GET',
         params: {
           pageNumber,
           pageSize,
         },
       }),
+      providesTags: ['account'],
+    }),
+
+    getAccountPersonnel: build.query({
+      query: ({ pageNumber, pageSize, role, facilityId }) => ({
+        url: '/accounts/personnel',
+        method: 'GET',
+        params: {
+          pageNumber,
+          pageSize,
+          role,
+          facilityId,
+        },
+      }),
+      providesTags: ['account'],
+    }),
+
+    getAccountPersonnelMinimal: build.query({
+      query: ({ pageNumber, pageSize, role, facilityId }) => ({
+        url: '/accounts/personnel/minimal',
+        method: 'GET',
+        params: {
+          pageNumber,
+          pageSize,
+          role,
+          facilityId,
+        },
+      }),
+      providesTags: ['account'],
+    }),
+
+    createACcountPersonnel: build.query({
+      query: (data) => ({
+        url: '/accounts/personnel',
+        method: 'POST',
+        body: data,
+      }),
+      transformResponse: (res) => res,
+      providesTags: ['account'],
+    }),
+
+    updateAccountPersonnel: build.query({
+      query: ({ data, id }) => ({
+        url: `/accounts/personnel`,
+        method: 'PUT',
+        params: { id: id },
+        body: data,
+      }),
+      transformResponse: (res) => res,
       providesTags: ['account'],
     }),
   }),
