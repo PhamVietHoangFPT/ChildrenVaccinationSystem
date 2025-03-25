@@ -14,7 +14,6 @@ import { LayoutRoute } from '../types/routes'
 import AllVaccinesCustomer from '../Pages/Vaccines/AllVaccinesCustomer'
 import VaccineDetail from '../Pages/Home/VaccineManager/VaccineDetailManager'
 import CreateVaccine from '../Pages/Home/VaccineManager/CreateVaccineManager'
-import { DoctorLayout } from '../components/layout/DoctorLayout'
 import DoctorHomePage from '../Pages/Doctor/DoctorHomePage'
 import CustomerListDoctor from '../Pages/Home/Doctor/CustomerListDoctor'
 import VaccineDetailsCustomer from '../Pages/Vaccines/VaccineDetailsCustomer'
@@ -33,6 +32,7 @@ import ManagerPersonnelList from '../Pages/Home/PersonnelManager/PersonnelListMa
 import VaccinationsHistory from '../Pages/Vaccinations/VaccinationsHistory'
 import RegiterVaccinationStaff from '../Pages/Staff/RegisterCustomer/registerVaccination'
 import RegisterCustomer from '../Pages/Staff/RegisterCustomer/registerCustomer'
+import DoctorLayout from '../components/layout/DoctorLayout'
 
 const routes: LayoutRoute[] = [
   {
