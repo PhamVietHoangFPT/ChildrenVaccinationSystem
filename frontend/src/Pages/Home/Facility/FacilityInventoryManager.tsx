@@ -1,12 +1,31 @@
-import { useParams } from 'react-router-dom';
-import { Table, Typography, Spin, Tabs } from 'antd';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Table, Typography, Spin, Tabs, Button } from 'antd';
 import { useGetFacilitiesInventoryQuery, useGetFacilitiesBatchesQuery } from '../../../features/facilities/facilitiesAPI';
 
 const { Title } = Typography;
 const { TabPane } = Tabs;
 
+interface InventoryData {
+  vaccine: {
+    id: string;
+    name: string;
+  };
+  totalStock: number;
+}
+
+interface BatchData {
+  batchNumber: string;
+  importDate?: string;
+  expireDate?: string;
+  vaccines: Array<{
+    name: string;
+    stock: number;
+  }>;
+}
+
 const ManagerFacilityInventory: React.FC = () => {
   const { id } = useParams();  
+  const navigate = useNavigate();
 
   const { data: inventoryData, isLoading: inventoryLoading, isFetching: inventoryFetching } = useGetFacilitiesInventoryQuery(id as string);
 
@@ -55,13 +74,13 @@ const ManagerFacilityInventory: React.FC = () => {
       title: 'Vaccine Name',
       dataIndex: 'vaccine.name',
       key: 'vaccineName',
-      render: (text: any, record: { vaccines: { name: any; }[]; }) => record.vaccines[0]?.name || '-', 
+      render: (_text: any, record: BatchData) => record.vaccines[0]?.name || '-', 
     },
     {
       title: 'Stock',
       dataIndex: 'vaccines.stock',
       key: 'stock',
-      render: (text: any, record: { vaccines: { stock: any; }[]; }) => record.vaccines[0]?.stock || '-', 
+      render: (_text: any, record: BatchData) => record.vaccines[0]?.stock || '-', 
     },
   ];
 
@@ -73,7 +92,7 @@ const ManagerFacilityInventory: React.FC = () => {
         <TabPane tab="Inventory" key="1">
           <Table
             columns={inventoryColumns}
-            dataSource={inventoryData?.data}  
+            dataSource={inventoryData?.data as InventoryData[]}  
             rowKey="vaccine.id"
             pagination={false}
             loading={inventoryFetching}
@@ -81,9 +100,17 @@ const ManagerFacilityInventory: React.FC = () => {
         </TabPane>
 
         <TabPane tab="Batch" key="2">
+          <div style={{ marginBottom: '16px' }}>
+            <Button
+              type="primary"
+              onClick={() => navigate(`/manager/facility/inventory/import/${id}`)}
+            >
+              + Create Batch
+            </Button>
+          </div>
           <Table
             columns={batchColumns}
-            dataSource={batchData?.data} 
+            dataSource={batchData?.data as BatchData[]} 
             rowKey="batchNumber"
             pagination={false}
             loading={batchFetching}

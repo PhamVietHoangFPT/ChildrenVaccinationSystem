@@ -72,6 +72,16 @@ const facilitiesApi = apiSlice.injectEndpoints({
       providesTags: ['facilities'],
     }),
 
+    importFacilities: builder.mutation({
+      query: (data) => ({
+        url: '/facilities/import',
+        method: 'POST',
+        body: data,
+      }),
+      transformResponse: (res) => res,
+      invalidatesTags: ['facilities'],
+    }),
+
   }),
 })
 
@@ -83,4 +93,5 @@ export const {
   useDeleteFacilitiesMutation,
   useGetFacilitiesInventoryQuery,
   useGetFacilitiesBatchesQuery,
+  useImportFacilitiesMutation,
 } = facilitiesApi

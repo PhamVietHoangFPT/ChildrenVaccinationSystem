@@ -38,6 +38,7 @@ import ManagerFacilityList from '../Pages/Home/Facility/FacilityListManager'
 import ManagerFacilityDetail from '../Pages/Home/Facility/FacilityDetailManager'
 import ManagerFacilityInventory from '../Pages/Home/Facility/FacilityInventoryManager'
 import ManagerFacilityCreate from '../Pages/Home/Facility/FacilityCreateManager'
+import ManagerFacilityImport from '../Pages/Home/Facility/FacilityImportManager'
 
 const routes: LayoutRoute[] = [
   {
@@ -199,6 +200,13 @@ const routes: LayoutRoute[] = [
         exact: true,
         role: ['Manager'],
       },
+      {
+        path: '/manager/facility/inventory/import/:id',
+        component: ManagerFacilityImport,
+        exact: true,
+        role: ['Manager'],
+      },
+
     ],
     
   },
