@@ -31,6 +31,7 @@ import PaymentLayout from '../components/layout/PaymentLayout'
 import PaymentSuccess from '../Pages/Payment/PaymentSuccess'
 import PaymentFail from '../Pages/Payment/PaymentFail'
 import ManagerPersonnelList from '../Pages/Home/PersonnelManager/PersonnelListManager'
+import VaccinationsHistory from '../Pages/Vaccinations/VaccinationsHistory'
 
 const routes: LayoutRoute[] = [
   {
@@ -60,6 +61,10 @@ const routes: LayoutRoute[] = [
       {
         path: '/forceUpdate',
         component: ForceUpdateAccount,
+      },
+      {
+        path: '/vaccinations-history',
+        component: VaccinationsHistory,
       },
     ],
   },
@@ -190,11 +195,11 @@ const routes: LayoutRoute[] = [
     layout: PaymentLayout,
     data: [
       {
-        path: '/paymentSuccess',
+        path: '/payment-success',
         component: PaymentSuccess,
       },
       {
-        path: '/paymentFail',
+        path: '/payment-fail',
         component: PaymentFail,
       },
     ],

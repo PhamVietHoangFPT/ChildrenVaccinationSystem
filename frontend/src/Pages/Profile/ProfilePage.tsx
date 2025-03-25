@@ -1,4 +1,4 @@
-import { Layout, Card, Descriptions, message, Spin } from 'antd'
+import { Layout, Card, Descriptions, message, Spin, Button } from 'antd'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Cookies from 'js-cookie'
@@ -95,6 +95,48 @@ export default function ProfilePage() {
               bordered
               style={{ marginBottom: 16, borderRadius: 12 }}
             >
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <div>
+                  <Button
+                    type='primary'
+                    style={{
+                      marginBottom: 16,
+                      backgroundColor: '#52c41a',
+                      borderColor: '#52c41a',
+                    }} // Xanh lá
+                    onClick={() =>
+                      navigate(
+                        `/vaccinations-history?childId=${child.id}&isUpcoming=true`
+                      )
+                    }
+                  >
+                    Xem các mũi tiêm kế tiếp của trẻ
+                  </Button>
+                </div>
+                <div>
+                  <Button
+                    type='primary'
+                    style={{
+                      marginBottom: 16,
+                      backgroundColor: '#fa8c16',
+                      borderColor: '#fa8c16',
+                    }} // Cam
+                    onClick={() =>
+                      navigate(
+                        `/vaccinations-history?childId=${child.id}&isUpcoming=false`
+                      )
+                    }
+                  >
+                    Xem lịch sử tiêm chủng của trẻ
+                  </Button>
+                </div>
+              </div>
+
               <Descriptions column={1}>
                 <Descriptions.Item label='Ngày sinh'>
                   {child.dateOfBirth
