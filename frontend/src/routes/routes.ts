@@ -25,7 +25,6 @@ import StaffVaccination from '../Pages/Staff/Vaccination/StaffVaccination'
 import PaymentLayout from '../components/layout/PaymentLayout'
 import PaymentSuccess from '../Pages/Payment/PaymentSuccess'
 import PaymentFail from '../Pages/Payment/PaymentFail'
-import ManagerPersonnelList from '../Pages/Home/PersonnelManager/PersonnelListManager'
 import VaccinationsHistory from '../Pages/Vaccinations/VaccinationsHistory'
 import RegiterVaccinationStaff from '../Pages/Staff/RegisterCustomer/registerVaccination'
 import RegisterCustomer from '../Pages/Staff/RegisterCustomer/registerCustomer'
@@ -34,6 +33,7 @@ import PersonnelDetailManager from '../Pages/Home/Personnel/PersonnelDetailManag
 import BlogDetail from '../Pages/Home/BlogManager/BlogDetailManager'
 import ManagerBlogList from '../Pages/Home/BlogManager/BlogListManager'
 import CreateBlog from '../Pages/Home/BlogManager/CreateBlogManager'
+import PersonnelListManager from '../Pages/Home/Personnel/PersonnelListManager'
 
 const routes: LayoutRoute[] = [
   {
@@ -135,7 +135,7 @@ const routes: LayoutRoute[] = [
       },
       {
         path: '/manager/personnel',
-        component: ManagerPersonnelList,
+        component: PersonnelListManager,
         exact: true,
         role: ['Manager'],
       },
