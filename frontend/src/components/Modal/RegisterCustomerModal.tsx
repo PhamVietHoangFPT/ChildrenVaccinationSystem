@@ -252,6 +252,7 @@ const RegisterCustomerModal: React.FC<RegisterCustomerProps> = ({
     setPagePackageNumber(page);
     setPagePackageSize(size);
   };
+  
   if (vaccineLoading || packageLoading) {
     return (
       <LoadingOutlined
@@ -280,7 +281,7 @@ const RegisterCustomerModal: React.FC<RegisterCustomerProps> = ({
             <div>
               <div
                 style={{
-                  margin: '20px',
+                  margin: '20px', 
                 }}
               >
                 <h1
