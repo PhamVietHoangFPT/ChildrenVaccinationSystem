@@ -8,7 +8,7 @@ import {
   Modal,
   Spin,
 } from 'antd';
-import { useGetBlogsDetailQuery, useUpdateBlogsMutation, useDeleteBlogsMutation } from '../../../features/blogs/blogsAPI';
+import { useGetAccountPersonnelQuery, useUpdateAccountPersonnelQuery,  } from '../../../features/account/accountAPI';
 import { Blogs } from '../../../types/blog';
 import { useRef, useState } from 'react';
 import ReactQuill from 'react-quill';

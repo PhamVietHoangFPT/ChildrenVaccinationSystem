@@ -99,6 +99,15 @@ export const accountApi = apiSlice.injectEndpoints({
       transformResponse: (res) => res,
       providesTags: ['account'],
     }),
+
+    getPersonnelDetail: build.query({
+      query: (id) => ({
+        url: `/accounts/personnel/${id}`,
+        method: 'GET',
+      }),
+      transformResponse: (res) => res,
+      providesTags: ['account'],
+    }),
   }),
 })
 
@@ -112,4 +121,5 @@ export const {
   useCreateACcountPersonnelQuery,
   useGetAccountPersonnelQuery,
   useUpdateAccountPersonnelQuery,
+  useGetPersonnelDetailQuery,
 } = accountApi
