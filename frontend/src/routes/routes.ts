@@ -31,6 +31,7 @@ import PaymentLayout from '../components/layout/PaymentLayout'
 import PaymentSuccess from '../Pages/Payment/PaymentSuccess'
 import PaymentFail from '../Pages/Payment/PaymentFail'
 import ManagerPersonnelList from '../Pages/Home/PersonnelManager/PersonnelListManager'
+import PersonnelDetailManager from '../Pages/Home/PersonnelManager/PersonnelDetailManager'
 
 const routes: LayoutRoute[] = [
   {
@@ -128,7 +129,7 @@ const routes: LayoutRoute[] = [
       },
       {
         path: '/manager/personnel/:id',
-        component: ManagerPersonnelList,
+        component: PersonnelDetailManager,
         exact: true,
         role: ['Manager'],
       },
