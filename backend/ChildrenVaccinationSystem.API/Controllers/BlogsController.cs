@@ -31,7 +31,21 @@ namespace ChildrenVaccinationSystem.API.Controllers
             ));
         }
 
-        [HttpGet("{id}")]
+		[HttpGet("minimal")]
+		public async Task<IActionResult> GetBlogsMinimal(int pageNumber = -1, int pageSize = -1)
+		{
+			BasePaginatedList<object> blogs = await _blogService.GetBlogsMinimal(pageNumber, pageSize);
+
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Lấy blogs thành công",
+				data: blogs
+			));
+		}
+
+
+		[HttpGet("{id}")]
         public async Task<IActionResult> GetBlogById(string id)
         {
             BlogViewDto blogs = await _blogService.GetBlogById(id);

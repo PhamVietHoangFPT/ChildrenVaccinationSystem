@@ -7,6 +7,8 @@ using ChildrenVaccinationSystem.Core.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
+using Net.payOS;
+using Net.payOS.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,7 +34,7 @@ namespace ChildrenVaccinationSystem.Services
 			_cache = cache;
 		}
 
-		public string CreatePaymentUrl(HttpContext context, List<Vaccination> vaccinations, double price, int code)
+		public string CreatePaymentUrlVnPay(HttpContext context, List<Vaccination> vaccinations, double price, int code)
 		{
 			// Get logged in User
 			//User currentUser = await _userService.GetCurrentUserAsync();
@@ -79,54 +81,7 @@ namespace ChildrenVaccinationSystem.Services
 			return paymentUrl;
 		}
 
-
-		//public string CreatePaymentUrl(HttpContext context, List<string> vaccinationIds)
-		//{
-		//	string vaccinationsJson = JsonSerializer.Serialize(vaccinationIds);
-		//	string uniqueKey = Guid.NewGuid().ToString("N"); // Generate short key
-
-		//	_cache.Set(uniqueKey, vaccinationsJson, TimeSpan.FromMinutes(5));
-
-
-
-		//	foreach (string id in vaccinationIds) 
-		//	{
-		//	}
-
-
-		//	var tick = DateTime.Now.Ticks.ToString();
-
-		//	VnPayHelper vnpay = new();
-
-
-		//	vnpay.AddRequestData("vnp_Version", _config["VnPay:Version"]!);
-		//	vnpay.AddRequestData("vnp_Command", _config["VnPay:Command"]!);
-		//	vnpay.AddRequestData("vnp_TmnCode", _config["VnPay:TmnCode"]!);
-		//	vnpay.AddRequestData("vnp_Amount", (price * 100).ToString());
-		//	//Số tiền thanh toán. Số tiền không 
-		//	//mang các ký tự phân tách thập phân, phần nghìn, ký tự tiền tệ. Để gửi số tiền thanh toán là 100,000 VND
-		//	//(một trăm nghìn VNĐ) thì merchant cần nhân thêm 100 lần(khử phần thập phân), sau đó gửi sang VNPAY
-		//	//là: 10000000
-
-		//	vnpay.AddRequestData("vnp_CreateDate", CoreHelper.SystemTimeNow.ToString("yyyyMMddHHmmss"));
-		//	vnpay.AddRequestData("vnp_CurrCode", _config["VnPay:CurrCode"]!);
-		//	vnpay.AddRequestData("vnp_IpAddr", Utils.GetIpAddress(context));
-		//	vnpay.AddRequestData("vnp_Locale", _config["VnPay:Locale"]!);
-		//	vnpay.AddRequestData("vnp_OrderInfo", uniqueKey);
-		//	vnpay.AddRequestData("vnp_OrderType", "other");
-		//	vnpay.AddRequestData("vnp_ReturnUrl", _config["VnPay:ReturnUrl"]!);
-		//	vnpay.AddRequestData("vnp_ExpireDate", CoreHelper.SystemTimeNow.AddMinutes(5).ToString("yyyyMMddHHmmss"));
-		//	vnpay.AddRequestData("vnp_TxnRef", $"{tick}");
-
-		//	var paymentUrl = vnpay.CreateRequestUrl(_config["VnPay:BaseUrl"]!, _config["VnPay:HashSecret"]!);
-
-		//	return paymentUrl;
-
-
-
-		//}
-
-		public VnPayResponseDto PaymentExecute(IQueryCollection collections)
+		public VnPayResponseDto PaymentExecuteVnPay(IQueryCollection collections)
 		{
 			VnPayHelper vnpay = new();
 			foreach (var (key, value) in collections)
@@ -190,7 +145,6 @@ namespace ChildrenVaccinationSystem.Services
 
 				}
 			}
-
 		}
 	}
 }
