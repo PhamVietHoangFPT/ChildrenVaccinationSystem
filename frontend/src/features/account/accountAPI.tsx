@@ -89,7 +89,7 @@ export const accountApi = apiSlice.injectEndpoints({
       providesTags: ['account'],
     }),
 
-    updateAccountPersonnel: build.query({
+    updateAccountPersonnel: build.mutation({
       query: ({ data, id }) => ({
         url: `/accounts/personnel`,
         method: 'PUT',
@@ -97,12 +97,12 @@ export const accountApi = apiSlice.injectEndpoints({
         body: data,
       }),
       transformResponse: (res) => res,
-      providesTags: ['account'],
+      invalidatesTags: ['account'],
     }),
 
     getPersonnelDetail: build.query({
       query: (id) => ({
-        url: `/accounts/personnel/${id}`,
+        url: `/accounts/${id}`,
         method: 'GET',
       }),
       transformResponse: (res) => res,
@@ -117,9 +117,10 @@ export const {
   useGetEmailResetValidQuery,
   useGetCustomerAccountsQuery,
   useGetMinimalCustomerAccountsQuery,
+
   useGetAccountPersonnelMinimalQuery,
   useCreateACcountPersonnelQuery,
   useGetAccountPersonnelQuery,
-  useUpdateAccountPersonnelQuery,
+  useUpdateAccountPersonnelMutation,
   useGetPersonnelDetailQuery,
 } = accountApi

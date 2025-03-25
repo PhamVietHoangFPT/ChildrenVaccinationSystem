@@ -64,6 +64,13 @@ const PersonnelListManager: React.FC = () => {
     },
 
     {
+      title: 'Role',
+      dataIndex: 'role',
+      key: 'role',
+      render: (role) => (role ? role : 'N/A'),
+    },
+
+    {
       title: 'Phone',
       dataIndex: 'phoneNumber',
       key: 'phoneNumber',
