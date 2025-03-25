@@ -14,6 +14,18 @@ const blogsApi = apiSlice.injectEndpoints({
       transformResponse: (res) => res,
       providesTags: ['blogs'],
     }),
+    getBlogsMinimalList: builder.query({
+      query: ({ pageNumber, pageSize }) => ({
+        url: '/blogs/minimal',
+        method: 'GET',
+        params: {
+          pageNumber,
+          pageSize,
+        },
+      }),
+      transformResponse: (res) => res,
+      providesTags: ['blogs'],
+    }),
     createBlogs: builder.mutation({
       query: (data) => ({
         url: '/blogs',
@@ -53,6 +65,7 @@ const blogsApi = apiSlice.injectEndpoints({
 
 export const {
   useGetBlogsListQuery,
+  useGetBlogsMinimalListQuery,
   useCreateBlogsMutation,
   useGetBlogsDetailQuery,
   useUpdateBlogsMutation,

@@ -1,7 +1,7 @@
 import { Typography, Button, Space, Carousel, Card } from 'antd'
 import { FC } from 'react'
 import { Vaccines } from '../../types/vaccine'
-
+import { useNavigate } from 'react-router-dom'
 const { Title, Text, Paragraph } = Typography
 
 interface VaccineSliderProps {
@@ -9,6 +9,7 @@ interface VaccineSliderProps {
 }
 
 export const VaccineSlider: FC<VaccineSliderProps> = ({ vaccines }) => {
+  const navigate = useNavigate()
   return (
     <Carousel
       autoplay
@@ -25,6 +26,9 @@ export const VaccineSlider: FC<VaccineSliderProps> = ({ vaccines }) => {
         <div key={vaccine.id}>
           <Card
             hoverable
+            onClick={() => {
+              navigate(`/vaccines/${vaccine.id}`)
+            }}
             style={{
               borderRadius: '12px',
               boxShadow: '0 4px 12px rgba(0,0,0,0.1)',

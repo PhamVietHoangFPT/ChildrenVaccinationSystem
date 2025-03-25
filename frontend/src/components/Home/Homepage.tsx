@@ -1,14 +1,10 @@
 import React from 'react'
 import { useGetVaccineListQuery } from '../../features/vaccine/vaccineAPI'
-import { Typography, Button, Row, Col, Collapse, Space } from 'antd'
+import { Typography, Button, Row, Col, Space } from 'antd'
 import { CalendarOutlined, LoadingOutlined } from '@ant-design/icons'
 import Logo from '../../assets/Logo.png'
 import { Vaccines } from '../../types/vaccine'
 import { VaccineSlider } from '../Vaccine/VaccineSlider'
-interface FAQ {
-  question: string
-  answer: string
-}
 interface VaccineListResponse {
   data: {
     data: {
@@ -18,39 +14,15 @@ interface VaccineListResponse {
   isLoading: boolean
 }
 
-const { Title, Paragraph, Text } = Typography
-const { Panel } = Collapse
+const { Title, Paragraph } = Typography
 
 const Homepage: React.FC = () => {
   const { data, isLoading } = useGetVaccineListQuery<VaccineListResponse>({
     pageNumber: 1,
-    pageSize: 10,
+    pageSize: 5,
   })
 
   const dataVaccine = data?.data.items ?? []
-
-  const faqs: FAQ[] = [
-    {
-      question: 'Is vaccination safe?',
-      answer:
-        'Yes, vaccines undergo rigorous testing and monitoring to ensure they are safe before they are approved for use. The benefits of vaccination far outweigh the potential risks for most people.',
-    },
-    {
-      question: 'What are the side effects?',
-      answer:
-        'Common side effects include soreness at the injection site, mild fever, and fatigue, which typically resolve within a few days. Serious side effects are extremely rare.',
-    },
-    {
-      question: 'Who should get vaccinated?',
-      answer:
-        'Most people should get vaccinated according to the recommended schedule, but specific recommendations may vary based on age, health conditions, and other factors. Consult with your healthcare provider for personalized advice.',
-    },
-    {
-      question: 'How long does immunity last after vaccination?',
-      answer:
-        'The duration of immunity varies by vaccine. Some vaccines provide lifelong protection, while others may require booster doses. Research is ongoing for newer vaccines to determine the duration of protection.',
-    },
-  ]
 
   return (
     <div
@@ -128,33 +100,6 @@ const Homepage: React.FC = () => {
           ) : (
             <VaccineSlider vaccines={dataVaccine as Vaccines[]} />
           )}
-        </div>
-
-        {/*Phan nay cua FAQS*/}
-        <div style={{ marginBottom: '48px' }}>
-          <Title
-            level={2}
-            style={{ textAlign: 'center', marginBottom: '32px' }}
-          >
-            Frequently Asked Questions
-          </Title>
-          <Row justify='center'>
-            <Col xs={24} md={20} lg={18}>
-              <Collapse defaultActiveKey={['0']} expandIconPosition='right'>
-                {faqs.map((faq, index) => (
-                  <Panel
-                    header={<Text strong>{faq.question}</Text>}
-                    key={index}
-                  >
-                    <Paragraph>{faq.answer}</Paragraph>
-                  </Panel>
-                ))}
-              </Collapse>
-              <div style={{ textAlign: 'center', marginTop: '24px' }}>
-                <Button type='primary'>View All FAQs</Button>
-              </div>
-            </Col>
-          </Row>
         </div>
       </div>
     </div>
