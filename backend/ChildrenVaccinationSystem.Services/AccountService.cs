@@ -227,25 +227,15 @@ namespace ChildrenVaccinationSystem.Services
 				throw new ErrorException(401, "not_found", "Không tìm thấy account id");
 			}
 
-			if (personnelUpdateDto.Email != null)
+			if (personnelUpdateDto.Email != null && personnelUpdateDto.Email != account.Email)
 			{
 				Account? existingAccount = await _unitOfWork.GetRepository<Account>().Entities.Where(a => a.Email == personnelUpdateDto.Email && a.DeletedBy == null).FirstOrDefaultAsync();
 
 				if (existingAccount != null)
 				{
-					throw new BaseException.ErrorException(409, "conflict", "Email này đã được sử dụng, vui lòng thử lại");
+					throw new ErrorException(409, "conflict", "Email này đã được sử dụng, vui lòng thử lại");
 				}
 			}
-
-
-			if (personnelUpdateDto.FacilityId != null && !_unitOfWork.IsValid<Facility>(personnelUpdateDto.FacilityId))
-			{
-				throw new ErrorException(404, "not_found", "Không tìm thấy facility id");
-			}
-
-			if (personnelUpdateDto.Role != null && personnelUpdateDto.Role != RoleEnum.Staff && personnelUpdateDto.Role != RoleEnum.Vaccinator && personnelUpdateDto.Role != RoleEnum.Doctor)
-				throw new ErrorException(404, "not_found", "Nhập sai role của nhân sự");
-
 
 			_mapper.Map(personnelUpdateDto, account);
 
@@ -256,7 +246,6 @@ namespace ChildrenVaccinationSystem.Services
 				account.Password = hashedPassword;
 			}
 			_authenticationService.UpdateAudits(account, false);
-
 
 			await _unitOfWork.GetRepository<Account>().UpdateAsync(account);
 			await _unitOfWork.SaveAsync();
