@@ -1,12 +1,12 @@
 import { Outlet, useNavigate } from 'react-router-dom'
 import { Layout, Typography } from 'antd'
-import {} from '@ant-design/icons'
-import { SideBarDoctor } from './SideBarDoctor/SideBarDoctor'
+import { } from '@ant-design/icons'
 import Cookies from 'js-cookie'
 import { useEffect } from 'react'
+import SideBarDoctor from './SideBarDoctor/SideBarDoctor'
 
 const { Header, Content, Footer } = Layout
-const { Title, Text } = Typography
+const { Text } = Typography
 
 export const DoctorLayout = () => {
   const navigate = useNavigate()
@@ -49,9 +49,6 @@ export const DoctorLayout = () => {
             zIndex: 1,
           }}
         >
-          <Title level={4} style={{ margin: 0 }}>
-            Vaccination Doctor
-          </Title>
         </Header>
 
         <Content style={{ margin: '24px' }}>
