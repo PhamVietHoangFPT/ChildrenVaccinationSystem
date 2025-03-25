@@ -8,7 +8,6 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   HomeOutlined,
-  TeamOutlined,
   MedicineBoxOutlined,
 } from '@ant-design/icons'
 import Cookies from 'js-cookie'
@@ -59,12 +58,6 @@ export const SideBar = () => {
       icon: <HomeOutlined />,
       label: 'Manage Staff',
       onClick: () => navigate('/manager/personnel'),
-    },
-    {
-      key: 'manager/view',
-      icon: <TeamOutlined />,
-      label: 'View all customers',
-      onClick: () => navigate('/manager/view'),
     },
     {
       key: 'manager/vaccine',
