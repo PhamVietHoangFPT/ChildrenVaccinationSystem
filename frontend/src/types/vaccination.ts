@@ -13,3 +13,18 @@ export interface Vaccination {
   vaccine?: Vaccines
   price?: number
 }
+
+export interface AllVaccinationHistory {
+  category: {
+    name: string
+  }
+  vaccinations: VaccinationHistory[]
+}
+
+export interface VaccinationHistory {
+  id: string
+  schedule: Date
+  status: string
+  name: string
+  currentSequence: number
+}
