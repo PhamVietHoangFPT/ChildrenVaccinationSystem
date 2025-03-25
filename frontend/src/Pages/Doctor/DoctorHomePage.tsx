@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { Vaccination } from '../../types/vaccination';
 import { useSearchParams } from 'react-router-dom';
-import { useGetVaccinationListDoctorQuery } from '../../features/vaccinations/vaccinationAPI';
+import { useGetVaccinationListDoctorQuery, useUpdateVaccinationStatusMutation } from '../../features/vaccinations/vaccinationAPI';
 import {
   CheckCircleOutlined,
+  CheckOutlined,
   ClockCircleOutlined,
   EditOutlined,
   ExclamationCircleOutlined,
@@ -12,7 +13,7 @@ import {
   SyncOutlined,
 } from '@ant-design/icons';
 import dayjs from 'dayjs'
-import { Button, Table, Tag } from 'antd';
+import { Button, message, Table, Tag } from 'antd';
 import ChildrenDetailModalDoctor from '../../components/Modal/ChildrenDoctor.modal';
 interface VaccinationListResponse {
   data: {
@@ -46,7 +47,7 @@ const DoctorHomePage: React.FC = () => {
 
   const dataVaccinations = vaccinations?.data.items ?? [];
   const totalVaccinations = vaccinations?.data.totalItems ?? 0;
-
+  const [updateVaccinationStatus, { isLoading: isUpdating }] = useUpdateVaccinationStatusMutation();
   // Update URL search params for pagination, date filters, status, and childCode
   useEffect(() => {
     const params: { [key: string]: string } = {
@@ -69,6 +70,16 @@ const DoctorHomePage: React.FC = () => {
       />
     );
   }
+
+  const handleStatusChangeClick = async (id: string, newStatus: number) => {
+    try {
+      await updateVaccinationStatus({ id, status: newStatus }).unwrap();
+      message.success('Status updated successfully');
+    } catch (error) {
+      console.error('Failed to update status:', error);
+      message.error('Failed to update status');
+    }
+  };
 
   const columns = [
     {
@@ -153,7 +164,22 @@ const DoctorHomePage: React.FC = () => {
         />
       ),
     },
-
+    {
+      title: 'Go to queue',
+      key: 'changeStatus',
+      render: (_: any, record: Vaccination) => (
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Button
+            type="primary"
+            loading={isUpdating}
+            onClick={() => handleStatusChangeClick(record.id, 3)}
+            disabled={isUpdating}
+          >
+            <CheckOutlined />
+          </Button>
+        </div>
+      ),
+    },
   ];
 
   // Handle modal close and refetch data after update
