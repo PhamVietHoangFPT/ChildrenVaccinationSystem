@@ -32,6 +32,7 @@ export const customerAPI = apiSlice.injectEndpoints({
       transformResponse: (res) => res,
       invalidatesTags: ['customers'],
     }),
+  
   }),
 })
 export const {

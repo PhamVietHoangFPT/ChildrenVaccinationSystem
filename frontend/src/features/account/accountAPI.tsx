@@ -99,6 +99,15 @@ export const accountApi = apiSlice.injectEndpoints({
       transformResponse: (res) => res,
       providesTags: ['account'],
     }),
+    createAccountForCustomer: build.mutation({
+      query: ({ data }) => ({
+        url: '/accounts/customer',
+        method: 'POST',
+        body: data,
+      }),
+      transformResponse: (res) => res,
+      invalidatesTags: ['account'],
+    }),
   }),
 })
 
@@ -108,4 +117,9 @@ export const {
   useGetEmailResetValidQuery,
   useGetCustomerAccountsQuery,
   useGetMinimalCustomerAccountsQuery,
+  useGetAccountPersonnelMinimalQuery,
+  useCreateACcountPersonnelQuery,
+  useGetAccountPersonnelQuery,
+  useUpdateAccountPersonnelQuery,
+  useCreateAccountForCustomerMutation
 } = accountApi

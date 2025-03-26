@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom'
 import {
   Form,
   Input,
@@ -10,107 +10,111 @@ import {
   Table,
   Space,
   Pagination,
-} from 'antd';
-import { DeleteOutlined } from '@ant-design/icons';
+} from 'antd'
+import { DeleteOutlined } from '@ant-design/icons'
 import {
   useGetPackageDetailQuery,
   useUpdatePackageMutation,
   useAddVaccineToPackageMutation,
   useDeleteVaccineFromPackageMutation,
-} from '../../../features/package/packageAPI';
-import { useGetVaccineListMiniMalQuery } from '../../../features/vaccine/vaccineAPI';
+} from '../../../features/package/packageAPI'
+import { useGetVaccineListMiniMalQuery } from '../../../features/vaccine/vaccineAPI'
 
-import { Packages } from '../../../types/package';
-import { Vaccines } from '../../../types/vaccine';
-import { useState } from 'react';
+import { Packages } from '../../../types/package'
+import { Vaccines } from '../../../types/vaccine'
+import { useState } from 'react'
 
-const { Title } = Typography;
+const { Title } = Typography
 
 interface PackageDetailResponse {
   data: {
-    data: Packages;
-    totalItems: number;
-  };
-  isLoading: boolean;
+    data: Packages
+    totalItems: number
+  }
+  isLoading: boolean
 }
 
 interface VaccinesListResponse {
   data: {
     data: {
-      items: Vaccines[];
-      totalItems: number;
-    };
-  };
-  isLoading: boolean;
-  isFetching: boolean;
+      items: Vaccines[]
+      totalItems: number
+    }
+  }
+  isLoading: boolean
+  isFetching: boolean
 }
 
 const ManagerPackageDetail: React.FC = () => {
-  const navigate = useNavigate();
-  const { id } = useParams();
-  const [loadingAddVaccine, setLoadingAddVaccine] = useState<boolean>(false);
+  const navigate = useNavigate()
+  const { id } = useParams()
+  const [loadingAddVaccine, setLoadingAddVaccine] = useState<boolean>(false)
 
-  const { data, isLoading, refetch } = useGetPackageDetailQuery<PackageDetailResponse>(
-    id as string
-  );
+  const { data, isLoading, refetch } =
+    useGetPackageDetailQuery<PackageDetailResponse>(id as string)
 
-  const [pageNumber, setPageNumber] = useState(1);
-  const [pageSize, setPageSize] = useState(7);
+  const [pageNumber, setPageNumber] = useState(1)
+  const [pageSize, setPageSize] = useState(7)
 
-  const { data: vaccineData, isLoading: vaccineDataLoading, isFetching: vaccineDataFetching } =
-    useGetVaccineListMiniMalQuery<VaccinesListResponse>({
-      pageNumber: pageNumber,
-      pageSize: pageSize,
-    });
+  const {
+    data: vaccineData,
+    isLoading: vaccineDataLoading,
+    isFetching: vaccineDataFetching,
+  } = useGetVaccineListMiniMalQuery<VaccinesListResponse>({
+    pageNumber: pageNumber,
+    pageSize: pageSize,
+  })
 
-  const [updatePackage] = useUpdatePackageMutation();
-  const [addVaccineToPackage] = useAddVaccineToPackageMutation();
-  const [deleteVaccineFromPackage] = useDeleteVaccineFromPackageMutation();
+  const [updatePackage] = useUpdatePackageMutation()
+  const [addVaccineToPackage] = useAddVaccineToPackageMutation()
+  const [deleteVaccineFromPackage] = useDeleteVaccineFromPackageMutation()
 
-  const [form] = Form.useForm();
+  const [form] = Form.useForm()
 
-  const [discountPercent, setDiscountPercent] = useState<number>(0);
+  const [discountPercent, setDiscountPercent] = useState<number>(0)
 
   const handleSave = async (values: any) => {
     try {
       if (discountPercent < 1 || discountPercent > 10) {
-        message.error('Chỉ được giảm từ 1% đến 10%');
-        return;
+        message.error('Chỉ được giảm từ 1% đến 10%')
+        return
       }
 
       const packageData = {
         name: values.name,
         price: getDiscountedPrice(),
         description: values.description || '',
-      };
+      }
 
       const dataUpdate = (await updatePackage({
         id,
         data: packageData,
-      }).unwrap()) as { message: string };
+      }).unwrap()) as { message: string }
 
-      message.success(dataUpdate.message);
+      message.success(dataUpdate.message)
     } catch (error: any) {
-      message.error(error.message);
+      message.error(error.message)
     }
-  };
+  }
 
   const handleAddVaccineToPackage = async (vaccineId: string) => {
     try {
-      setLoadingAddVaccine(true);
+      setLoadingAddVaccine(true)
       await addVaccineToPackage({
         id: id as string,
         vaccineId: vaccineId,
-      }).unwrap();
+      }).unwrap()
 
-      message.success('Thêm vaccine thành công');
-      refetch();
+      message.success('Thêm vaccine thành công')
+      refetch()
     } catch (error: any) {
-      message.error('Lỗi khi thêm vaccine: ' + (error.message || 'Unknown error'));
+      message.error(
+        'Lỗi khi thêm vaccine: ' + (error.message || 'Unknown error')
+      )
     } finally {
-      setLoadingAddVaccine(false);
+      setLoadingAddVaccine(false)
     }
-  };
+  }
 
   const handleDeleteVaccine = (vaccineId: string) => {
     Modal.confirm({
@@ -124,49 +128,50 @@ const ManagerPackageDetail: React.FC = () => {
           await deleteVaccineFromPackage({
             id: id as string,
             vaccineId: vaccineId,
-          }).unwrap();
+          }).unwrap()
 
-          message.success('Xóa vaccine thành công');
-          refetch();
+          message.success('Xóa vaccine thành công')
+          refetch()
         } catch (error: any) {
-          message.error('Lỗi khi xóa vaccine: ' + error.message);
+          message.error('Lỗi khi xóa vaccine: ' + error.message)
         }
       },
-    });
-  };
+    })
+  }
 
-  const transformedVaccines = data?.data.packageItems?.map((item) => item.vaccine) || [];
+  const transformedVaccines =
+    data?.data.packageItems?.map((item) => item.vaccine) || []
 
   const calculateTotalPrice = () => {
     return data.data.packageItems.reduce((sum, item) => {
       if (item.vaccine && typeof item.vaccine.price === 'number') {
-        return sum + item.vaccine.price;
+        return sum + item.vaccine.price
       }
-      return sum;
-    }, 0);
-  };
+      return sum
+    }, 0)
+  }
 
   const getDiscountedPrice = () => {
-    const total = calculateTotalPrice();
-    const discount = discountPercent || 0;
-    return total - total * (discount / 100);
-  };
+    const total = calculateTotalPrice()
+    const discount = discountPercent || 0
+    return total - total * (discount / 100)
+  }
 
   if (isLoading) {
     return (
       <div style={{ textAlign: 'center', marginTop: '50px' }}>
-        <Spin size="large" />
+        <Spin size='large' />
       </div>
-    );
+    )
   }
 
   if (!data) {
-    return <div>Không tìm thấy Package</div>;
+    return <div>Không tìm thấy Package</div>
   }
 
   const initialValues = {
     ...data.data,
-  };
+  }
 
   return (
     <div style={{ padding: '24px' }}>
@@ -174,59 +179,70 @@ const ManagerPackageDetail: React.FC = () => {
 
       <Form
         form={form}
-        layout="vertical"
+        layout='vertical'
         onFinish={handleSave}
         initialValues={initialValues}
       >
-        <Form.Item name="id" hidden>
+        <Form.Item name='id' hidden>
           <Input />
         </Form.Item>
 
         <Form.Item
-          label="Tên Package"
-          name="name"
+          label='Tên Package'
+          name='name'
           rules={[{ required: true, message: 'Vui lòng nhập tên Package' }]}
         >
           <Input />
         </Form.Item>
 
-        <Form.Item label="Mô tả" name="description">
+        <Form.Item label='Mô tả' name='description'>
           <Input.TextArea rows={3} />
         </Form.Item>
 
-        <Form.Item label="Giảm giá (%)">
-  <Input
-    type="number"
-    min={1}
-    max={10}
-    value={discountPercent}
-    onChange={(e) => {
-      const value = Number(e.target.value);
-      if (value >= 1 && value <= 10) {
-        setDiscountPercent(value);
-      } else {
-        message.warning('Chỉ cho phép từ 1% đến 10%');
-      }
-    }}
-    style={{ width: '150px' }}
-  />
-</Form.Item>
+        <Form.Item label='Giảm giá (%)'>
+          <Input
+            type='number'
+            min={1}
+            max={10}
+            value={discountPercent}
+            onChange={(e) => {
+              const value = Number(e.target.value)
+              if (value >= 1 && value <= 10) {
+                setDiscountPercent(value)
+              } else {
+                message.warning('Chỉ cho phép từ 1% đến 10%')
+              }
+            }}
+            style={{ width: '150px' }}
+          />
+        </Form.Item>
 
-<div style={{ marginTop: '20px' }}>
-  <div style={{ fontSize: '21px', fontWeight: 'bold', color: 'red' }}>
-    <span>Giá trước khi giảm: </span>
-    <span>{new Intl.NumberFormat('en-US').format(calculateTotalPrice())} VND</span>
-  </div>
-  <div style={{ fontSize: '21px', fontWeight: 'bold', color: 'green', marginTop: '10px' }}>
-    <span>Giá sau khi giảm: </span>
-    <span>{new Intl.NumberFormat('en-US').format(getDiscountedPrice())} VND</span>
-  </div>
-</div>
+        <div style={{ marginTop: '20px' }}>
+          <div style={{ fontSize: '21px', fontWeight: 'bold', color: 'red' }}>
+            <span>Giá trước khi giảm: </span>
+            <span>
+              {new Intl.NumberFormat('en-US').format(calculateTotalPrice())} VND
+            </span>
+          </div>
+          <div
+            style={{
+              fontSize: '21px',
+              fontWeight: 'bold',
+              color: 'green',
+              marginTop: '10px',
+            }}
+          >
+            <span>Giá sau khi giảm: </span>
+            <span>
+              {new Intl.NumberFormat('en-US').format(getDiscountedPrice())} VND
+            </span>
+          </div>
+        </div>
 
         <Table
           dataSource={vaccineData?.data.items}
           loading={vaccineDataLoading || vaccineDataFetching}
-          rowKey="id"
+          rowKey='id'
           pagination={false}
           columns={[
             {
@@ -238,18 +254,20 @@ const ManagerPackageDetail: React.FC = () => {
               title: 'Giá',
               dataIndex: 'price',
               key: 'price',
-              render: (price) => `${new Intl.NumberFormat('en-US').format(price || 0)} `,
+              render: (price) =>
+                `${new Intl.NumberFormat('en-US').format(price || 0)} `,
             },
             {
               title: 'Hành động',
               key: 'action',
               render: (_, record) => (
-                <Space size="middle">
+                <Space size='middle'>
                   <Button
-                    type="primary"
+                    type='primary'
                     onClick={() => handleAddVaccineToPackage(record.id)}
                     disabled={transformedVaccines?.some(
-                      (transformedVaccine) => transformedVaccine.id === record.id
+                      (transformedVaccine) =>
+                        transformedVaccine.id === record.id
                     )}
                     loading={loadingAddVaccine}
                   >
@@ -267,8 +285,8 @@ const ManagerPackageDetail: React.FC = () => {
             total={vaccineData?.data.totalItems}
             style={{ textAlign: 'center' }}
             onChange={(page, size) => {
-              setPageNumber(page);
-              setPageSize(size);
+              setPageNumber(page)
+              setPageSize(size)
             }}
           />
         )}
@@ -277,7 +295,7 @@ const ManagerPackageDetail: React.FC = () => {
           <Title level={4}>Danh sách Vaccine đã chọn</Title>
           <Table
             dataSource={transformedVaccines}
-            rowKey="id"
+            rowKey='id'
             columns={[
               {
                 title: 'Tên',
@@ -288,13 +306,14 @@ const ManagerPackageDetail: React.FC = () => {
                 title: 'Giá',
                 dataIndex: 'price',
                 key: 'price',
-                render: (price) => `${new Intl.NumberFormat('en-US').format(price || 0)} `,
+                render: (price) =>
+                  `${new Intl.NumberFormat('en-US').format(price || 0)} `,
               },
               {
                 title: 'Hành động',
                 key: 'action',
                 render: (_, record) => (
-                  <Space size="middle">
+                  <Space size='middle'>
                     <Button
                       danger
                       icon={<DeleteOutlined />}
@@ -312,7 +331,7 @@ const ManagerPackageDetail: React.FC = () => {
         {/* Nút Lưu ở dưới cùng */}
         <Form.Item>
           <div style={{ display: 'flex', gap: '16px', marginTop: '24px' }}>
-            <Button type="primary" htmlType="submit">
+            <Button type='primary' htmlType='submit'>
               Lưu
             </Button>
             <Button onClick={() => navigate('/manager/package')}>
@@ -322,7 +341,7 @@ const ManagerPackageDetail: React.FC = () => {
         </Form.Item>
       </Form>
     </div>
-  );
-};
+  )
+}
 
-export default ManagerPackageDetail;
+export default ManagerPackageDetail
