@@ -119,7 +119,7 @@ namespace ChildrenVaccinationSystem.Services
         {
 
             IQueryable<Vaccine> query = _unitOfWork.GetRepository<Vaccine>().Entities
-				.Where(v => (string.IsNullOrWhiteSpace(name) || (v.Name.Contains(name))) && (string.IsNullOrWhiteSpace(categoryName) || (v.Category.Name.Contains(categoryName))) && (string.IsNullOrWhiteSpace(manufacturerCountry) || (v.Manufacturer.Country.Name.Contains(manufacturerCountry))) && v.DeletedBy == null);
+				.Where(v => (string.IsNullOrWhiteSpace(name) || v.Name.ToLower().Contains(name.ToLower())) && (string.IsNullOrWhiteSpace(categoryName) || (v.Category.Name.Contains(categoryName))) && (string.IsNullOrWhiteSpace(manufacturerCountry) || (v.Manufacturer.Country.Name.Contains(manufacturerCountry))) && v.DeletedBy == null);
 
 
 
