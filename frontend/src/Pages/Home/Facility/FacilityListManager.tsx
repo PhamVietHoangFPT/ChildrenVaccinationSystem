@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { Table, Button, Input, Typography, Spin, Pagination, Space } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
-import { EyeOutlined, SearchOutlined, PlusOutlined, ContainerOutlined } from '@ant-design/icons'
+import {
+  EyeOutlined,
+  SearchOutlined,
+  PlusOutlined,
+  ContainerOutlined,
+} from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 
 import { useGetFacilitiesListQuery } from '../../../features/facilities/facilitiesAPI'
@@ -25,17 +30,18 @@ const ManagerFacilityList: React.FC = () => {
   const [pageNumber, setPageNumber] = useState<number>(1)
   const [pageSize, setPageSize] = useState<number>(10)
   const [debouncedSearchText, setDebouncedSearchText] = useState('')
-  
-  const { data, isLoading, isFetching } = useGetFacilitiesListQuery<FacilitiesListResponse>({
-    pageNumber: pageNumber,
-    pageSize: pageSize,
-    name: debouncedSearchText,
-  })
+
+  const { data, isLoading, isFetching } =
+    useGetFacilitiesListQuery<FacilitiesListResponse>({
+      pageNumber: pageNumber,
+      pageSize: pageSize,
+      name: debouncedSearchText,
+    })
 
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearchText(searchText)
-    }, 500) 
+    }, 500)
 
     return () => {
       clearTimeout(handler)
@@ -52,17 +58,24 @@ const ManagerFacilityList: React.FC = () => {
     {
       key: 'actions',
       render: (_, record) => (
-        <Space size="middle" style={{ justifyContent: 'right', width: '100%', marginLeft: '-65px' }}>
+        <Space
+          size='middle'
+          style={{
+            justifyContent: 'right',
+            width: '100%',
+            marginLeft: '-65px',
+          }}
+        >
           <Button
-            type="primary"
+            type='primary'
             icon={<EyeOutlined />}
             onClick={() => navigate(`/manager/facility/${record.id}`)}
           >
             Details
           </Button>
           <Button
-            type="primary"
-            icon={<ContainerOutlined />}  
+            type='primary'
+            icon={<ContainerOutlined />}
             onClick={() => navigate(`/manager/facility/inventory/${record.id}`)}
           >
             Inventory
@@ -85,7 +98,7 @@ const ManagerFacilityList: React.FC = () => {
         }}
       >
         <Input
-          placeholder="Search by facility name"
+          placeholder='Search by facility name'
           prefix={<SearchOutlined />}
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
@@ -105,20 +118,20 @@ const ManagerFacilityList: React.FC = () => {
         <Spin />
       ) : (
         <>
-        <Table
-            dataSource={data?.data?.items} 
+          <Table
+            dataSource={data?.data?.items}
             columns={columns}
-            rowKey="id"  
+            rowKey='id'
             pagination={false}
             loading={isFetching}
-        />
+          />
           {!isLoading && (
             <Pagination
               current={pageNumber}
               pageSize={pageSize}
               total={data?.totalItems}
               style={{ textAlign: 'center' }}
-              align="center"
+              align='center'
               onChange={(page, size) => {
                 setPageNumber(page)
                 setPageSize(size)

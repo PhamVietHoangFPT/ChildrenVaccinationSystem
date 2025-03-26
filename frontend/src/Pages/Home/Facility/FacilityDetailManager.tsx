@@ -1,59 +1,63 @@
-import { useParams, useNavigate } from 'react-router-dom';
-import { Form, Input, Button, Typography, message, Spin } from 'antd';
-import { useGetFacilitiesDetailQuery, useUpdateFacilitiesMutation } from '../../../features/facilities/facilitiesAPI';
-import { Facilities } from '../../../types/facilities';
+import { useParams, useNavigate } from 'react-router-dom'
+import { Form, Input, Button, Typography, message, Spin } from 'antd'
+import {
+  useGetFacilitiesDetailQuery,
+  useUpdateFacilitiesMutation,
+} from '../../../features/facilities/facilitiesAPI'
+import { Facilities } from '../../../types/facilities'
 
-const { Title } = Typography;
+const { Title } = Typography
 
 interface FacilityDetailResponse {
   data: {
-    data: Facilities;
-  };
-  isLoading: boolean;
+    data: Facilities
+  }
+  isLoading: boolean
 }
 
 const ManagerFacilityDetail: React.FC = () => {
-  const navigate = useNavigate();
-  const { id } = useParams();
-  
-  const { data, isLoading } = useGetFacilitiesDetailQuery<FacilityDetailResponse>(id as string);
-  
-  const [updateFacility] = useUpdateFacilitiesMutation();
-  
-  const [form] = Form.useForm();
+  const navigate = useNavigate()
+  const { id } = useParams()
+
+  const { data, isLoading } =
+    useGetFacilitiesDetailQuery<FacilityDetailResponse>(id as string)
+
+  const [updateFacility] = useUpdateFacilitiesMutation()
+
+  const [form] = Form.useForm()
 
   const handleSave = async (values: any) => {
     try {
       const facilityData = {
-        address: values.address, 
-      };
+        address: values.address,
+      }
 
       const dataUpdate = (await updateFacility({
         id,
         data: facilityData,
-      }).unwrap()) as { message: string };
+      }).unwrap()) as { message: string }
 
-      message.success(dataUpdate.message);
+      message.success(dataUpdate.message)
     } catch (error: any) {
-      message.error('Lỗi khi cập nhật địa chỉ: ' + error.message);
+      message.error('Lỗi khi cập nhật địa chỉ: ' + error.message)
     }
-  };
+  }
 
   if (isLoading) {
     return (
       <div style={{ textAlign: 'center', marginTop: '50px' }}>
-        <Spin size="large" />
+        <Spin size='large' />
       </div>
-    );
+    )
   }
 
   if (!data) {
-    return <div>Không tìm thấy Facility</div>;
+    return <div>Không tìm thấy Facility</div>
   }
 
   const initialValues = {
     address: data.data.address,
-  };
+  }
 
   return (
     <div style={{ padding: '24px' }}>
@@ -61,17 +65,23 @@ const ManagerFacilityDetail: React.FC = () => {
 
       <Form
         form={form}
-        layout="vertical"
+        layout='vertical'
         initialValues={initialValues}
         onFinish={handleSave}
       >
-        <Form.Item label="Địa chỉ Facility" name="address" rules={[{ required: true, message: 'Vui lòng nhập địa chỉ facility' }]}>
+        <Form.Item
+          label='Địa chỉ Facility'
+          name='address'
+          rules={[
+            { required: true, message: 'Vui lòng nhập địa chỉ facility' },
+          ]}
+        >
           <Input />
         </Form.Item>
 
         <Form.Item>
           <div style={{ display: 'flex', gap: '16px', marginTop: '24px' }}>
-            <Button type="primary" htmlType="submit">
+            <Button type='primary' htmlType='submit'>
               Lưu
             </Button>
             <Button onClick={() => navigate('/manager/facility')}>
@@ -81,7 +91,7 @@ const ManagerFacilityDetail: React.FC = () => {
         </Form.Item>
       </Form>
     </div>
-  );
-};
+  )
+}
 
-export default ManagerFacilityDetail;
+export default ManagerFacilityDetail

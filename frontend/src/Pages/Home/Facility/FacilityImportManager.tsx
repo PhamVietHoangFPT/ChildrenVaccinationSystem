@@ -1,40 +1,63 @@
-import { Form, Input, Button, Select, message, Spin, Typography } from 'antd';
-import { useImportFacilitiesMutation } from '../../../features/facilities/facilitiesAPI';
-import {   useGetVaccineListMiniMalQuery } from '../../../features/vaccine/vaccineAPI';
-import { useParams, useNavigate } from 'react-router-dom';
+import { Form, Input, Button, Select, message, Spin, Typography } from 'antd'
+import { useImportFacilitiesMutation } from '../../../features/facilities/facilitiesAPI'
+import { useGetVaccineListMiniMalQuery } from '../../../features/vaccine/vaccineAPI'
+import { useParams, useNavigate } from 'react-router-dom'
+import { Vaccines } from '../../../types/vaccine'
+const { Title } = Typography
 
-const { Title } = Typography;
+interface VaccineDataResponse {
+  data: {
+    data: {
+      items: Vaccines[]
+    }
+  }
+  isLoading: boolean
+}
 
 const ManagerFacilityImport: React.FC = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
+  const { id } = useParams()
+  const navigate = useNavigate()
 
   // Hook to fetch vaccine list
-  const { data: vaccineData, isLoading: vaccineLoading } = useGetVaccineListMiniMalQuery({ pageNumber: 1, pageSize: 100 });
+  const { data: vaccineData, isLoading: vaccineLoading } =
+    useGetVaccineListMiniMalQuery<VaccineDataResponse>({
+      pageNumber: 1,
+      pageSize: 100,
+    })
 
-  const [, { isLoading }] = useImportFacilitiesMutation();
-  const [form] = Form.useForm();
+  const [importFacilities, { isLoading }] = useImportFacilitiesMutation()
+  const [form] = Form.useForm()
 
   // Handle form submission
   const handleSubmit = async (values: any) => {
     try {
       // Prepare the data for import
       const importData = {
-        facilityId: id, 
+        facilityId: id,
         vaccineImports: values.vaccineImports.map((vaccine: any) => ({
           vaccineId: vaccine.vaccineId,
           stock: vaccine.stock,
-        }))
-      };
+        })),
+      }
 
-      await useImportFacilitiesMutation(importData); 
+      const dataResponse = (await importFacilities(importData).unwrap()) as {
+        message: string
+      }
 
-      message.success('Vaccines imported successfully');
-      navigate(`/manager/facility/${id}`);
+      message.success(dataResponse.message)
+      navigate(`/manager/facility/inventory/${id}`)
     } catch (error: any) {
-      message.error('Error importing vaccines: ' + (error.message || 'Unknown error'));
+      message.error(error.data.error)
     }
-  };
+  }
+
+  const handleSelectChange = (selectedValues: string[]) => {
+    const selectedVaccines = selectedValues.map((vaccineId) => ({
+      vaccineId,
+      stock: '',
+    }))
+    form.setFieldsValue({ vaccineImports: selectedVaccines })
+  }
 
   return (
     <div style={{ padding: '24px' }}>
@@ -42,104 +65,116 @@ const ManagerFacilityImport: React.FC = () => {
 
       {vaccineLoading || isLoading ? (
         <div style={{ textAlign: 'center', marginTop: '50px' }}>
-          <Spin size="large" />
+          <Spin size='large' />
         </div>
       ) : (
         <Form
           form={form}
-          layout="vertical"
+          layout='vertical'
           onFinish={handleSubmit}
           style={{ maxWidth: '600px', margin: 'auto' }}
         >
-          {/* Dynamic Vaccine Select */}
+          {/* Chọn danh sách vaccine */}
           <Form.Item
-            label="Select Vaccines"
-            name="vaccineImports"
-            rules={[{ required: true, message: 'Please select at least one vaccine' }]}
+            label='Select Vaccines'
+            name='selectedVaccines'
+            rules={[
+              { required: true, message: 'Please select at least one vaccine' },
+            ]}
           >
             <Select
-              mode="multiple"
-              placeholder="Select vaccines"
-              optionLabelProp="label"
+              mode='multiple'
+              placeholder='Select vaccines'
+              onChange={handleSelectChange}
               allowClear
             >
-              {vaccineData?.data.items.map((vaccine: any) => (
-                <Select.Option key={vaccine.id} value={vaccine.id} label={vaccine.name}>
+              {vaccineData?.data.items.map((vaccine) => (
+                <Select.Option key={vaccine.id} value={vaccine.id}>
                   {vaccine.name}
                 </Select.Option>
               ))}
             </Select>
           </Form.Item>
 
-          <Form.List
-            name="vaccineImports"
-            initialValue={[]}
-            rules={[
-              {
-                validator: async(_, names) => {
-                  if (!names || names.length < 1) {
-                    return Promise.reject(new Error('At least one vaccine import is required'));
-                  }
-                },
-              },
-            ]}
-          >
-            {(fields, { add, remove }) => (
+          {/* Danh sách vaccine đã chọn */}
+          <Form.List name='vaccineImports'>
+            {(fields, { remove }) => (
               <>
-                {fields.map(({ key, fieldKey, name, fieldNames, ...restField }) => (
-                  <div key={key} style={{ marginBottom: '8px' }}>
-                    <Form.Item
-                      {...restField}
-                      name={[name, 'vaccineId']}
-                      fieldKey={[fieldKey, 'vaccineId']}
-                      label="Vaccine"
-                      rules={[{ required: true, message: 'Please select a vaccine' }]}
+                {fields.map(({ key, name, ...restField }) => {
+                  const vaccineId = form.getFieldValue([
+                    'vaccineImports',
+                    name,
+                    'vaccineId',
+                  ])
+                  const vaccine = vaccineData?.data.items.find(
+                    (v) => v.id === vaccineId
+                  )
+
+                  return (
+                    <div
+                      key={key}
+                      style={{
+                        marginBottom: '12px',
+                        borderBottom: '1px solid #ddd',
+                        paddingBottom: '8px',
+                      }}
                     >
-                      <Select
-                        placeholder="Select vaccine"
-                        style={{ width: '100%' }}
+                      {/* Hiển thị tên vaccine */}
+                      <Form.Item
+                        {...restField}
+                        name={[name, 'vaccineId']}
+                        hidden
                       >
-                        {vaccineData?.data.items.map((vaccine: any) => (
-                          <Select.Option key={vaccine.id} value={vaccine.id}>
-                            {vaccine.name}
-                          </Select.Option>
-                        ))}
-                      </Select>
-                    </Form.Item>
+                        <Input />
+                      </Form.Item>
 
-                    <Form.Item
-                      {...restField}
-                      name={[name, 'stock']}
-                      fieldKey={[fieldKey, 'stock']}
-                      label="Stock"
-                      rules={[{ required: true, message: 'Please enter stock' }]}
-                    >
-                      <Input type="number" min={1} />
-                    </Form.Item>
+                      <Form.Item label='Vaccine'>
+                        <Input value={vaccine?.name} disabled />
+                      </Form.Item>
 
-                    <Button type="link" onClick={() => remove(name)}>
-                      Remove Vaccine
-                    </Button>
-                  </div>
-                ))}
-                <Form.Item>
-                  <Button type="dashed" onClick={() => add()} block>
-                    + Add Vaccine
-                  </Button>
-                </Form.Item>
+                      {/* Nhập số lượng stock */}
+                      <Form.Item
+                        {...restField}
+                        name={[name, 'stock']}
+                        label='Stock'
+                        rules={[
+                          { required: true, message: 'Please enter stock' },
+                        ]}
+                      >
+                        <Input type='number' min={1} />
+                      </Form.Item>
+
+                      <Button
+                        type='link'
+                        onClick={() => {
+                          remove(name)
+                          const updatedVaccineImports =
+                            form.getFieldValue('vaccineImports') || []
+                          const updatedSelectedVaccines =
+                            updatedVaccineImports.map((v: any) => v.vaccineId)
+                          form.setFieldsValue({
+                            selectedVaccines: updatedSelectedVaccines,
+                          })
+                        }}
+                      >
+                        Remove Vaccine
+                      </Button>
+                    </div>
+                  )
+                })}
               </>
             )}
           </Form.List>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" loading={isLoading}>
+            <Button type='primary' htmlType='submit' loading={isLoading}>
               {isLoading ? 'Importing...' : 'Import Vaccines'}
             </Button>
           </Form.Item>
         </Form>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default ManagerFacilityImport;
+export default ManagerFacilityImport
