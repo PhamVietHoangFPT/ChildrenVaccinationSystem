@@ -25,20 +25,32 @@ import StaffVaccination from '../Pages/Staff/Vaccination/StaffVaccination'
 import PaymentLayout from '../components/layout/PaymentLayout'
 import PaymentSuccess from '../Pages/Payment/PaymentSuccess'
 import PaymentFail from '../Pages/Payment/PaymentFail'
+<<<<<<< HEAD
+=======
 import ManagerFacilityList from '../Pages/Home/Facility/FacilityListManager'
 import ManagerFacilityDetail from '../Pages/Home/Facility/FacilityDetailManager'
 import ManagerFacilityInventory from '../Pages/Home/Facility/FacilityInventoryManager'
 import ManagerFacilityCreate from '../Pages/Home/Facility/FacilityCreateManager'
 import ManagerFacilityImport from '../Pages/Home/Facility/FacilityImportManager'
 import ManagerPersonnelList from '../Pages/Home/PersonnelManager/PersonnelListManager'
+>>>>>>> 1c66e09a43ce08d7fc7b66356bba419fb9fb652b
 import VaccinationsHistory from '../Pages/Vaccinations/VaccinationsHistory'
 import BlogDetails from '../Pages/Blogs/BlogDetails'
 import RegiterVaccinationStaff from '../Pages/Staff/RegisterCustomer/registerVaccination'
 import RegisterCustomer from '../Pages/Staff/RegisterCustomer/registerCustomer'
 import DoctorLayout from '../components/layout/DoctorLayout'
+<<<<<<< HEAD
+import PersonnelDetailManager from '../Pages/Home/Personnel/PersonnelDetailManager'
+import BlogDetail from '../Pages/Home/BlogManager/BlogDetailManager'
+import ManagerBlogList from '../Pages/Home/BlogManager/BlogListManager'
+import CreateBlog from '../Pages/Home/BlogManager/CreateBlogManager'
+import PersonnelListManager from '../Pages/Home/Personnel/PersonnelListManager'
+import CreatePersonnelManager from '../Pages/Home/Personnel/PersonnelCreateManager'
+=======
 import ManagerPackageList from '../Pages/Home/Package/PackageListManager'
 import ManagerPackageDetail from '../Pages/Home/Package/PackageDetailManager'
 import ManagerPackageCreate from '../Pages/Home/Package/CreatePackageManager'
+>>>>>>> 1c66e09a43ce08d7fc7b66356bba419fb9fb652b
 
 const routes: LayoutRoute[] = [
   {
@@ -141,7 +153,19 @@ const routes: LayoutRoute[] = [
       },
       {
         path: '/manager/personnel',
-        component: ManagerPersonnelList,
+        component: PersonnelListManager,
+        exact: true,
+        role: ['Manager'],
+      },
+      {
+        path: '/manager/personnel/:id',
+        component: PersonnelDetailManager,
+        exact: true,
+        role: ['Manager'],
+      },
+      {
+        path: '/manager/personnel/create',
+        component: CreatePersonnelManager,
         exact: true,
         role: ['Manager'],
       },
@@ -170,18 +194,32 @@ const routes: LayoutRoute[] = [
         role: ['Manager'],
       },
       {
+<<<<<<< HEAD
+        path: '/manager/blog/create',
+        component: CreateBlog,
+=======
         path: '/manager/package',
         component: ManagerPackageList,
+>>>>>>> 1c66e09a43ce08d7fc7b66356bba419fb9fb652b
         exact: true,
         role: ['Manager'],
       },
       {
+<<<<<<< HEAD
+        path: '/manager/blog',
+        component:  ManagerBlogList,
+=======
         path: '/manager/package/:id',
         component: ManagerPackageDetail,
+>>>>>>> 1c66e09a43ce08d7fc7b66356bba419fb9fb652b
         exact: true,
         role: ['Manager'],
       },
       {
+<<<<<<< HEAD
+        path: '/manager/blog/:id',
+        component: BlogDetail,
+=======
         path: '/manager/package/create',
         component: ManagerPackageCreate,
         exact: true,
@@ -214,6 +252,7 @@ const routes: LayoutRoute[] = [
       {
         path: '/manager/facility/inventory/import/:id',
         component: ManagerFacilityImport,
+>>>>>>> 1c66e09a43ce08d7fc7b66356bba419fb9fb652b
         exact: true,
         role: ['Manager'],
       },
