@@ -224,7 +224,7 @@ namespace ChildrenVaccinationSystem.Services
 
 			if (account == null || (account.Role != RoleEnum.Staff && account.Role != RoleEnum.Vaccinator && account.Role != RoleEnum.Doctor))
 			{
-				throw new ErrorException(401, "not_found", "Không tìm thấy account id");
+				throw new ErrorException(404, "not_found", "Không tìm thấy account id");
 			}
 
 			if (personnelUpdateDto.Email != null && personnelUpdateDto.Email != account.Email)
@@ -235,6 +235,16 @@ namespace ChildrenVaccinationSystem.Services
 				{
 					throw new ErrorException(409, "conflict", "Email này đã được sử dụng, vui lòng thử lại");
 				}
+			}
+
+			if (personnelUpdateDto.FacilityId != null && !_unitOfWork.IsValid<Facility>(personnelUpdateDto.FacilityId))
+			{
+				throw new ErrorException(404, "not_found", "Không tìm thấy facility id");
+			}
+
+			if (personnelUpdateDto.Role != null && personnelUpdateDto.Role != RoleEnum.Staff && personnelUpdateDto.Role != RoleEnum.Doctor && personnelUpdateDto.Role != RoleEnum.Vaccinator)
+			{
+				throw new ErrorException(400, "bad_request", "Role không hợp lệ");
 			}
 
 			_mapper.Map(personnelUpdateDto, account);
