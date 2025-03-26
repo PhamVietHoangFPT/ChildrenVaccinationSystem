@@ -30,6 +30,7 @@ import VaccinationsHistory from '../Pages/Vaccinations/VaccinationsHistory'
 import RegiterVaccinationStaff from '../Pages/Staff/RegisterCustomer/registerVaccination'
 import RegisterCustomer from '../Pages/Staff/RegisterCustomer/registerCustomer'
 import DoctorLayout from '../components/layout/DoctorLayout'
+import VaccinationSchedule from '../Pages/Staff/Schedule/Vaccination.schedule'
 
 const routes: LayoutRoute[] = [
   {
@@ -102,6 +103,12 @@ const routes: LayoutRoute[] = [
       {
         path: '/staff/vaccination/register-vaccination',
         component: RegiterVaccinationStaff,
+        exact: true,
+        role: ['Staff'],
+      },
+      {
+        path: '/staff/vaccination/schedule',
+        component: VaccinationSchedule,
         exact: true,
         role: ['Staff'],
       },
