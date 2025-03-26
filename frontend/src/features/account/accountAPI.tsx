@@ -126,7 +126,7 @@ export const {
   useGetEmailResetValidQuery,
   useGetCustomerAccountsQuery,
   useGetMinimalCustomerAccountsQuery,
-
+  useCreateAccountForCustomerMutation,
   useGetAccountPersonnelMinimalQuery,
   useCreateACcountPersonnelMutation,
   useGetAccountPersonnelQuery,
