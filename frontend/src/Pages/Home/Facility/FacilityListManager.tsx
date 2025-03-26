@@ -1,49 +1,54 @@
 import React, { useEffect, useState } from 'react'
-import { Table, Button, Input, Typography, Spin, Pagination } from 'antd'
+import { Table, Button, Input, Typography, Spin, Pagination, Space } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
-import { EyeOutlined, SearchOutlined, PlusOutlined } from '@ant-design/icons'
+import {
+  EyeOutlined,
+  SearchOutlined,
+  PlusOutlined,
+  ContainerOutlined,
+} from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 
-import { useGetPackageListMiniMalQuery } from '../../../features/package/packageAPI'
-import { Packages } from '../../../types/package'
+import { useGetFacilitiesListQuery } from '../../../features/facilities/facilitiesAPI'
+import { Facilities } from '../../../types/facilities'
 
 const { Title } = Typography
 
-interface PackagesListResponse {
+interface FacilitiesListResponse {
   data: {
-    data: {
-      items: Packages[]
-      totalItems: number
-    }
+    data: any
+    items: Facilities[]
+    totalItems: number
   }
   isLoading: boolean
   isFetching: boolean
 }
 
-const ManagerPackageList: React.FC = () => {
+const ManagerFacilityList: React.FC = () => {
   const navigate = useNavigate()
   const [searchText, setSearchText] = useState<string>('')
   const [pageNumber, setPageNumber] = useState<number>(1)
   const [pageSize, setPageSize] = useState<number>(10)
-  const [debouncedPackageName, setDebouncedPackageName] = useState('')
+  const [debouncedSearchText, setDebouncedSearchText] = useState('')
+
   const { data, isLoading, isFetching } =
-    useGetPackageListMiniMalQuery<PackagesListResponse>({
+    useGetFacilitiesListQuery<FacilitiesListResponse>({
       pageNumber: pageNumber,
       pageSize: pageSize,
-      name: debouncedPackageName,
+      name: debouncedSearchText,
     })
 
   useEffect(() => {
     const handler = setTimeout(() => {
-      setDebouncedPackageName(searchText)
-    }, 500) 
+      setDebouncedSearchText(searchText)
+    }, 500)
 
     return () => {
       clearTimeout(handler)
     }
   }, [searchText])
 
-  const columns: ColumnsType<Packages> = [
+  const columns: ColumnsType<Facilities> = [
     {
       title: 'Name',
       dataIndex: 'name',
@@ -51,31 +56,38 @@ const ManagerPackageList: React.FC = () => {
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
-      title: 'Price',
-      dataIndex: 'price',
-      key: 'price',
-      render: (price) =>
-        price ? `${new Intl.NumberFormat('en-US').format(price)} ` : 'N/A',
-      sorter: (a, b) => a.price! - b.price!,
-    },
-    {
-      title: 'Actions',
       key: 'actions',
       render: (_, record) => (
-        <Button
-          type='primary'
-          icon={<EyeOutlined />}
-          onClick={() => navigate(`/manager/package/${record.id}`)}
+        <Space
+          size='middle'
+          style={{
+            justifyContent: 'right',
+            width: '100%',
+            marginLeft: '-65px',
+          }}
         >
-          Details
-        </Button>
+          <Button
+            type='primary'
+            icon={<EyeOutlined />}
+            onClick={() => navigate(`/manager/facility/${record.id}`)}
+          >
+            Details
+          </Button>
+          <Button
+            type='primary'
+            icon={<ContainerOutlined />}
+            onClick={() => navigate(`/manager/facility/inventory/${record.id}`)}
+          >
+            Inventory
+          </Button>
+        </Space>
       ),
     },
   ]
 
   return (
     <div style={{ padding: '24px' }}>
-      <Title level={2}>Package List</Title>
+      <Title level={2}>Facility List</Title>
 
       <div
         style={{
@@ -86,7 +98,7 @@ const ManagerPackageList: React.FC = () => {
         }}
       >
         <Input
-          placeholder='Search by package name'
+          placeholder='Search by facility name'
           prefix={<SearchOutlined />}
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
@@ -96,9 +108,9 @@ const ManagerPackageList: React.FC = () => {
         <Button
           type='primary'
           icon={<PlusOutlined />}
-          onClick={() => navigate('/manager/package/create')}
+          onClick={() => navigate('/manager/facility/create')}
         >
-          Create Package
+          Create Facility
         </Button>
       </div>
 
@@ -107,7 +119,7 @@ const ManagerPackageList: React.FC = () => {
       ) : (
         <>
           <Table
-            dataSource={data?.data.items}
+            dataSource={data?.data?.items}
             columns={columns}
             rowKey='id'
             pagination={false}
@@ -117,7 +129,7 @@ const ManagerPackageList: React.FC = () => {
             <Pagination
               current={pageNumber}
               pageSize={pageSize}
-              total={data?.data.totalItems}
+              total={data?.totalItems}
               style={{ textAlign: 'center' }}
               align='center'
               onChange={(page, size) => {
@@ -132,4 +144,4 @@ const ManagerPackageList: React.FC = () => {
   )
 }
 
-export default ManagerPackageList
+export default ManagerFacilityList

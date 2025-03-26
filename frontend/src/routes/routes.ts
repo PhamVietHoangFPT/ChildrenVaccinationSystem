@@ -25,11 +25,19 @@ import StaffVaccination from '../Pages/Staff/Vaccination/StaffVaccination'
 import PaymentLayout from '../components/layout/PaymentLayout'
 import PaymentSuccess from '../Pages/Payment/PaymentSuccess'
 import PaymentFail from '../Pages/Payment/PaymentFail'
+import ManagerFacilityList from '../Pages/Home/Facility/FacilityListManager'
+import ManagerFacilityDetail from '../Pages/Home/Facility/FacilityDetailManager'
+import ManagerFacilityInventory from '../Pages/Home/Facility/FacilityInventoryManager'
+import ManagerFacilityCreate from '../Pages/Home/Facility/FacilityCreateManager'
+import ManagerFacilityImport from '../Pages/Home/Facility/FacilityImportManager'
 import ManagerPersonnelList from '../Pages/Home/PersonnelManager/PersonnelListManager'
 import VaccinationsHistory from '../Pages/Vaccinations/VaccinationsHistory'
 import RegiterVaccinationStaff from '../Pages/Staff/RegisterCustomer/registerVaccination'
 import RegisterCustomer from '../Pages/Staff/RegisterCustomer/registerCustomer'
 import DoctorLayout from '../components/layout/DoctorLayout'
+import ManagerPackageList from '../Pages/Home/Package/PackageListManager'
+import ManagerPackageDetail from '../Pages/Home/Package/PackageDetailManager'
+import ManagerPackageCreate from '../Pages/Home/Package/CreatePackageManager'
 
 const routes: LayoutRoute[] = [
   {
@@ -156,6 +164,54 @@ const routes: LayoutRoute[] = [
       {
         path: '/manager/vaccine/create',
         component: CreateVaccine,
+        exact: true,
+        role: ['Manager'],
+      },
+      {
+        path: '/manager/package',
+        component: ManagerPackageList,
+        exact: true,
+        role: ['Manager'],
+      },
+      {
+        path: '/manager/package/:id',
+        component: ManagerPackageDetail,
+        exact: true,
+        role: ['Manager'],
+      },
+      {
+        path: '/manager/package/create',
+        component: ManagerPackageCreate,
+        exact: true,
+        role: ['Manager'],
+      },
+      {
+        path: '/manager/facility',
+        component: ManagerFacilityList,
+        exact: true,
+        role: ['Manager'],
+      },
+      {
+        path: '/manager/facility/:id',
+        component: ManagerFacilityDetail,
+        exact: true,
+        role: ['Manager'],
+      },
+      {
+        path: '/manager/facility/inventory/:id',
+        component: ManagerFacilityInventory,
+        exact: true,
+        role: ['Manager'],
+      },
+      {
+        path: '/manager/facility/create',
+        component: ManagerFacilityCreate,
+        exact: true,
+        role: ['Manager'],
+      },
+      {
+        path: '/manager/facility/inventory/import/:id',
+        component: ManagerFacilityImport,
         exact: true,
         role: ['Manager'],
       },
