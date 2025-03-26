@@ -107,6 +107,7 @@ namespace ChildrenVaccinationSystem.Services
 					Vaccine = new { g.First().Vaccine.Id, g.First().Vaccine.Name },
 					TotalStock = g.Sum(vi => vi.Stock)    // Sum up stock for this vaccine
 				})
+				.OrderBy(g => g.Vaccine.Name)
 				.ToListAsync();
 
 			return inventory;
@@ -136,6 +137,7 @@ namespace ChildrenVaccinationSystem.Services
 						})
 						.ToList()
 				})
+				.OrderByDescending(g => g.ImportedDate)
 				.ToListAsync();
 
 			return batches;
