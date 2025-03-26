@@ -15,6 +15,8 @@ import {
 } from '../../../features/account/accountAPI'
 import { Personnel } from '../../../types/personnel'
 import moment from 'moment'
+import { Facilities } from '../../../types/facilities'
+import { useGetFacilitiesListQuery } from '../../../features/facilities/facilitiesAPI'
 
 const { Option } = Select
 const { Title } = Typography
@@ -22,6 +24,15 @@ const { Title } = Typography
 interface PersonnelDetailResponse {
   data: {
     data: Personnel
+  }
+  isLoading: boolean
+}
+
+interface FacilityListResponse {
+  data: {
+    data: {
+      items: Facilities[]
+    }
   }
   isLoading: boolean
 }
@@ -34,6 +45,12 @@ const PersonnelDetailManager: React.FC = () => {
     useGetPersonnelDetailQuery<PersonnelDetailResponse>(id as string)
   const [updatePersonnel] = useUpdateAccountPersonnelMutation()
 
+  const { data: facility, isLoading: facilityLoading } =
+    useGetFacilitiesListQuery<FacilityListResponse>({
+      pageNumber: -1,
+      pageSize: -1,
+    })
+
   const [form] = Form.useForm()
 
   const handleSave = async (values: any) => {
@@ -44,7 +61,6 @@ const PersonnelDetailManager: React.FC = () => {
           ? values.dateOfBirth.format('YYYY-MM-DD')
           : null,
       }
-      delete payload.role;
 
       const dataUpdate = (await updatePersonnel({
         id,
@@ -74,9 +90,9 @@ const PersonnelDetailManager: React.FC = () => {
     email: data.data.email,
     gender: data.data.gender,
     role: data.data.role,
-    facilityName: data.data.facility?.name,
+    facilityId: data.data.facility?.id,
     facilityAddress: data.data.facility?.address,
-    isResettingPassword: false
+    isResettingPassword: false,
   }
 
   return (
@@ -127,11 +143,39 @@ const PersonnelDetailManager: React.FC = () => {
           </Select>
         </Form.Item>
 
-        <Form.Item label={`Chức vụ: ${initialValues.role}`} />
+        <Form.Item
+          label='Chức vụ'
+          name='role'
+          rules={[{ required: true, message: 'Vui lòng chọn chức vụ' }]}
+        >
+          <Select placeholder='Chọn chức vụ'>
+            <Option value={1}>Nhân viên</Option>
+            <Option value={2}>Bác sĩ</Option>
+            <Option value={3}>Người tiêm</Option>
+          </Select>
+        </Form.Item>
 
-        <Form.Item label={`Tên cơ sở: ${initialValues.facilityName}`} />
+        {facilityLoading ? (
+          <Spin />
+        ) : (
+          facility && (
+            <Form.Item
+              label='Cơ sở'
+              name='facilityId'
+              rules={[{ required: true, message: 'Vui lòng chọn cơ sở' }]}
+            >
+              <Select placeholder='Chọn nhà cơ sở'>
+                {facility.data.items.map((fac) => (
+                  <Option key={fac.id} value={fac.id}>
+                    {fac.name}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          )
+        )}
 
-        <Form.Item label={`Địa chỉ cơ sở: ${initialValues.facilityAddress}`} />
+        
 
         <Form.Item
           label='Đặt lại mật khẩu'
