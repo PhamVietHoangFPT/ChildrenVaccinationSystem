@@ -39,7 +39,7 @@ interface CategoriesListResponse {
   isLoading: boolean
 }
 
-const CreateVaccine: React.FC = () => {
+const CreatePersonnelManager: React.FC = () => {
   const navigate = useNavigate()
   const [form] = Form.useForm()
 
@@ -312,4 +312,4 @@ const CreateVaccine: React.FC = () => {
   )
 }
 
-export default CreateVaccine
+export default CreatePersonnelManager

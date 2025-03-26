@@ -34,6 +34,7 @@ import BlogDetail from '../Pages/Home/BlogManager/BlogDetailManager'
 import ManagerBlogList from '../Pages/Home/BlogManager/BlogListManager'
 import CreateBlog from '../Pages/Home/BlogManager/CreateBlogManager'
 import PersonnelListManager from '../Pages/Home/Personnel/PersonnelListManager'
+import CreatePersonnelManager from '../Pages/Home/Personnel/PersonnelCreateManager'
 
 const routes: LayoutRoute[] = [
   {
@@ -142,6 +143,12 @@ const routes: LayoutRoute[] = [
       {
         path: '/manager/personnel/:id',
         component: PersonnelDetailManager,
+        exact: true,
+        role: ['Manager'],
+      },
+      {
+        path: '/manager/personnel/create',
+        component: CreatePersonnelManager,
         exact: true,
         role: ['Manager'],
       },
