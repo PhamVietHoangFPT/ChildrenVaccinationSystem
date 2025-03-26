@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react'
 import { Children } from '../../../types/children';
 import { Vaccination } from '../../../types/vaccination';
 import { useSearchParams } from 'react-router-dom';
-import { useGetVaccinationListQuery } from '../../../features/vaccinations/vaccinationAPI';
+import { useGetVaccinationListQuery, usePaymentVaccinationMutation } from '../../../features/vaccinations/vaccinationAPI';
 import dayjs, { Dayjs } from 'dayjs';
 import { useGetChildrenListQuery } from '../../../features/children/childrenAPI';
-import { AutoComplete, Button, Table, Tag } from 'antd';
+import { AutoComplete, Button, message, Table, Tag } from 'antd';
 import {
     LoadingOutlined,
 } from '@ant-design/icons';
@@ -63,6 +63,7 @@ const VaccinationSchedule: React.FC = () => {
 
     const dataVaccinations = vaccinations?.data.items ?? [];
     const totalVaccinations = vaccinations?.data.totalItems ?? 0;
+    const [payment] = usePaymentVaccinationMutation()
     // Fetch children list for childCode options
     const {
         data: children,
@@ -166,6 +167,11 @@ const VaccinationSchedule: React.FC = () => {
                 <span style={{ fontSize: '12px' }}>{schedule ? dayjs(schedule).format('YYYY-MM-DD') : 'N/A'}</span>,
         },
         {
+            title: 'Price',
+            dataIndex: 'price',
+            key: 'price',
+        },
+        {
             title: 'Status',
             dataIndex: 'status',
             key: 'status',
@@ -201,12 +207,22 @@ const VaccinationSchedule: React.FC = () => {
     };
 
     // Handle Pay button click
-    const handlePay = () => {
+    const handlePay = async () => {
         const selectedVaccinations = dataVaccinations.filter((item) =>
             selectedVaccines.includes(item.id)
         );
-        console.log('Selected Vaccine IDs:', selectedVaccinations.map((v) => v.id));
-        // Thêm logic xử lý thanh toán ở đây (gọi API, v.v.)
+        const inputValues = selectedVaccinations.map((v) => v.id)
+        try {
+            const res = (await payment({ data: inputValues }).unwrap()) as {
+                message: string
+                data: string
+            }
+            message.success(res.message)
+            window.open(res.data, '_blank')
+        } catch (error: any) {
+            console.log(error)
+            message.error(error.data.message)
+        }
     };
     return (
         <div style={{ padding: 20, background: '#fff', borderRadius: 8 }}>
