@@ -2,10 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { Children } from '../../../types/children'
 import { useSearchParams } from 'react-router-dom'
 import { useGetChildrenListQuery } from '../../../features/children/childrenAPI'
-import { EditOutlined, LoadingOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
-import { Button, Input, Table, Tag } from 'antd'
-import ChildrenDetailModal from '../../../components/Modal/ChildrenDetail'
-import AddChildrenModal from '../../../components/Modal/AddChildren'
+import { LoadingOutlined, MinusCircleOutlined } from '@ant-design/icons'
+import { Input, Table, Button, Tag } from 'antd'
+import RegisterCustomerModal from '../../../components/Modal/RegisterCustomerModal'
 interface ChildrenListResponse {
   data: {
     data: {
@@ -17,31 +16,30 @@ interface ChildrenListResponse {
   isFetching: boolean
 }
 
-const ChildrenPage: React.FC = () => {
+const RegiterVaccinationStaff: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams()
 
   // Pagination and search states
   const initialPage = parseInt(searchParams.get('page') || '1', 10)
+  const [modelVisible, setModelVisible] = useState(false)
+  const [currentChildren, setCurrentChildren] = useState<Children>()
   const [searchPhoneTerm, setSearchPhoneTerm] = useState('')
   const [searchNameTerm, setSearchNameTerm] = useState('')
   const [currentPage, setCurrentPage] = useState(initialPage)
   const pageSize = 7
-  // Modal state
-  const [isDetailModalVisible, setIsDetailModalVisible] = useState(false)
-  const [isAddModalVisible, setIsAddModalVisible] = useState(false)
-  const [selectedChildId, setSelectedChildId] = useState<string | null>(null)
+
+  const closeModel = () => {
+    setModelVisible(false)
+  }
 
   // Fetch customer list
-  const {
-    data: children,
-    isFetching: childrenFetching,
-    isLoading: chilrenLoading,
-  } = useGetChildrenListQuery<ChildrenListResponse>({
-    parentPhoneNumber: searchPhoneTerm || undefined,
-    name: searchNameTerm || undefined,
-    pageNumber: currentPage,
-    pageSize: pageSize,
-  })
+  const { data: children, isLoading: chilrenLoading } =
+    useGetChildrenListQuery<ChildrenListResponse>({
+      parentPhoneNumber: searchPhoneTerm || undefined,
+      name: searchNameTerm || undefined,
+      pageNumber: currentPage,
+      pageSize: pageSize,
+    })
 
   const dataChildren = children?.data.items ?? []
   const totalChildren = children?.data.totalItems ?? 0
@@ -91,7 +89,7 @@ const ChildrenPage: React.FC = () => {
       title: 'Medical Note',
       dataIndex: 'medicalNote',
       key: 'medicalNote',
-      render: (medicalNote: string) => (medicalNote ? medicalNote : <Tag icon={<MinusCircleOutlined />} color="default">None</Tag>)
+      render: (medicalNote: string) => (medicalNote  ? medicalNote :  <Tag icon={<MinusCircleOutlined />} color="default">None</Tag>)
     },
     {
       title: 'Gender',
@@ -100,51 +98,50 @@ const ChildrenPage: React.FC = () => {
       render: (gender: boolean) => (gender ? 'Male' : 'Female'),
     },
     {
-      title: 'Update',
-      key: 'update',
-      render: (_: any, record: Children) => (
+      title: 'Vaccination',
+      key: 'action',
+      render: (record: Children) => (
         <Button
           type='primary'
-          icon={<EditOutlined />}
           onClick={() => {
-            setSelectedChildId(record.id) // Set the selected customer ID
-            setIsDetailModalVisible(true) // Show the modal
+            setModelVisible(true)
+            setCurrentChildren(record)
           }}
-        />
+        >
+          Register
+        </Button>
       ),
     },
   ]
-
-  // Handle modal close
-  const handleDetailModalClose = () => {
-    setIsDetailModalVisible(false)
-    setSelectedChildId(null)
-  }
-
-  const handleAddModalClose = () => {
-    setIsAddModalVisible(false)
+  if (chilrenLoading) {
+    return (
+      <LoadingOutlined
+        style={{
+          fontSize: '50px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '30vh',
+        }}
+      />
+    )
   }
   return (
     <div style={{ padding: 20, background: '#fff', borderRadius: 8 }}>
-      <Input.Search
-        placeholder='Search by phone number'
-        allowClear
-        onSearch={(value) => setSearchPhoneTerm(value)}
-        style={{ marginBottom: 16, width: 300 }}
-      />
-      <Input.Search
-        placeholder='Search by chidren name'
-        allowClear
-        onSearch={(value) => setSearchNameTerm(value)}
-        style={{ marginBottom: 16, width: 300 }}
-      />
-      <Button
-        type='primary'
-        icon={<PlusOutlined />}
-        onClick={() => setIsAddModalVisible(true)}
-      >
-        Thêm trẻ
-      </Button>
+      <div style={{ display: 'flex' }}>
+        <Input.Search
+          placeholder='Search by phone number'
+          allowClear
+          onSearch={(value) => setSearchPhoneTerm(value)}
+          style={{ marginBottom: 16, width: 300 }}
+        />
+        <Input.Search
+          placeholder='Search by chidren name'
+          allowClear
+          onSearch={(value) => setSearchNameTerm(value)}
+          style={{ marginBottom: 16, width: 300 }}
+        />
+      </div>
       <Table
         columns={columns}
         dataSource={dataChildren.map((item, index) => ({
@@ -153,7 +150,6 @@ const ChildrenPage: React.FC = () => {
           index: (currentPage - 1) * pageSize + index + 1,
           children: undefined,
         }))}
-        loading={childrenFetching}
         bordered
         pagination={{
           current: currentPage,
@@ -164,16 +160,12 @@ const ChildrenPage: React.FC = () => {
           },
         }}
       />
-      <ChildrenDetailModal
-        visible={isDetailModalVisible}
-        id={selectedChildId}
-        onClose={handleDetailModalClose}
-      />
-      <AddChildrenModal
-        visible={isAddModalVisible}
-        onClose={handleAddModalClose}
+      <RegisterCustomerModal
+        onClose={closeModel}
+        visible={modelVisible}
+        children={currentChildren}
       />
     </div>
   )
 }
-export default ChildrenPage
+export default RegiterVaccinationStaff

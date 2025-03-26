@@ -1,7 +1,7 @@
 import { Outlet, useNavigate } from 'react-router-dom'
 import { Layout, Typography } from 'antd'
 import {} from '@ant-design/icons'
-import { SideBar } from './SideBar/SideBarManager'
+import { SideBar } from './SideBarManager/SideBarManager'
 import Cookies from 'js-cookie'
 import { useEffect } from 'react'
 
