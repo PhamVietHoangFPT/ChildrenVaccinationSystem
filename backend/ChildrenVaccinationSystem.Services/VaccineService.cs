@@ -158,6 +158,23 @@ namespace ChildrenVaccinationSystem.Services
 			return new BasePaginatedList<object>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
 		}
 
+		public async Task<BasePaginatedList<object>> GetVaccinesMini()
+		{
+			IQueryable<Vaccine> query = _unitOfWork.GetRepository<Vaccine>().Entities
+				.Where(v => v.DeletedBy == null);
+
+			BasePaginatedList<Vaccine> resultQuery = await _unitOfWork.GetRepository<Vaccine>().GetPaging(query, 1, query.Count());
+
+			var responseItems = resultQuery.Items.Select(v => new
+			{
+				v.Id,
+				v.Name,
+			}).ToList();
+
+			return new BasePaginatedList<object>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
+		}
+
+
 		public async Task<VaccineViewDto> GetVaccineById(string id)
 		{
 			Vaccine? vaccine = await _unitOfWork.GetRepository<Vaccine>().Entities.Where(v => v.Id == id && v.DeletedBy == null).FirstOrDefaultAsync();
