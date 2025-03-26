@@ -14,6 +14,7 @@ import {
 } from '../../../features/account/accountAPI'
 import { Facilities } from '../../../types/facilities'
 import { useGetFacilitiesListQuery } from '../../../features/facilities/facilitiesAPI'
+import moment from 'moment'
 
 const { Option } = Select
 const { Title } = Typography
@@ -85,12 +86,39 @@ const CreatePersonnelManager: React.FC = () => {
         </Form.Item>
 
         <Form.Item
-          label='Ngày sinh'
-          name='dateOfBirth'
-          rules={[{ required: true, message: 'Vui lòng nhập ngày sinh' }]}
-        >
-          <DatePicker style={{ width: '100%' }} format='DD/MM/YYYY' />
-        </Form.Item>
+  label="Ngày sinh"
+  name="dateOfBirth"
+  rules={[
+    { required: true, message: 'Vui lòng nhập ngày sinh' },
+    () => ({
+      validator(_, value) {
+        if (!value) {
+          return Promise.reject(new Error('Vui lòng nhập ngày sinh'));
+        }
+
+        // Chắc chắn rằng giá trị là một đối tượng moment
+        const birthDate = moment(value, 'YYYY-MM-DD', true);
+
+        if (!birthDate.isValid()) {
+          return Promise.reject(new Error('Ngày sinh không hợp lệ'));
+        }
+
+        const age = moment().diff(birthDate, 'years');
+        console.log('Tuổi tính toán:', age); // Debug để kiểm tra
+
+        if (age < 18) {
+          return Promise.reject(new Error('Người dùng phải ít nhất 18 tuổi'));
+        }
+
+        return Promise.resolve();
+      },
+    }),
+  ]}
+>
+  <DatePicker style={{ width: '100%' }} format="DD/MM/YYYY" />
+</Form.Item>
+
+
 
         <Form.Item
           label='Email'
