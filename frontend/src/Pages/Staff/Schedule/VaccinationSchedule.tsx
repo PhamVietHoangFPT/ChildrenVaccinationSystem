@@ -5,7 +5,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useGetVaccinationListQuery } from '../../../features/vaccinations/vaccinationAPI';
 import dayjs, { Dayjs } from 'dayjs';
 import { useGetChildrenListQuery } from '../../../features/children/childrenAPI';
-import { AutoComplete, Table, Tag } from 'antd';
+import { AutoComplete, Button, Table, Tag } from 'antd';
 import {
     LoadingOutlined,
 } from '@ant-design/icons';
@@ -33,7 +33,7 @@ interface VaccinationListResponse {
 }
 const VaccinationSchedule: React.FC = () => {
     const [searchParams, setSearchParams] = useSearchParams();
-
+    const [selectedVaccines, setSelectedVaccines] = useState<string[]>([]);// State để lưu các hàng được chọn
     // Pagination and search states from URL
     const initialPage = parseInt(searchParams.get('page') || '1', 10);
     const initialScheduleFrom = searchParams.get('scheduleFrom') || undefined;
@@ -186,6 +186,28 @@ const VaccinationSchedule: React.FC = () => {
             },
         },
     ];
+    // Handle row selection
+    const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+        // Chuyển đổi React.Key[] thành string[]
+        const selectedKeys = newSelectedRowKeys.map((key) => key.toString());
+        setSelectedVaccines(selectedKeys);
+    };
+
+    // Row selection configuration
+    const rowSelection = {
+        selectedRowKeys: selectedVaccines, // Sử dụng selectedVaccines kiểu string[]
+        onChange: onSelectChange,
+        type: 'checkbox' as const,
+    };
+
+    // Handle Pay button click
+    const handlePay = () => {
+        const selectedVaccinations = dataVaccinations.filter((item) =>
+            selectedVaccines.includes(item.id)
+        );
+        console.log('Selected Vaccine IDs:', selectedVaccinations.map((v) => v.id));
+        // Thêm logic xử lý thanh toán ở đây (gọi API, v.v.)
+    };
     return (
         <div style={{ padding: 20, background: '#fff', borderRadius: 8 }}>
             <div style={{ marginBottom: 16 }}>
@@ -219,8 +241,16 @@ const VaccinationSchedule: React.FC = () => {
                 onScheduleFromChange={handleScheduleFromChange}
                 onScheduleToChange={handleScheduleToChange}
             />
+            <div style={{ marginBottom: 16 }}>
+                {selectedVaccines.length > 0 && (
+                    <Button type="primary" onClick={handlePay}>
+                        Pay
+                    </Button>
+                )}
+            </div>
             <Table
                 columns={columns}
+                rowSelection={rowSelection}
                 dataSource={dataVaccinations.map((item) => ({
                     ...item,
                     key: item.id,
