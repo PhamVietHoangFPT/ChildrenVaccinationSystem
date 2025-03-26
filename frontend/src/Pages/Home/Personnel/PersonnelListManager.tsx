@@ -67,8 +67,16 @@ const PersonnelListManager: React.FC = () => {
       title: 'Role',
       dataIndex: 'role',
       key: 'role',
-      render: (role) => (role ? role : 'N/A'),
+      render: (role: number) => {
+        const roleMap: Record<number, string> = {
+          1: 'Nhân viên',
+          2: 'Bác sĩ',
+          3: 'Người tiêm',
+        };
+        return roleMap[role] || 'N/A';
+      },
     },
+    
 
     {
       title: 'Phone',
