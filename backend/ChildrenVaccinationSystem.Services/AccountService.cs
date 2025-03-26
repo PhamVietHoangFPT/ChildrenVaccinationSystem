@@ -185,7 +185,7 @@ namespace ChildrenVaccinationSystem.Services
 				a.PhoneNumber,
 				a.Email,
 				a.Gender,
-				Role = a.Role.ToString(),
+				a.Role,
 				Facility = new { a.Facility!.Name }
 			}).ToList();
 			return new BasePaginatedList<object>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
