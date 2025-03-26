@@ -7,10 +7,9 @@ import {
     message,
     Input,
     InputNumber,
-    Switch,
     DatePicker,
 } from 'antd'
-import { LoadingOutlined } from '@ant-design/icons'
+import { LoadingOutlined, ManOutlined, WomanOutlined } from '@ant-design/icons'
 import { Children } from '../../types/children'
 import {
     useGetChildrenDetailQuery,
@@ -144,6 +143,7 @@ const ChildrenDetailModalDoctor: React.FC<ChilrenDetailModalProps> = ({
                         height: childrenDetail.height,
                         weight: childrenDetail.weight,
                         medicalNote: childrenDetail.medicalNote,
+                        gender: childrenDetail.gender,
                     }}
                 >
                     <Form.Item
@@ -189,14 +189,14 @@ const ChildrenDetailModalDoctor: React.FC<ChilrenDetailModalProps> = ({
                     <Form.Item label='Medical Note' name='medicalNote'>
                         <Input />
                     </Form.Item>
-                    <Form.Item
-                        label='Gender'
-                        name='gender'
-                        valuePropName='checked' // Switch dùng "checked" thay vì "value"
-                    >
-                        <Switch disabled />
-                    </Form.Item>
-                    <Button type='primary' htmlType='submit' loading={isUpdating}>
+                    <Text>
+                        <strong>Gender: </strong>
+                        {childrenDetail?.gender ? <strong>Male <ManOutlined /></strong> : <strong>Female <WomanOutlined /></strong>}
+                    </Text>
+
+
+                    <br></br>
+                    <Button type='primary' htmlType='submit' loading={isUpdating} style={{ display: "flex", justifySelf: "center",marginTop :"30px",width:"50%"}}>
                         Update
                     </Button>
                 </Form>
