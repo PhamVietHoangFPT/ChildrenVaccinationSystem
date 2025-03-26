@@ -10,6 +10,8 @@ namespace ChildrenVaccinationSystem.Contract.Services
 	{
 		Task<BasePaginatedList<VaccinationViewDto>> GetVaccinations(string? childId, string? childCode, DateOnly? scheduleFrom, DateOnly? scheduleTo, VaccinationStatusEnum? status, int pageNumber, int pageSize);
 		Task<BasePaginatedList<object>> GetVaccinationsMinimal(string? childId, string? childCode, DateOnly? scheduleFrom, DateOnly? scheduleTo, VaccinationStatusEnum? status, int pageNumber, int pageSize);
+		Task<BasePaginatedList<object>> GetDoctorVaccinations(int pageNumber, int pageSize);
+		Task<BasePaginatedList<object>> GetVaccinatorVaccinations(int pageNumber, int pageSize);
 		Task<object> GetVaccinationHistory(string childId, bool isUpcoming);
 		Task<object> GetVaccinationById(string id);
 		Task<string> PayPendingVaccinations(HttpContext context, List<string> vaccinationIds);

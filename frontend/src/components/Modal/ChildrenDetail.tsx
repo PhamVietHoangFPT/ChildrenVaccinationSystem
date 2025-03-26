@@ -112,8 +112,8 @@ const ChildrenDetailModal: React.FC<ChilrenDetailModalProps> = ({
 
   return (
     <Modal
-      title='Customer Details'
-      visible={visible}
+      title='Child Details'
+      open={visible}
       onCancel={onClose}
       footer={[
         <Button key='close' onClick={onClose}>
@@ -194,7 +194,7 @@ const ChildrenDetailModal: React.FC<ChilrenDetailModalProps> = ({
           >
             <Switch />
           </Form.Item>
-          <Button type='primary' htmlType='submit' loading={isUpdating}>
+          <Button type='primary' htmlType='submit' loading={isUpdating} style={{ display: "flex", justifySelf: "center", marginTop: "30px", width: "50%" }}>
             Update
           </Button>
         </Form>

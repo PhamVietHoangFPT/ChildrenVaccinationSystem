@@ -34,6 +34,38 @@ export const vaccinationsApi = apiSlice.injectEndpoints({
       transformResponse: (res) => res,
       providesTags: ['vaccinations'],
     }),
+    getVaccinationListDoctor: build.query({
+      query: ({
+        pageNumber,
+        pageSize,
+      }) => ({
+        url: '/vaccinations/doctor',
+        method: 'GET',
+        params: {
+          pageNumber,
+          pageSize,
+        },
+      }),
+      transformResponse: (res) => res,
+      providesTags: ['vaccinations'],
+    }),
+    getVaccinationListVaccinator: build.query({
+      query: ({
+        pageNumber,
+        pageSize,
+        childCode,
+      }) => ({
+        url: '/vaccinations/vaccinator',
+        method: 'GET',
+        params: {
+          pageNumber,
+          pageSize,
+          childCode,
+        },
+      }),
+      transformResponse: (res) => res,
+      providesTags: ['vaccinations'],
+    }),
     getVaccinationDetail: build.query({
       query: (id) => ({
         url: `/vaccinations/${id}`,
@@ -84,4 +116,6 @@ export const {
   useUpdateVaccinationMutation,
   useUpdateVaccinationStatusMutation,
   useGetVaccinationsHistoryQuery,
+  useGetVaccinationListDoctorQuery,
+  useGetVaccinationListVaccinatorQuery
 } = vaccinationsApi

@@ -47,6 +47,33 @@ namespace ChildrenVaccinationSystem.API.Controllers
 			));
 		}
 
+		[HttpGet("doctor")]
+		public async Task<IActionResult> GetDoctorVaccinations(int pageNumber = -1, int pageSize = -1)
+		{
+			BasePaginatedList<object> vaccinations = await _vaccinationService.GetDoctorVaccinations(pageNumber, pageSize);
+
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Lấy vaccinations thành công",
+				data: vaccinations
+			));
+		}
+
+		[HttpGet("vaccinator")]
+		public async Task<IActionResult> GetVaccinatorVaccinations(int pageNumber = -1, int pageSize = -1)
+		{
+			BasePaginatedList<object> vaccinations = await _vaccinationService.GetVaccinatorVaccinations(pageNumber, pageSize);
+
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Lấy vaccinations thành công",
+				data: vaccinations
+			));
+		}
+
+
 		[HttpGet("history/{childId}")]
 		public async Task<IActionResult> GetVaccinationHistory(string childId, [Required]bool isUpcoming)
 		{

@@ -31,7 +31,21 @@ namespace ChildrenVaccinationSystem.API.Controllers
             ));
         }
 
-        [HttpGet("{id}")]
+		[HttpGet("minimal")]
+		public async Task<IActionResult> GetFacilitiesMinimal(int pageNumber = -1, int pageSize = -1)
+		{
+			BasePaginatedList<object> facilities = await _facilityService.GetFacilitiesMinimal(pageNumber, pageSize);
+
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "Lấy Facility thành công",
+				data: facilities
+			));
+		}
+
+
+		[HttpGet("{id}")]
         public async Task<IActionResult> GetFacilityById(string id)
         {
             FacilityViewDto facilitíe = await _facilityService.GetFacilityById(id);

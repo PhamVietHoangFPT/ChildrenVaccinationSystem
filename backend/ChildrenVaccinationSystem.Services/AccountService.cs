@@ -185,6 +185,7 @@ namespace ChildrenVaccinationSystem.Services
 				a.PhoneNumber,
 				a.Email,
 				a.Gender,
+				a.Role,
 				Facility = new { a.Facility!.Name }
 			}).ToList();
 			return new BasePaginatedList<object>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
@@ -223,28 +224,28 @@ namespace ChildrenVaccinationSystem.Services
 
 			if (account == null || (account.Role != RoleEnum.Staff && account.Role != RoleEnum.Vaccinator && account.Role != RoleEnum.Doctor))
 			{
-				throw new ErrorException(401, "not_found", "Không tìm thấy account id");
+				throw new ErrorException(404, "not_found", "Không tìm thấy account id");
 			}
 
-			if (personnelUpdateDto.Email != null)
+			if (personnelUpdateDto.Email != null && personnelUpdateDto.Email != account.Email)
 			{
 				Account? existingAccount = await _unitOfWork.GetRepository<Account>().Entities.Where(a => a.Email == personnelUpdateDto.Email && a.DeletedBy == null).FirstOrDefaultAsync();
 
 				if (existingAccount != null)
 				{
-					throw new BaseException.ErrorException(409, "conflict", "Email này đã được sử dụng, vui lòng thử lại");
+					throw new ErrorException(409, "conflict", "Email này đã được sử dụng, vui lòng thử lại");
 				}
 			}
-
 
 			if (personnelUpdateDto.FacilityId != null && !_unitOfWork.IsValid<Facility>(personnelUpdateDto.FacilityId))
 			{
 				throw new ErrorException(404, "not_found", "Không tìm thấy facility id");
 			}
 
-			if (personnelUpdateDto.Role != null && personnelUpdateDto.Role != RoleEnum.Staff && personnelUpdateDto.Role != RoleEnum.Vaccinator && personnelUpdateDto.Role != RoleEnum.Doctor)
-				throw new ErrorException(404, "not_found", "Nhập sai role của nhân sự");
-
+			if (personnelUpdateDto.Role != null && personnelUpdateDto.Role != RoleEnum.Staff && personnelUpdateDto.Role != RoleEnum.Doctor && personnelUpdateDto.Role != RoleEnum.Vaccinator)
+			{
+				throw new ErrorException(400, "bad_request", "Role không hợp lệ");
+			}
 
 			_mapper.Map(personnelUpdateDto, account);
 
@@ -256,7 +257,6 @@ namespace ChildrenVaccinationSystem.Services
 			}
 			_authenticationService.UpdateAudits(account, false);
 
-
 			await _unitOfWork.GetRepository<Account>().UpdateAsync(account);
 			await _unitOfWork.SaveAsync();
 		}
@@ -266,7 +266,7 @@ namespace ChildrenVaccinationSystem.Services
 			Account? account = await _unitOfWork.GetRepository<Account>().Entities.Where(c => c.Id == id && c.DeletedBy == null).FirstOrDefaultAsync();
 
 			if (account == null)
-				throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy account id");
+				throw new ErrorException(404, "not_found", "Không tìm thấy account id");
 
 			return _mapper.Map<AccountViewDto>(account);
 		}

@@ -1,170 +1,94 @@
-import React, { useEffect, useState } from 'react'
-import { Children } from '../../../types/children'
-import { useSearchParams } from 'react-router-dom'
-import { useGetChildrenListQuery } from '../../../features/children/childrenAPI'
-import { LoadingOutlined, SearchOutlined } from '@ant-design/icons'
-import { Input, Table, Button } from 'antd'
-import RegisterCustomerModal from '../../../components/Modal/RegisterCustomerModal'
-interface ChildrenListResponse {
-  data: {
-    data: {
-      items: Children[]
-      totalItems: number
-    }
-  }
-  isLoading: boolean
-  isFetching: boolean
-}
+import { Button, DatePicker, Form, Input, message, Switch } from 'antd';
+import React from 'react';
+import dayjs from 'dayjs';
+import { useCreateAccountForCustomerMutation } from '../../../features/account/accountAPI';
 
 const RegisterCustomer: React.FC = () => {
-  const [searchParams, setSearchParams] = useSearchParams()
+    const [form] = Form.useForm();
+    const [createAccount, { isLoading: isCreating }] = useCreateAccountForCustomerMutation();
 
-  // Pagination and search states
-  const initialPage = parseInt(searchParams.get('page') || '1', 10)
-  const [modelVisible, setModelVisible] = useState(false)
-  const [currentChildren, setCurrentChildren] = useState<Children>()
-  const [searchPhoneTerm, setSearchPhoneTerm] = useState('')
-  const [searchNameTerm, setSearchNameTerm] = useState('')
-  const [currentPage, setCurrentPage] = useState(initialPage)
-  const pageSize = 7
+    const handleCreateAccount = async (values: any) => {
+        const accountData = {
+            name: values.name, // Switch to camelCase
+            dateOfBirth: values.dateOfBirth ? dayjs(values.dateOfBirth).format('YYYY-MM-DD') : null,
+            phoneNumber: values.phoneNumber,
+            address: values.address,
+            gender: values.gender ?? true, // Keep boolean as it worked in Swagger
+        };
+        console.log('Payload sent to API:', accountData);
 
-  const closeModel = () => {
-    setModelVisible(false)
-  }
+        try {
+            const response = await createAccount({ data: accountData }).unwrap();
+            console.log('API response:', response);
+            message.success('Account created successfully!');
+            form.resetFields();
+        } catch (err: any) {
+            message.error(
+                err.data?.title || err.data?.message || 'Failed to create account'
+            );
+        }
+    };
 
-  // Fetch customer list
-  const { data: children, isLoading: chilrenLoading } =
-    useGetChildrenListQuery<ChildrenListResponse>({
-      parentPhoneNumber: searchPhoneTerm || undefined,
-      name: searchNameTerm || undefined,
-      pageNumber: currentPage,
-      pageSize: pageSize,
-    })
-
-  const dataChildren = children?.data.items ?? []
-  const totalChildren = children?.data.totalItems ?? 0
-
-  // Update URL search params
-  useEffect(() => {
-    setSearchParams({
-      page: currentPage.toString(),
-      parentPhoneNumber: searchPhoneTerm,
-      name: searchNameTerm,
-    })
-  }, [currentPage, searchPhoneTerm, searchNameTerm, setSearchParams])
-
-  if (chilrenLoading) {
     return (
-      <LoadingOutlined
-        style={{
-          fontSize: '50px',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '30vh',
-        }}
-      />
-    )
-  }
-  // Table columns
-  const columns = [
-    {
-      title: 'No.',
-      dataIndex: 'index',
-      key: 'index',
-      render: (_: any, __: any, index: number) =>
-        (currentPage - 1) * pageSize + index + 1,
-    },
-    {
-      title: 'Child Name',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: 'Date Of Birth',
-      dataIndex: 'dateOfBirth',
-      key: 'dateOfBirth',
-    },
-    {
-      title: 'Medical Note',
-      dataIndex: 'medicalNote',
-      key: 'medicalNote',
-    },
-    {
-      title: 'Gender',
-      dataIndex: 'gender',
-      key: 'gender',
-      render: (gender: boolean) => (gender ? 'Male' : 'Female'),
-    },
-    {
-      title: 'Action',
-      key: 'action',
-      render: (record: Children) => (
-        <Button
-          type='primary'
-          onClick={() => {
-            setModelVisible(true)
-            setCurrentChildren(record)
-          }}
+        <Form
+            form={form}
+            layout="vertical"
+            onFinish={handleCreateAccount}
+            initialValues={{ gender: true }}
         >
-          Register
-        </Button>
-      ),
-    },
-  ]
+            <Form.Item
+                label="Name"
+                name="name"
+                rules={[{ required: true, message: 'Please enter customer name!' }]}
+            >
+                <Input placeholder="Enter customer name" />
+            </Form.Item>
 
-  return (
-    <div style={{ padding: 20, background: '#fff', borderRadius: 8 }}>
-      <div style={{ display: 'flex' }}>
-        <Input.Search
-          placeholder='Search by phone number'
-          allowClear
-          enterButton={<SearchOutlined />}
-          onSearch={(value) => setSearchPhoneTerm(value)}
-          style={{
-            width: 320,
-            padding: '8px 12px',
-            borderRadius: 8,
-          }}
-        />
-        <Input.Search
-          placeholder='Search by children name'
-          allowClear
-          enterButton={<SearchOutlined />}
-          onSearch={(value) => setSearchNameTerm(value)}
-          style={{
-            width: 320,
-            padding: '8px 12px',
-            borderRadius: 8,
-          }}
-        />
-      </div>
-      {(searchNameTerm || searchPhoneTerm) && (
-        <Table
-          columns={columns}
-          dataSource={dataChildren.map((item, index) => ({
-            ...item,
-            key: item.id,
-            index: (currentPage - 1) * pageSize + index + 1,
-            children: undefined,
-          }))}
-          bordered
-          pagination={{
-            current: currentPage,
-            pageSize: pageSize,
-            total: totalChildren,
-            onChange: (page) => {
-              setCurrentPage(page)
-            },
-          }}
-        />
-      )}
-      <RegisterCustomerModal
-        onClose={closeModel}
-        visible={modelVisible}
-        children={currentChildren}
-      />
-    </div>
-  )
-}
-export default RegisterCustomer
+            <Form.Item
+                label="Date Of Birth"
+                name="dateOfBirth"
+                rules={[{ required: true, message: 'Please enter date of birth!' }]}
+            >
+                <DatePicker
+                    disabledDate={(current) =>
+                        current && current > dayjs().subtract(18, 'year').endOf('day')
+                    }
+                    style={{ width: '100%' }}
+                    format="YYYY-MM-DD"
+                />
+            </Form.Item>
+
+            <Form.Item
+                label="Phone Number"
+                name="phoneNumber"
+                rules={[{ required: true, message: 'Please enter phone number!' }]}
+            >
+                <Input placeholder="Enter phone number" />
+            </Form.Item>
+
+            <Form.Item
+                label="Address"
+                name="address"
+                rules={[{ required: true, message: 'Please enter address!' }]}
+            >
+                <Input placeholder="Enter address" />
+            </Form.Item>
+
+            <Form.Item
+                label="Gender (Male: On, Female: Off)"
+                name="gender"
+                valuePropName="checked"
+            >
+                <Switch />
+            </Form.Item>
+
+            <Form.Item>
+                <Button type="primary" htmlType="submit" loading={isCreating}>
+                    Add Account
+                </Button>
+            </Form.Item>
+        </Form>
+    );
+};
+
+export default RegisterCustomer;

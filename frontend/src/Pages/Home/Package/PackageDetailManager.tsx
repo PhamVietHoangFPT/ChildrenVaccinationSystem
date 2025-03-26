@@ -217,12 +217,27 @@ const ManagerPackageDetail: React.FC = () => {
           />
         </Form.Item>
 
-        <Form.Item label='Giá sau giảm giá'>
-          <Input
-            value={new Intl.NumberFormat('en-US').format(getDiscountedPrice())}
-            disabled
-          />
-        </Form.Item>
+        <div style={{ marginTop: '20px' }}>
+          <div style={{ fontSize: '21px', fontWeight: 'bold', color: 'red' }}>
+            <span>Giá trước khi giảm: </span>
+            <span>
+              {new Intl.NumberFormat('en-US').format(calculateTotalPrice())} VND
+            </span>
+          </div>
+          <div
+            style={{
+              fontSize: '21px',
+              fontWeight: 'bold',
+              color: 'green',
+              marginTop: '10px',
+            }}
+          >
+            <span>Giá sau khi giảm: </span>
+            <span>
+              {new Intl.NumberFormat('en-US').format(getDiscountedPrice())} VND
+            </span>
+          </div>
+        </div>
 
         <Table
           dataSource={vaccineData?.data.items}
