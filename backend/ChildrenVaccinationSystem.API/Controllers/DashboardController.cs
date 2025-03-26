@@ -4,6 +4,7 @@ using ChildrenVaccinationSystem.Core.Base;
 using ChildrenVaccinationSystem.Core.Enum;
 using ChildrenVaccinationSystem.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace ChildrenVaccinationSystem.API.Controllers
 {
@@ -21,21 +22,21 @@ namespace ChildrenVaccinationSystem.API.Controllers
 
 
 		[HttpGet("vaccinations-administered")]
-		public async Task<IActionResult> GetVaccinationsAdministered(int startMonth, int startYear, int endMonth, int endYear, string? facilityId)
+		public async Task<IActionResult> GetVaccinationsAdministered([Required] int startMonth, [Required] int startYear, [Required] int endMonth, [Required] int endYear, string? facilityId)
 		{
-			long count = await _dashboardService.GetVaccinationsAdministered(startMonth, startYear, endMonth, endYear, facilityId);
+			var data = await _dashboardService.GetVaccinationsAdministered(startMonth, startYear, endMonth, endYear, facilityId);
 
 			return Ok(new BaseResponse<object>(
 				statusCode: StatusCodeEnum.OK,
 				code: StatusCodeEnum.OK.ToString(),
 				message: "",
-				data: count
+				data: data
 			));
 		}
 
 
 		[HttpGet("vaccinations-status")]
-		public async Task<IActionResult> GetVaccinationsByStatus(int startMonth, int startYear, int endMonth, int endYear, string? facilityId)
+		public async Task<IActionResult> GetVaccinationsByStatus([Required] int startMonth, [Required] int startYear, [Required] int endMonth, [Required] int endYear, string? facilityId)
 		{
 			var data = await _dashboardService.GetVaccinationsByStatus(startMonth, startYear, endMonth, endYear, facilityId);
 
@@ -47,34 +48,8 @@ namespace ChildrenVaccinationSystem.API.Controllers
 			));
 		}
 
-		[HttpGet("completion-rate")]
-		public async Task<IActionResult> GetCompletionRate(int startMonth, int startYear, int endMonth, int endYear, string? facilityId)
-		{
-			var data = await _dashboardService.GetCompletionRate(startMonth, startYear, endMonth, endYear, facilityId);
-
-			return Ok(new BaseResponse<object>(
-				statusCode: StatusCodeEnum.OK,
-				code: StatusCodeEnum.OK.ToString(),
-				message: "",
-				data: data
-			));
-		}
-
-		[HttpGet("stock-data")]
-		public async Task<IActionResult> GetStockData(string? facilityId)
-		{
-			var data = await _dashboardService.GetStockData(facilityId);
-
-			return Ok(new BaseResponse<object>(
-				statusCode: StatusCodeEnum.OK,
-				code: StatusCodeEnum.OK.ToString(),
-				message: "",
-				data: data
-			));
-		}
-
 		[HttpGet("registrations")]
-		public async Task<IActionResult> GetRegistrations(int startMonth, int startYear, int endMonth, int endYear)
+		public async Task<IActionResult> GetRegistrations([Required] int startMonth, [Required] int startYear, [Required] int endMonth, [Required] int endYear)
 		{
 			var data = await _dashboardService.GetRegistrations(startMonth, startYear, endMonth, endYear);
 
@@ -87,9 +62,35 @@ namespace ChildrenVaccinationSystem.API.Controllers
 		}
 
 		[HttpGet("revenue")]
-		public async Task<IActionResult> GetRevenue(int startMonth, int startYear, int endMonth, int endYear, string? facilityId)
+		public async Task<IActionResult> GetRevenue([Required] int startMonth, [Required] int startYear, [Required] int endMonth, [Required] int endYear, string? facilityId)
 		{
 			var data = await _dashboardService.GetRevenue(startMonth, startYear, endMonth, endYear, facilityId);
+
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "",
+				data: data
+			));
+		}
+
+		[HttpGet("top-vaccines")]
+		public async Task<IActionResult> GetTopVaccines(int topN, string? facilityId)
+		{
+			var data = await _dashboardService.GetTopVaccines(topN, facilityId);
+
+			return Ok(new BaseResponse<object>(
+				statusCode: StatusCodeEnum.OK,
+				code: StatusCodeEnum.OK.ToString(),
+				message: "",
+				data: data
+			));
+		}
+
+		[HttpGet("top-facilities")]
+		public async Task<IActionResult> GetTopVaccines(int topN)
+		{
+			var data = await _dashboardService.GetTopFacilitiesByRevenue(topN);
 
 			return Ok(new BaseResponse<object>(
 				statusCode: StatusCodeEnum.OK,
