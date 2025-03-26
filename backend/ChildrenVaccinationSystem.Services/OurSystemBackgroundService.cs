@@ -20,7 +20,7 @@ namespace ChildrenVaccinationSystem.Services
 
 		protected override async Task ExecuteAsync(CancellationToken stoppingToken)
 		{
-			var task1 = RunTaskEvery(TimeSpan.FromMinutes(1), stoppingToken, async () =>
+			var task1 = RunTaskEvery(TimeSpan.FromMinutes(15), stoppingToken, async () =>
 			{
 				using var scope = _serviceScopeFactory.CreateScope();
 				var accountService = scope.ServiceProvider.GetRequiredService<IAccountService>();

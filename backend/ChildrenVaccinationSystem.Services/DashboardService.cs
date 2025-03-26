@@ -19,16 +19,21 @@ namespace ChildrenVaccinationSystem.Services
 			_unitOfWork = unitOfWork;
 		}
 
-		public async Task<long> GetVaccinationsAdministered(DateOnly start, DateOnly end, string? facilityId)
+		public async Task<long> GetVaccinationsAdministered(int startMonth, int startYear, int endMonth, int endYear, string? facilityId)
 		{
 			long count = await _unitOfWork.GetRepository<Vaccination>().Entities
-				.Where(v => (facilityId == null || v.FacilityId == facilityId) && v.Status == VaccinationStatusEnum.Completed && v.Schedule >= start && v.Schedule < end).CountAsync();
+				.Where(v => (facilityId == null || v.FacilityId == facilityId) && v.Status == VaccinationStatusEnum.Completed &&
+					(v.Schedule.Year > startYear || (v.Schedule.Year == startYear && v.Schedule.Month >= startMonth)) &&
+					(v.Schedule.Year < endYear || (v.Schedule.Year == endYear && v.Schedule.Month <= endMonth)))
+				.CountAsync();
 
 			return count;
 		}
 
-		public async Task<object> GetVaccinationsByStatus(DateOnly start, DateOnly end, string? facilityId)
+		public async Task<object> GetVaccinationsByStatus(int startMonth, int startYear, int endMonth, int endYear, string? facilityId)
 		{
+			DateOnly start = new DateOnly(startYear, startMonth, 1);
+			DateOnly end = new DateOnly(endYear, endMonth, DateTime.DaysInMonth(endYear, endMonth));
 			var result = await _unitOfWork.GetRepository<Vaccination>().Entities
 				.Where(v => (facilityId == null || v.FacilityId == facilityId) && (v.Status == VaccinationStatusEnum.Pending || v.Status == VaccinationStatusEnum.Canceled || v.Status == VaccinationStatusEnum.Refunded || v.Status == VaccinationStatusEnum.Completed) && v.Schedule >= start && v.Schedule <= end)
 				.GroupBy(v => v.Status)
@@ -42,8 +47,10 @@ namespace ChildrenVaccinationSystem.Services
 			return result;
 		}
 
-		public async Task<object> GetCompletionRate(DateOnly start, DateOnly end, string? facilityId)
+		public async Task<object> GetCompletionRate(int startMonth, int startYear, int endMonth, int endYear, string? facilityId)
 		{
+			DateOnly start = new DateOnly(startYear, startMonth, 1);
+			DateOnly end = new DateOnly(endYear, endMonth, DateTime.DaysInMonth(endYear, endMonth));
 			var query = _unitOfWork.GetRepository<Vaccination>().Entities.AsQueryable();
 
 			query = query.Where(v => (facilityId == null || v.FacilityId == facilityId) && v.Schedule >= start && v.Schedule <= end);
@@ -67,7 +74,6 @@ namespace ChildrenVaccinationSystem.Services
 		{
 			var query = _unitOfWork.GetRepository<VaccineInventory>().Entities.Where(vi => facilityId == null || vi.FacilityId == facilityId);
 
-			// Group by VaccineId to get the current stock per vaccine
 			var stockData = await query
 				.GroupBy(vi => new { vi.VaccineId, vi.Vaccine.Name })
 				.Select(g => new
@@ -81,8 +87,10 @@ namespace ChildrenVaccinationSystem.Services
 			return stockData;
 		}
 
-		public async Task<object> GetRegistrations(DateOnly start, DateOnly end)
+		public async Task<object> GetRegistrations(int startMonth, int startYear, int endMonth, int endYear)
 		{
+			DateOnly start = new DateOnly(startYear, startMonth, 1);
+			DateOnly end = new DateOnly(endYear, endMonth, DateTime.DaysInMonth(endYear, endMonth));
 			var query = _unitOfWork.GetRepository<Child>().Entities.Where(c => c.DeletedBy == null).AsQueryable();
 
 			query = query.Where(r => r.CreatedTime >= start.ToDateTime(TimeOnly.MinValue) && r.CreatedTime <= end.ToDateTime(TimeOnly.MaxValue));
@@ -106,8 +114,10 @@ namespace ChildrenVaccinationSystem.Services
 			};
 		}
 
-		public async Task<object> GetRevenue(DateOnly start, DateOnly end, string? facilityId)
+		public async Task<object> GetRevenue(int startMonth, int startYear, int endMonth, int endYear, string? facilityId)
 		{
+			DateOnly start = new DateOnly(startYear, startMonth, 1);
+			DateOnly end = new DateOnly(endYear, endMonth, DateTime.DaysInMonth(endYear, endMonth));
 			var query = _unitOfWork.GetRepository<Vaccination>().Entities
 				.Where(v => v.Status == VaccinationStatusEnum.Completed && (facilityId == null || v.FacilityId == facilityId) && v.Schedule >= start && v.Schedule <= end);
 
