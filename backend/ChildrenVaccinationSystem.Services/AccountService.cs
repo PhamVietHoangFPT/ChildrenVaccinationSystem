@@ -266,7 +266,7 @@ namespace ChildrenVaccinationSystem.Services
 			Account? account = await _unitOfWork.GetRepository<Account>().Entities.Where(c => c.Id == id && c.DeletedBy == null).FirstOrDefaultAsync();
 
 			if (account == null)
-				throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy account id");
+				throw new ErrorException(404, "not_found", "Không tìm thấy account id");
 
 			return _mapper.Map<AccountViewDto>(account);
 		}
