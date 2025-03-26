@@ -91,6 +91,7 @@ const ChildrenPage: React.FC = () => {
       title: 'Medical Note',
       dataIndex: 'medicalNote',
       key: 'medicalNote',
+      render: (medicalNote: string) => (medicalNote ? medicalNote : "None")
     },
     {
       title: 'Gender',
