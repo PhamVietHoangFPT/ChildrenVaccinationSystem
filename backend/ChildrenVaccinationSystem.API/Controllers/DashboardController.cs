@@ -21,9 +21,9 @@ namespace ChildrenVaccinationSystem.API.Controllers
 
 
 		[HttpGet("vaccinations-administered")]
-		public async Task<IActionResult> GetVaccinationsAdministered(DateOnly start, DateOnly end, string? facilityId)
+		public async Task<IActionResult> GetVaccinationsAdministered(int startMonth, int startYear, int endMonth, int endYear, string? facilityId)
 		{
-			long count = await _dashboardService.GetVaccinationsAdministered(start, end, facilityId);
+			long count = await _dashboardService.GetVaccinationsAdministered(startMonth, startYear, endMonth, endYear, facilityId);
 
 			return Ok(new BaseResponse<object>(
 				statusCode: StatusCodeEnum.OK,
@@ -35,9 +35,9 @@ namespace ChildrenVaccinationSystem.API.Controllers
 
 
 		[HttpGet("vaccinations-status")]
-		public async Task<IActionResult> GetVaccinationsByStatus(DateOnly start, DateOnly end, string? facilityId)
+		public async Task<IActionResult> GetVaccinationsByStatus(int startMonth, int startYear, int endMonth, int endYear, string? facilityId)
 		{
-			var data = await _dashboardService.GetVaccinationsByStatus(start, end, facilityId);
+			var data = await _dashboardService.GetVaccinationsByStatus(startMonth, startYear, endMonth, endYear, facilityId);
 
 			return Ok(new BaseResponse<object>(
 				statusCode: StatusCodeEnum.OK,
@@ -48,9 +48,9 @@ namespace ChildrenVaccinationSystem.API.Controllers
 		}
 
 		[HttpGet("completion-rate")]
-		public async Task<IActionResult> GetCompletionRate(DateOnly start, DateOnly end, string? facilityId)
+		public async Task<IActionResult> GetCompletionRate(int startMonth, int startYear, int endMonth, int endYear, string? facilityId)
 		{
-			var data = await _dashboardService.GetCompletionRate(start, end, facilityId);
+			var data = await _dashboardService.GetCompletionRate(startMonth, startYear, endMonth, endYear, facilityId);
 
 			return Ok(new BaseResponse<object>(
 				statusCode: StatusCodeEnum.OK,
@@ -61,7 +61,7 @@ namespace ChildrenVaccinationSystem.API.Controllers
 		}
 
 		[HttpGet("stock-data")]
-		public async Task<IActionResult> GetStockData(DateOnly start, DateOnly end, string? facilityId)
+		public async Task<IActionResult> GetStockData(string? facilityId)
 		{
 			var data = await _dashboardService.GetStockData(facilityId);
 
@@ -74,9 +74,9 @@ namespace ChildrenVaccinationSystem.API.Controllers
 		}
 
 		[HttpGet("registrations")]
-		public async Task<IActionResult> GetRegistrations(DateOnly start, DateOnly end)
+		public async Task<IActionResult> GetRegistrations(int startMonth, int startYear, int endMonth, int endYear)
 		{
-			var data = await _dashboardService.GetRegistrations(start, end);
+			var data = await _dashboardService.GetRegistrations(startMonth, startYear, endMonth, endYear);
 
 			return Ok(new BaseResponse<object>(
 				statusCode: StatusCodeEnum.OK,
@@ -87,9 +87,9 @@ namespace ChildrenVaccinationSystem.API.Controllers
 		}
 
 		[HttpGet("revenue")]
-		public async Task<IActionResult> GetRevenue(DateOnly start, DateOnly end, string? facilityId)
+		public async Task<IActionResult> GetRevenue(int startMonth, int startYear, int endMonth, int endYear, string? facilityId)
 		{
-			var data = await _dashboardService.GetRevenue(start, end, facilityId);
+			var data = await _dashboardService.GetRevenue(startMonth, startYear, endMonth, endYear, facilityId);
 
 			return Ok(new BaseResponse<object>(
 				statusCode: StatusCodeEnum.OK,
