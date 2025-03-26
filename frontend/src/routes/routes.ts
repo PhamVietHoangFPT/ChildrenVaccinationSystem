@@ -44,6 +44,7 @@ import CreatePersonnelManager from '../Pages/Home/Personnel/PersonnelCreateManag
 import BlogDetail from '../Pages/Home/BlogManager/BlogDetailManager'
 import CreateBlog from '../Pages/Home/BlogManager/CreateBlogManager'
 import ManagerBlogList from '../Pages/Home/BlogManager/BlogListManager'
+import VaccinationSchedule from '../Pages/Staff/Schedule/VaccinationSchedule'
 
 const routes: LayoutRoute[] = [
   {
@@ -117,6 +118,12 @@ const routes: LayoutRoute[] = [
       {
         path: '/staff/vaccination/register-vaccination',
         component: RegiterVaccinationStaff,
+        exact: true,
+        role: ['Staff'],
+      },
+      {
+        path: '/staff/vaccination/schedule',
+        component: VaccinationSchedule,
         exact: true,
         role: ['Staff'],
       },
