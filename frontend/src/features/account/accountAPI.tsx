@@ -79,14 +79,14 @@ export const accountApi = apiSlice.injectEndpoints({
       providesTags: ['account'],
     }),
 
-    createACcountPersonnel: build.query({
+    createACcountPersonnel: build.mutation({
       query: (data) => ({
         url: '/accounts/personnel',
         method: 'POST',
         body: data,
       }),
       transformResponse: (res) => res,
-      providesTags: ['account'],
+      invalidatesTags: ['account'],
     }),
 
     updateAccountPersonnel: build.mutation({
@@ -119,7 +119,7 @@ export const {
   useGetMinimalCustomerAccountsQuery,
 
   useGetAccountPersonnelMinimalQuery,
-  useCreateACcountPersonnelQuery,
+  useCreateACcountPersonnelMutation,
   useGetAccountPersonnelQuery,
   useUpdateAccountPersonnelMutation,
   useGetPersonnelDetailQuery,
