@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { Children } from '../../../types/children'
 import { useSearchParams } from 'react-router-dom'
 import { useGetChildrenListQuery } from '../../../features/children/childrenAPI'
-import { EditOutlined, LoadingOutlined, PlusOutlined } from '@ant-design/icons'
-import { Button, Input, Table } from 'antd'
+import { EditOutlined, LoadingOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
+import { Button, Input, Table, Tag } from 'antd'
 import ChildrenDetailModal from '../../../components/Modal/ChildrenDetail'
 import AddChildrenModal from '../../../components/Modal/AddChildren'
 interface ChildrenListResponse {
@@ -91,7 +91,7 @@ const ChildrenPage: React.FC = () => {
       title: 'Medical Note',
       dataIndex: 'medicalNote',
       key: 'medicalNote',
-      render: (medicalNote: string) => (medicalNote ? medicalNote : "None")
+      render: (medicalNote: string) => (medicalNote ? medicalNote : <Tag icon={<MinusCircleOutlined />} color="default">None</Tag>)
     },
     {
       title: 'Gender',
