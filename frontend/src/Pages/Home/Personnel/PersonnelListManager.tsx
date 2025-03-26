@@ -93,7 +93,7 @@ const PersonnelListManager: React.FC = () => {
           icon={<EyeOutlined />}
           onClick={() => navigate(`/manager/personnel/${record.id}`)}
         >
-          Details
+          Chi tiết
         </Button>
       ),
     },
@@ -101,7 +101,7 @@ const PersonnelListManager: React.FC = () => {
 
   return (
     <div style={{ padding: '24px' }}>
-      <Title level={2}>Personnel List</Title>
+      <Title level={2}>Danh sách Nhân sự</Title>
 
       <div
         style={{
@@ -112,7 +112,7 @@ const PersonnelListManager: React.FC = () => {
         }}
       >
         <Input
-          placeholder='Search by personnel name'
+          placeholder='Tìm kiếm nhân sự theo tên'
           prefix={<SearchOutlined />}
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
@@ -124,7 +124,7 @@ const PersonnelListManager: React.FC = () => {
           icon={<PlusOutlined />}
           onClick={() => navigate('/manager/personnel/create')}
         >
-          Create Personnel
+          Thêm nhân sự
         </Button>
       </div>
 
