@@ -40,23 +40,31 @@ const CreatePersonnelManager: React.FC = () => {
 
   const [form] = Form.useForm()
 
-  const handleSave = async (values: any) => {
+  const handleSave = async () => {
     try {
+      const values = await form.validateFields(); 
+      console.log('Validated Values:', values);
+  
       const payload = {
-        ...values,
-        dateOfBirth: values.dateOfBirth
-          ? values.dateOfBirth.format('YYYY-MM-DD')
-          : null,
-      }
-
+        name: values.name,
+        dateOfBirth: values.dateOfBirth ? values.dateOfBirth.format('YYYY-MM-DD') : null,
+        gender: values.gender,
+        email: values.email,
+        role: values.role,
+        facilityId: values.facilityId,
+      };
+  
       const createData = (await createPersonnel({
         data: payload,
-      }).unwrap()) as { message: string }
-      message.success(createData.message)
+      }).unwrap()) as { message: string };
+  
+      message.success(createData.message);
     } catch (error: any) {
-      message.error(error.message)
+      console.error('Validation or API Error:', error);
+      message.error(error.data.message);
     }
-  }
+  };
+  
 
 
   return (
