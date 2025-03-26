@@ -6,6 +6,7 @@ import {
   CheckCircleOutlined,
   CheckOutlined,
   ClockCircleOutlined,
+  CloseOutlined,
   EditOutlined,
   ExclamationCircleOutlined,
   LoadingOutlined,
@@ -170,12 +171,28 @@ const DoctorHomePage: React.FC = () => {
       render: (_: any, record: Vaccination) => (
         <div style={{ display: "flex", justifyContent: "center" }}>
           <Button
-            type="primary"
+            color="green" variant="solid"
             loading={isUpdating}
             onClick={() => handleStatusChangeClick(record.id, 3)}
             disabled={isUpdating}
           >
             <CheckOutlined />
+          </Button>
+        </div>
+      ),
+    },
+    {
+      title: 'Back to paid',
+      key: 'statusToPaid',
+      render: (_: any, record: Vaccination) => (
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Button
+            color="danger" variant="solid"
+            loading={isUpdating}
+            onClick={() => handleStatusChangeClick(record.id, 1)}
+            disabled={isUpdating}
+          >
+            <CloseOutlined />
           </Button>
         </div>
       ),

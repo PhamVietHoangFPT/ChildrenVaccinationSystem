@@ -13,6 +13,7 @@ namespace ChildrenVaccinationSystem.Contract.Services
 	public interface IFacilityService
 	{
 		Task<BasePaginatedList<FacilityViewDto>> GetFacilities(int pageNumber, int pageSize);
+		Task<BasePaginatedList<object>> GetFacilitiesMinimal(int pageNumber, int pageSize);
 		Task<FacilityViewDto> GetFacilityById(string id);
 		Task<object> GetFacilityInventory(string id);
 		Task<object> GetFacilityBatches(string id);

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { Children } from '../../../types/children'
 import { useSearchParams } from 'react-router-dom'
 import { useGetChildrenListQuery } from '../../../features/children/childrenAPI'
-import { LoadingOutlined } from '@ant-design/icons'
-import { Input, Table, Button } from 'antd'
+import { LoadingOutlined, MinusCircleOutlined } from '@ant-design/icons'
+import { Input, Table, Button, Tag } from 'antd'
 import RegisterCustomerModal from '../../../components/Modal/RegisterCustomerModal'
 interface ChildrenListResponse {
   data: {
@@ -89,6 +89,7 @@ const RegiterVaccinationStaff: React.FC = () => {
       title: 'Medical Note',
       dataIndex: 'medicalNote',
       key: 'medicalNote',
+      render: (medicalNote: string) => (medicalNote  ? medicalNote :  <Tag icon={<MinusCircleOutlined />} color="default">None</Tag>)
     },
     {
       title: 'Gender',

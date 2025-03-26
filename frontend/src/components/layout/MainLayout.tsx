@@ -18,7 +18,7 @@ function MainLayout() {
     if (userData) {
       if (userData.Role === 'Customer') {
         if (!userData?.PhoneNumber || !userData?.Address) {
-          navigate('/forceUpdate')
+          navigate('/force-update')
         }
       }
     }

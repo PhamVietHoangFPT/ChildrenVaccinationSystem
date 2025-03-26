@@ -1,14 +1,14 @@
 import React from 'react'
 import { useGetVaccineListQuery } from '../../features/vaccine/vaccineAPI'
-import { Typography, Button, Row, Col, Collapse, Space } from 'antd'
+import { Typography, Button, Row, Col, Space } from 'antd'
 import { CalendarOutlined, LoadingOutlined } from '@ant-design/icons'
 import Logo from '../../assets/Logo.png'
 import { Vaccines } from '../../types/vaccine'
 import { VaccineSlider } from '../Vaccine/VaccineSlider'
-interface FAQ {
-  question: string
-  answer: string
-}
+import { Blogs } from '../../types/blog'
+import { useGetBlogsMinimalListQuery } from '../../features/blogs/blogsAPI'
+import { BlogSlider } from '../Blogs/BlogSlider'
+import { useNavigate } from 'react-router-dom'
 interface VaccineListResponse {
   data: {
     data: {
@@ -18,39 +18,32 @@ interface VaccineListResponse {
   isLoading: boolean
 }
 
-const { Title, Paragraph, Text } = Typography
-const { Panel } = Collapse
+interface BlogListResponse {
+  data: {
+    data: {
+      items: Blogs[]
+    }
+  }
+  isLoading: boolean
+}
+
+const { Title, Paragraph } = Typography
 
 const Homepage: React.FC = () => {
+  const navigate = useNavigate()
   const { data, isLoading } = useGetVaccineListQuery<VaccineListResponse>({
     pageNumber: 1,
-    pageSize: 10,
+    pageSize: 5,
   })
 
-  const dataVaccine = data?.data.items ?? []
+  const { data: dataBlog, isLoading: isLoadingBlog } =
+    useGetBlogsMinimalListQuery<BlogListResponse>({
+      pageNumber: -1,
+      pageSize: -1,
+    })
 
-  const faqs: FAQ[] = [
-    {
-      question: 'Is vaccination safe?',
-      answer:
-        'Yes, vaccines undergo rigorous testing and monitoring to ensure they are safe before they are approved for use. The benefits of vaccination far outweigh the potential risks for most people.',
-    },
-    {
-      question: 'What are the side effects?',
-      answer:
-        'Common side effects include soreness at the injection site, mild fever, and fatigue, which typically resolve within a few days. Serious side effects are extremely rare.',
-    },
-    {
-      question: 'Who should get vaccinated?',
-      answer:
-        'Most people should get vaccinated according to the recommended schedule, but specific recommendations may vary based on age, health conditions, and other factors. Consult with your healthcare provider for personalized advice.',
-    },
-    {
-      question: 'How long does immunity last after vaccination?',
-      answer:
-        'The duration of immunity varies by vaccine. Some vaccines provide lifelong protection, while others may require booster doses. Research is ongoing for newer vaccines to determine the duration of protection.',
-    },
-  ]
+  const dataVaccine = data?.data.items ?? []
+  const allDataBlog = dataBlog?.data.items ?? []
 
   return (
     <div
@@ -79,18 +72,24 @@ const Homepage: React.FC = () => {
                 level={1}
                 style={{ marginBottom: '24px', color: '#1890ff' }}
               >
-                Protect Yourself and Your Loved Ones with Vaccination
+                Bảo vệ bạn và những người thân yêu bằng tiêm chủng
               </Title>
               <Paragraph style={{ fontSize: '16px', marginBottom: '24px' }}>
-                Vaccination is one of the most effective ways to prevent
-                diseases. Get vaccinated today to protect yourself and help
-                build community immunity.
+                Tiêm chủng là một trong những cách hiệu quả nhất để phòng ngừa
+                bệnh tật. Hãy tiêm chủng ngay hôm nay để bảo vệ bản thân và giúp
+                xây dựng miễn dịch cộng đồng.
               </Paragraph>
               <Space>
-                <Button type='primary' size='large' icon={<CalendarOutlined />}>
-                  Schedule Appointment
+                <Button
+                  type='primary'
+                  size='large'
+                  icon={<CalendarOutlined />}
+                  onClick={() => {
+                    navigate('vaccine-registration')
+                  }}
+                >
+                  Đặt lịch hẹn
                 </Button>
-                <Button size='large'>Learn More</Button>
               </Space>
             </div>
           </Col>
@@ -113,7 +112,7 @@ const Homepage: React.FC = () => {
             level={2}
             style={{ textAlign: 'center', marginBottom: '32px' }}
           >
-            Popular Vaccines
+            Một số loại vaccine
           </Title>
           {isLoading ? (
             <LoadingOutlined
@@ -130,31 +129,27 @@ const Homepage: React.FC = () => {
           )}
         </div>
 
-        {/*Phan nay cua FAQS*/}
+        {/* Danh sach blog */}
         <div style={{ marginBottom: '48px' }}>
           <Title
             level={2}
             style={{ textAlign: 'center', marginBottom: '32px' }}
           >
-            Frequently Asked Questions
+            Các bài viết mới
           </Title>
-          <Row justify='center'>
-            <Col xs={24} md={20} lg={18}>
-              <Collapse defaultActiveKey={['0']} expandIconPosition='right'>
-                {faqs.map((faq, index) => (
-                  <Panel
-                    header={<Text strong>{faq.question}</Text>}
-                    key={index}
-                  >
-                    <Paragraph>{faq.answer}</Paragraph>
-                  </Panel>
-                ))}
-              </Collapse>
-              <div style={{ textAlign: 'center', marginTop: '24px' }}>
-                <Button type='primary'>View All FAQs</Button>
-              </div>
-            </Col>
-          </Row>
+          {isLoadingBlog ? (
+            <LoadingOutlined
+              style={{
+                fontSize: '50px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '30vh',
+              }}
+            />
+          ) : (
+            <BlogSlider blogs={allDataBlog as Blogs[]} />
+          )}
         </div>
       </div>
     </div>

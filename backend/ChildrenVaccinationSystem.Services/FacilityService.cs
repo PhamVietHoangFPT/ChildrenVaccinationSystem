@@ -5,11 +5,6 @@ using ChildrenVaccinationSystem.Contract.Repositories.IUOW;
 using ChildrenVaccinationSystem.Contract.Services;
 using ChildrenVaccinationSystem.Core.Base;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static ChildrenVaccinationSystem.Core.Base.BaseException;
 
 namespace ChildrenVaccinationSystem.Services
@@ -67,6 +62,22 @@ namespace ChildrenVaccinationSystem.Services
 			return new BasePaginatedList<FacilityViewDto>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
 		}
 
+		public async Task<BasePaginatedList<object>> GetFacilitiesMinimal(int pageNumber, int pageSize)
+		{
+			IQueryable<Facility> query = _unitOfWork.GetRepository<Facility>().Entities.Where(f => f.DeletedBy == null);
+
+			BasePaginatedList<Facility> resultQuery = (pageNumber <= 0 || pageSize <= 0)
+				? await _unitOfWork.GetRepository<Facility>().GetPaging(query, 1, query.Count())
+				: await _unitOfWork.GetRepository<Facility>().GetPaging(query, pageNumber, pageSize);
+
+			var responseItems = resultQuery.Items.Select(f => new
+			{
+				f.Id,
+				f.Name,
+			}).ToList();
+
+			return new BasePaginatedList<object>(responseItems, resultQuery.TotalItems, resultQuery.CurrentPage, resultQuery.PageSize);
+		}
 
 		public async Task<FacilityViewDto> GetFacilityById(string id)
 		{

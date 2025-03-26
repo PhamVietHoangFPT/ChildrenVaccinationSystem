@@ -5,7 +5,6 @@ import {
   UserOutlined,
   LogoutOutlined,
   CalendarOutlined,
-  InfoCircleOutlined,
 } from '@ant-design/icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSyringe } from '@fortawesome/free-solid-svg-icons'
@@ -50,24 +49,7 @@ const Navbar: React.FC = () => {
         key: 'appointments',
         icon: <CalendarOutlined />,
         label: 'Lịch hẹn',
-        url: '/vaccineRegistration',
-      },
-      {
-        key: 'about',
-        icon: <InfoCircleOutlined />,
-        label: 'Về chúng tôi',
-        children: [
-          {
-            key: 'about1',
-            label: 'About us 1',
-            url: '/abouts/abouts2',
-          },
-          {
-            key: 'service2',
-            label: 'About us 2',
-            url: '/abouts/abouts2',
-          },
-        ],
+        url: '/vaccine-registration',
       },
       {
         key: userData ? 'profile' : 'login',
@@ -109,19 +91,11 @@ const Navbar: React.FC = () => {
           borderBottom: '1px solid #f0f0f0',
         }}
       >
-        {items.map((item) =>
-          item.children ? (
-            <Menu.SubMenu key={item.key} icon={item.icon} title={item.label}>
-              {item.children.map((child) => (
-                <Menu.Item key={child.key}>{child.label}</Menu.Item>
-              ))}
-            </Menu.SubMenu>
-          ) : (
-            <Menu.Item key={item.key} icon={item.icon}>
-              {item.label}
-            </Menu.Item>
-          )
-        )}
+        {items.map((item) => (
+          <Menu.Item key={item.key} icon={item.icon}>
+            {item.label}
+          </Menu.Item>
+        ))}
         {userData && (
           <Menu.Item
             key='logout'

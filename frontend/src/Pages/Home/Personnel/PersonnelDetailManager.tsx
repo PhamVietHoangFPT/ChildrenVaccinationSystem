@@ -10,8 +10,9 @@ import {
   Select,
 } from 'antd'
 import {
-  useUpdateAccountPersonnelMutation,
   useGetPersonnelDetailQuery,
+  useUpdateAccountPersonnelMutation,
+ 
 } from '../../../features/account/accountAPI'
 import { Personnel } from '../../../types/personnel'
 import moment from 'moment'
