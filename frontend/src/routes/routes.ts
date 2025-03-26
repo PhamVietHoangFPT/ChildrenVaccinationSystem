@@ -32,6 +32,7 @@ import ManagerFacilityCreate from '../Pages/Home/Facility/FacilityCreateManager'
 import ManagerFacilityImport from '../Pages/Home/Facility/FacilityImportManager'
 import ManagerPersonnelList from '../Pages/Home/PersonnelManager/PersonnelListManager'
 import VaccinationsHistory from '../Pages/Vaccinations/VaccinationsHistory'
+import BlogDetails from '../Pages/Blogs/BlogDetails'
 import RegiterVaccinationStaff from '../Pages/Staff/RegisterCustomer/registerVaccination'
 import RegisterCustomer from '../Pages/Staff/RegisterCustomer/registerCustomer'
 import DoctorLayout from '../components/layout/DoctorLayout'
@@ -61,17 +62,18 @@ const routes: LayoutRoute[] = [
         component: VaccineDetailsCustomer,
       },
       {
-        path: '/vaccineRegistration',
+        path: '/vaccine-registration',
         component: VaccineRegistrationCustomer,
       },
       {
-        path: '/forceUpdate',
+        path: '/force-update',
         component: ForceUpdateAccount,
       },
       {
         path: '/vaccinations-history',
         component: VaccinationsHistory,
       },
+      { path: '/blogs/:id', component: BlogDetails },
     ],
   },
   {
