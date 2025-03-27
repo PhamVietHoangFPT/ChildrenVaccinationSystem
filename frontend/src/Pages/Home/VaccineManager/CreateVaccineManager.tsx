@@ -127,32 +127,36 @@ const CreateVaccine: React.FC = () => {
           <Input.TextArea rows={3} />
         </Form.Item>
 
-        <Form.Item label='Tuổi bắt đầu' style={{ marginBottom: 0 }}>
+        <Form.Item label='Tuổi khuyến khích' style={{ marginBottom: 0 }}>
           <Form.Item
             name='startRecommendedAge'
             style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}
             rules={[
-              { required: true, message: 'Vui lòng nhập tuổi bắt đầu' },
-              () => ({
+              { required: true, message: 'Nhập tuổi bắt đầu' },
+              {
                 validator(_, value) {
+                  if (value === undefined || value === null || value === '') {
+                    return Promise.reject('Yêu cầu nhập tuổi bắt đầu')
+                  }
                   const num = Number(value)
-                  if (isNaN(num)) {
-                    return Promise.reject(new Error('Tuổi phải là số'))
+                  if (isNaN(num) || !Number.isInteger(num)) {
+                    return Promise.reject(
+                      'Tuổi bắt đầu phải là một số nguyên dương'
+                    )
                   }
                   if (num < 0 || num > 15) {
                     return Promise.reject(
-                      new Error(
-                        'Tuổi bắt đầu phải nằm trong khoảng từ 0 đến 15'
-                      )
+                      'Tuổi bắt đầu phải nằm trong khoảng từ 0 đến 15'
                     )
                   }
                   return Promise.resolve()
                 },
-              }),
+              },
             ]}
           >
-            <Input placeholder='Nhập tuổi bắt đầu' />
+            <Input placeholder='Tuổi bắt đầu' />
           </Form.Item>
+
           <span
             style={{
               display: 'inline-block',
@@ -162,30 +166,33 @@ const CreateVaccine: React.FC = () => {
           >
             -
           </span>
+
           <Form.Item
             name='endRecommendedAge'
             dependencies={['startRecommendedAge']}
             style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}
             rules={[
-              { required: true, message: 'Vui lòng nhập tuổi kết thúc' },
+              { required: true, message: 'Nhập tuổi kết thúc' },
               ({ getFieldValue }) => ({
                 validator(_, value) {
-                  const startAge = Number(getFieldValue('startRecommendedAge'))
-                  const endAge = Number(value)
-
-                  if (isNaN(endAge)) {
-                    return Promise.reject(new Error('Tuổi kết thúc phải là số'))
+                  if (value === undefined || value === null || value === '') {
+                    return Promise.reject('Yêu cầu nhập tuổi kết thúc')
                   }
-                  if (endAge < 1 || endAge > 16) {
+                  const endNum = Number(value)
+                  const startNum = Number(getFieldValue('startRecommendedAge'))
+                  if (isNaN(endNum) || !Number.isInteger(endNum)) {
                     return Promise.reject(
-                      new Error(
-                        'Tuổi kết thúc phải nằm trong khoảng từ 1 đến 16'
-                      )
+                      'Tuổi kết thúc phải là một số nguyên dương'
                     )
                   }
-                  if (endAge <= startAge) {
+                  if (endNum < 1 || endNum > 16) {
                     return Promise.reject(
-                      new Error('Tuổi kết thúc phải lớn hơn tuổi bắt đầu')
+                      'Tuổi kết thúc phải nằm trong khoảng từ 1 đến 16'
+                    )
+                  }
+                  if (startNum >= endNum) {
+                    return Promise.reject(
+                      'Tuổi kết thúc phải lớn hơn tuổi bắt đầu'
                     )
                   }
                   return Promise.resolve()
