@@ -151,7 +151,7 @@ const AddChildrenModal: React.FC<AddChildrenModalProps> = ({
           </Form.Item>
 
           <Form.Item
-            label='Child Name'
+            label='Tên trẻ em'
             name='name'
             rules={[{ required: true, message: 'Please enter child name!' }]}
           >
@@ -159,7 +159,7 @@ const AddChildrenModal: React.FC<AddChildrenModalProps> = ({
           </Form.Item>
 
           <Form.Item
-            label='Date Of Birth'
+            label='Ngày sinh'
             name='dateOfBirth'
             rules={[{ required: true, message: 'Please enter date of birth' }]}
           >
@@ -176,7 +176,7 @@ const AddChildrenModal: React.FC<AddChildrenModalProps> = ({
             name='height'
             rules={[
               { required: true, message: 'Vui lòng nhập chiều cao!' },
-              { type: 'number', min: 1, message: 'Chiều cao phải lớn hơn 0!' },
+              { type: 'number', min: 1, max: 60, message: 'Chiều cao không hợp lệ!' },
             ]}
           >
             <InputNumber
@@ -191,7 +191,7 @@ const AddChildrenModal: React.FC<AddChildrenModalProps> = ({
             name='weight'
             rules={[
               { required: true, message: 'Vui lòng nhập cân nặng!' },
-              { type: 'number', min: 1, message: 'Cân nặng phải lớn hơn 0!' },
+              { type: 'number', min: 1, max: 6, message: 'Cân nặng không hợp lệ!' },
             ]}
           >
             <InputNumber

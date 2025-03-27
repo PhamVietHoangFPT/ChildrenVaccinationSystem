@@ -356,7 +356,7 @@ const StaffVaccination: React.FC = () => {
                 <AutoComplete
                     style={{ width: 300 }}
                     options={options}
-                    placeholder="Search by Child Code"
+                    placeholder="Tìm kiếm bằng child code"
                     value={searchValue}
                     onSelect={handleChildCodeSelect}
                     onChange={handleSearchChange}
