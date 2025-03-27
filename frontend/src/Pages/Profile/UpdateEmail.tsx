@@ -5,10 +5,12 @@ import {
   useConfirmUpdateEmailMutation,
 } from '../../features/auth/authApi'
 import { useNavigate } from 'react-router-dom'
+import Cookies from 'js-cookie'
 export default function UpdateEmail() {
   const [form] = Form.useForm()
   const [isOtpStep, setIsOtpStep] = useState(false)
   const navigate = useNavigate()
+  const [tempEmail, setTempEmail] = useState('')
 
   const [updateEmail, { isLoading: isUpdating }] = useUpdateEmailMutation()
   const [confirmUpdateEmail, { isLoading: isConfirming }] =
@@ -19,6 +21,7 @@ export default function UpdateEmail() {
     try {
       const updateEmailData = await updateEmail({ email }).unwrap()
       message.success(updateEmailData.message)
+      setTempEmail(email)
       setIsOtpStep(true) // Chuyển sang bước nhập OTP
     } catch (error: any) {
       message.error(error.data.message)
@@ -28,10 +31,18 @@ export default function UpdateEmail() {
   // ✅ Xác nhận OTP
   const handleConfirmOtp = async (otp: any) => {
     try {
-      const confirmUpdateEmaillData = await confirmUpdateEmail(otp).unwrap()
-      message.success(confirmUpdateEmaillData.message)
+      const confirmUpdateEmailData = await confirmUpdateEmail(otp).unwrap()
+      message.success(confirmUpdateEmailData.message)
       form.resetFields()
       setIsOtpStep(false)
+      const userData = Cookies.get('userData')
+        ? JSON.parse(Cookies.get('userData') as string)
+        : null
+
+      if (userData) {
+        userData.Email = tempEmail
+        Cookies.set('userData', JSON.stringify(userData))
+      }
       navigate('/profile')
     } catch (error: any) {
       console.log(error)
