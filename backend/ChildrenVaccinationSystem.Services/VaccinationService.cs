@@ -452,5 +452,22 @@ namespace ChildrenVaccinationSystem.Services
 				throw new ErrorException(400, "bad_request", "Trạng thái không hợp lệ");
 
 		}
+
+
+
+
+		public async Task BgRemoveOverExpiredVaccinations()
+		{
+			int numberOfExpiredMonths = 1;
+			var vaccinations = _unitOfWork.GetRepository<Vaccination>().Entities
+				.Where(v => v.Status == VaccinationStatusEnum.Pending
+					&& v.Schedule < DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(-numberOfExpiredMonths)));
+
+			foreach (var vaccination in vaccinations)
+			{
+				await _unitOfWork.GetRepository<Vaccination>().DeleteAsync(vaccination);
+			}
+			await _unitOfWork.SaveAsync();
+		}
 	}
 }
