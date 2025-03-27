@@ -110,7 +110,7 @@ const SideBarStaff: React.FC = () => {
             key: '7',
             label: 'View Schedules',
             icon: <SearchOutlined />,
-            url: '/option5',
+            url: '/staff/vaccination/schedule',
           },
           {
             key: '8',
