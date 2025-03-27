@@ -34,7 +34,7 @@ const PersonnelListManager: React.FC = () => {
 
   useEffect(() => {
     if (data?.data?.items) {
-      // Filter thanh search
+
       const filtered = data.data.items.filter((personnel) =>
         personnel.name.toLowerCase().includes(searchText.toLowerCase())
       )
@@ -46,7 +46,7 @@ const PersonnelListManager: React.FC = () => {
 
   const columns: ColumnsType<Personnel> = [
     {
-      title: 'Name',
+      title: 'Tên',
       dataIndex: 'name',
       key: 'name',
       sorter: (a, b) => a.name.localeCompare(b.name),
@@ -58,13 +58,13 @@ const PersonnelListManager: React.FC = () => {
     },
 
     {
-      title: 'Facility',
+      title: 'Cơ sở',
       dataIndex: ['facility', 'name'],
       key: 'facility',
     },
 
     {
-      title: 'Role',
+      title: 'Chức vụ',
       dataIndex: 'role',
       key: 'role',
       render: (role: number) => {
@@ -79,13 +79,13 @@ const PersonnelListManager: React.FC = () => {
     
 
     {
-      title: 'Phone',
+      title: 'Số điện thoại',
       dataIndex: 'phoneNumber',
       key: 'phoneNumber',
       render: (phoneNumber) => (phoneNumber ? phoneNumber : 'N/A'),
     },
     {
-      title: 'Actions',
+      title: 'Hành động',
       key: 'actions',
       render: (_, record) => (
         <Button
@@ -101,7 +101,7 @@ const PersonnelListManager: React.FC = () => {
 
   return (
     <div style={{ padding: '24px' }}>
-      <Title level={2}>Danh sách Nhân sự</Title>
+      <Title level={2}>Quản lý Nhân sự</Title>
 
       <div
         style={{
