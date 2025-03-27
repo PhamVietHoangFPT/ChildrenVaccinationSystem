@@ -171,7 +171,7 @@ const VaccinationUpdateModal: React.FC<VaccinationUpdateModalProps> = ({
   // Determine if doctor and vaccinator should be disabled based on status
   const isDoctorDisabled = vaccinationDetail?.status !== 1
   const isVaccinatorDisabled = vaccinationDetail?.status !== 3
-
+  const isScheduleDisabled = vaccinationDetail?.status === 1 || vaccinationDetail?.status === 0
   return (
     <Modal
       title='Update Vaccination Details'
@@ -226,7 +226,7 @@ const VaccinationUpdateModal: React.FC<VaccinationUpdateModalProps> = ({
             label='Schedule Date'
             name='schedule'
             rules={[
-              { required: true, message: 'Please select a schedule date' },
+              { required: isScheduleDisabled, message: 'Please select a schedule date' },
             ]}
           >
             <DatePicker
@@ -235,6 +235,7 @@ const VaccinationUpdateModal: React.FC<VaccinationUpdateModalProps> = ({
               }
               style={{ width: '100%' }}
               format='YYYY-MM-DD'
+              disabled={!isScheduleDisabled}
             />
           </Form.Item>
 
