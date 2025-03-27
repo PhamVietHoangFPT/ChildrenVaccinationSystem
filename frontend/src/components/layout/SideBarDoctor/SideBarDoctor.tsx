@@ -45,12 +45,12 @@ const SideBarDoctor: React.FC = () => {
     return [
       {
         key: 'sub0',
-        label: `Welcome, ${userData?.Name}`,
+        label: `Xin chào, ${userData?.Name}`,
         icon: <SmileOutlined />,
       },
       {
         key: 'sub5',
-        label: 'Log Out',
+        label: 'Đăng xuất',
         icon: <LogoutOutlined />,
         url: '/logout',
         danger: true,

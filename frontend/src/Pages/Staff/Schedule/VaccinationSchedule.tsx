@@ -146,33 +146,33 @@ const VaccinationSchedule: React.FC = () => {
                 (currentPage - 1) * pageSize + index + 1,
         },
         {
-            title: 'Child Name',
+            title: 'Tên trẻ em',
             dataIndex: 'child.name',
             key: 'childName',
             render: (_: string | undefined, record: Vaccination) =>
                 <span style={{ fontSize: '12px' }}>{record.child?.name ?? 'N/A'}</span>,
         },
         {
-            title: 'Vaccine',
+            title: 'Tên vaccine',
             dataIndex: 'vaccine.name',
             key: 'vaccineName',
             render: (_: string | undefined, record: Vaccination) =>
                 <span style={{ fontSize: '12px' }}>{record.vaccine?.name ?? 'N/A'}</span>,
         },
         {
-            title: 'Schedule',
+            title: 'Lịch tiêm',
             dataIndex: 'schedule',
             key: 'schedule',
             render: (schedule: Date | undefined) =>
                 <span style={{ fontSize: '12px' }}>{schedule ? dayjs(schedule).format('YYYY-MM-DD') : 'N/A'}</span>,
         },
         {
-            title: 'Price',
+            title: 'Giá',
             dataIndex: 'price',
             key: 'price',
         },
         {
-            title: 'Status',
+            title: 'Trạng thái',
             dataIndex: 'status',
             key: 'status',
             render: (status: number | undefined) => {
@@ -230,7 +230,7 @@ const VaccinationSchedule: React.FC = () => {
                 <AutoComplete
                     style={{ width: 300 }}
                     options={options}
-                    placeholder="Search by Child Code"
+                    placeholder="Tìm kiếm bằng child code"
                     value={searchValue}
                     onSelect={handleChildCodeSelect}
                     onChange={handleSearchChange}

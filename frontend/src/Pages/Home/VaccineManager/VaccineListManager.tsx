@@ -44,23 +44,23 @@ const ManagerVaccineList: React.FC = () => {
 
   const columns: ColumnsType<Vaccines> = [
     {
-      title: 'Name',
+      title: 'Tên',
       dataIndex: 'name',
       key: 'name',
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
-      title: 'Category',
+      title: 'Danh mục',
       dataIndex: ['category', 'name'],
       key: 'category',
     },
     {
-      title: 'Manufacturer',
+      title: 'Nhà sản xuất',
       dataIndex: ['manufacturer', 'name'],
       key: 'manufacturer',
     },
     {
-      title: 'Price',
+      title: 'Giá',
       dataIndex: 'price',
       key: 'price',
       render: (price) =>
@@ -68,18 +68,18 @@ const ManagerVaccineList: React.FC = () => {
       sorter: (a, b) => a.price! - b.price!,
     },
     {
-      title: 'Recommended Age',
+      title: 'Tuổi khuyến khích',
       key: 'recommendedAge',
       render: (_, record) =>
         `${record.startRecommendedAge} - ${record.endRecommendedAge} years`,
     },
     {
-      title: 'Dosage',
+      title: 'Liều',
       dataIndex: 'dosage',
       key: 'dosage',
     },
     {
-      title: 'Actions',
+      title: 'Hành động',
       key: 'actions',
       render: (_, record) => (
         <Button
@@ -87,7 +87,7 @@ const ManagerVaccineList: React.FC = () => {
           icon={<EyeOutlined />}
           onClick={() => navigate(`/manager/vaccine/${record.id}`)}
         >
-          Details
+          Chi tiết
         </Button>
       ),
     },
@@ -95,7 +95,7 @@ const ManagerVaccineList: React.FC = () => {
 
   return (
     <div style={{ padding: '24px' }}>
-      <Title level={2}>Vaccine List</Title>
+      <Title level={2}>Quản lý Vaccines</Title>
 
       <div
         style={{
@@ -106,7 +106,7 @@ const ManagerVaccineList: React.FC = () => {
         }}
       >
         <Input
-          placeholder='Search by vaccine name'
+          placeholder='Tìm kiếm Vaccine theo tên'
           prefix={<SearchOutlined />}
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
@@ -118,7 +118,7 @@ const ManagerVaccineList: React.FC = () => {
           icon={<PlusOutlined />}
           onClick={() => navigate('/manager/vaccine/create')}
         >
-          Create Vaccine
+          Thêm Vaccine
         </Button>
       </div>
 

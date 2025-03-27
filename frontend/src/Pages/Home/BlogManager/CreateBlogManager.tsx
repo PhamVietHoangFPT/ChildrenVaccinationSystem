@@ -41,7 +41,7 @@ const CreateBlog: React.FC = () => {
 
   return (
     <div style={{ padding: '24px' }}>
-      <Title level={2}>Blog Details</Title>
+      <Title level={2}>Tạo Blog</Title>
       <Form
         form={form}
         layout="vertical"
@@ -52,23 +52,23 @@ const CreateBlog: React.FC = () => {
         </Form.Item>
 
         <Form.Item
-          label="Title"
+          label="Tiêu đề"
           name="title"
-          rules={[{ required: true, message: 'Please enter the blog title' }]}
+          rules={[{ required: true, message: 'Vui lòng nhập tiêu đề' }]}
         >
           <Input />
         </Form.Item>
 
         <Form.Item
-          label="Content"
+          label="Nội dung"
           name="content"
-          rules={[{ required: true, message: 'Please enter the blog content' }]}
+          rules={[{ required: true, message: 'Vui lòng nhập nội dung' }]}
         >
-          {/* <Input.TextArea rows={6} /> */}
+
           <ReactQuill
                 ref={reactQuillRef}
                 theme="snow"
-                placeholder="Start writing..."
+                placeholder="Bắt đầu viết nội dung....."
                 modules={{
                   toolbar: {
                     container: [
@@ -117,10 +117,10 @@ const CreateBlog: React.FC = () => {
         <Form.Item>
           <div style={{ display: 'flex', gap: '16px' }}>
             <Button type="primary" htmlType="submit">
-              Save
+              Lưu
             </Button>
             <Button onClick={() => navigate('/manager/blog')}>
-              Back
+              Trở lại
             </Button>
           </div>
         </Form.Item>

@@ -179,7 +179,7 @@ const StaffVaccination: React.FC = () => {
             />
         );
     }
-
+    console.log(dateVaccinations)
     const columns = [
         {
             title: 'No.',
@@ -188,7 +188,7 @@ const StaffVaccination: React.FC = () => {
                 (currentPage - 1) * pageSize + index + 1,
         },
         {
-            title: 'Child Name',
+            title: 'Tên trẻ',
             dataIndex: 'child.name',
             key: 'childName',
             render: (_: string | undefined, record: Vaccination) =>
@@ -202,14 +202,20 @@ const StaffVaccination: React.FC = () => {
                 <span style={{ fontSize: '12px' }}>{record.vaccine?.name ?? 'N/A'}</span>,
         },
         {
-            title: 'Schedule',
+            title: 'Thứ tự mũi',
+            dataIndex: 'currentSequence',
+            key: 'currentSequence',
+            render: (currentSequence: number) => (<span style={{ fontSize: '12px' }}>Mũi thứ {currentSequence}</span>)
+        },
+        {
+            title: 'Lịch tiêm',
             dataIndex: 'schedule',
             key: 'schedule',
             render: (schedule: Date | undefined) =>
                 <span style={{ fontSize: '12px' }}>{schedule ? dayjs(schedule).format('YYYY-MM-DD') : 'N/A'}</span>,
         },
         {
-            title: 'Status',
+            title: 'Trạng thái',
             dataIndex: 'status',
             key: 'status',
             render: (status: number | undefined) => {
@@ -248,7 +254,7 @@ const StaffVaccination: React.FC = () => {
             },
         },
         {
-            title: 'Update',
+            title: 'Cập nhật',
             key: 'update',
             render: (_: any, record: Vaccination) => (
                 <Button
@@ -262,7 +268,7 @@ const StaffVaccination: React.FC = () => {
             ),
         },
         {
-            title: 'Change Status',
+            title: 'Đổi trạng thái',
             key: 'changeStatus',
             render: (_: any, record: Vaccination) => (
                 <>
@@ -350,7 +356,7 @@ const StaffVaccination: React.FC = () => {
                 <AutoComplete
                     style={{ width: 300 }}
                     options={options}
-                    placeholder="Search by Child Code"
+                    placeholder="Tìm kiếm bằng child code"
                     value={searchValue}
                     onSelect={handleChildCodeSelect}
                     onChange={handleSearchChange}

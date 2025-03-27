@@ -50,7 +50,7 @@ export const ManagerLayout = () => {
           }}
         >
           <Title level={4} style={{ margin: 0 }}>
-            Vaccination Manager
+            Quản Lý Tiêm Chủng
           </Title>
         </Header>
 

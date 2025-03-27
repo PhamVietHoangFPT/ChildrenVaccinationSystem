@@ -90,7 +90,7 @@ const DoctorHomePage: React.FC = () => {
         (currentPage - 1) * pageSize + index + 1,
     },
     {
-      title: 'Child Name',
+      title: 'Tên trẻ em',
       dataIndex: 'child.name',
       key: 'childName',
       render: (_: string | undefined, record: Vaccination) =>
@@ -104,14 +104,14 @@ const DoctorHomePage: React.FC = () => {
         <span>{record.vaccine?.name ?? 'N/A'}</span>,
     },
     {
-      title: 'Schedule',
+      title: 'Lịch tiêm',
       dataIndex: 'schedule',
       key: 'schedule',
       render: (schedule: Date | undefined) =>
         <span>{schedule ? dayjs(schedule).format('YYYY-MM-DD') : 'N/A'}</span>,
     },
     {
-      title: 'Status',
+      title: 'Trạng thái',
       dataIndex: 'status',
       key: 'status',
       render: (status: number | undefined) => {
@@ -150,7 +150,7 @@ const DoctorHomePage: React.FC = () => {
       },
     },
     {
-      title: 'Update',
+      title: 'Cập nhật',
       key: 'update',
       render: (_: any, record: Vaccination) => (
         <Button
@@ -166,7 +166,7 @@ const DoctorHomePage: React.FC = () => {
       ),
     },
     {
-      title: 'Go to queue',
+      title: 'Có thể tiêm',
       key: 'changeStatus',
       render: (_: any, record: Vaccination) => (
         <div style={{ display: "flex", justifyContent: "center" }}>
@@ -182,7 +182,7 @@ const DoctorHomePage: React.FC = () => {
       ),
     },
     {
-      title: 'Back to paid',
+      title: 'Không tiêm',
       key: 'statusToPaid',
       render: (_: any, record: Vaccination) => (
         <div style={{ display: "flex", justifyContent: "center" }}>

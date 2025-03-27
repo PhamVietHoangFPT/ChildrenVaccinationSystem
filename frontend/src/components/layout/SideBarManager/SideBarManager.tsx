@@ -7,11 +7,14 @@ import {
   LogoutOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  HomeOutlined,
   MedicineBoxOutlined,
+  BarChartOutlined,
+  FileOutlined,
+  ShopOutlined,
 } from '@ant-design/icons'
 import Cookies from 'js-cookie'
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBoxesPacking } from '@fortawesome/free-solid-svg-icons'
 const { Sider } = Layout
 const { Search } = Input
 
@@ -54,33 +57,39 @@ export const SideBar = () => {
   // Define the menu items
   const items = [
     {
+      key: 'manager',
+      icon: <BarChartOutlined />,
+      label: 'Bảng thống kê',
+      onClick: () => navigate('/manager'),
+    },
+    {
       key: 'manager/staff',
-      icon: <HomeOutlined />,
-      label: 'Manage Staff',
+      icon: <UserOutlined />,
+      label: 'Quản lý nhân sự',
       onClick: () => navigate('/manager/personnel'),
     },
     {
       key: 'manager/blog',
-      icon: <HomeOutlined />,
-      label: 'Manage Blogs',
+      icon: <FileOutlined />,
+      label: 'Quản lý bài viết',
       onClick: () => navigate('/manager/blog'),
     },
     {
       key: 'manager/vaccine',
       icon: <MedicineBoxOutlined />,
-      label: 'Manage Vaccines',
+      label: 'Quản lý vắc xin',
       onClick: () => navigate('/manager/vaccine'),
     },
     {
       key: 'manager/package',
-      icon: <HomeOutlined />,
-      label: 'Manage Package',
+      icon: <FontAwesomeIcon icon={faBoxesPacking} />,
+      label: 'Quản lý gói tiêm',
       onClick: () => navigate('/manager/package'),
     },
     {
       key: 'manager/facility',
-      icon: <HomeOutlined />,
-      label: 'Manage Facility',
+      icon: <ShopOutlined />,
+      label: 'Quản lý cơ sở',
       onClick: () => navigate('/manager/facility'),
     },
   ]
@@ -203,7 +212,7 @@ export const SideBar = () => {
             style={{ width: collapsed ? '100%' : '100%' }}
             size={collapsed ? 'middle' : 'middle'}
           >
-            {!collapsed && 'Logout'}
+            {!collapsed && 'Đăng xuất'}
           </Button>
         </Tooltip>
       </div>
