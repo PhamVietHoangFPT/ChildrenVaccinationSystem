@@ -68,7 +68,7 @@ const CreatePersonnelManager: React.FC = () => {
 
   return (
     <div style={{ padding: '24px' }}>
-      <Title level={2}>Thêm Nhân viên</Title>
+      <Title level={2}>Thêm nhân viên</Title>
       <Form form={form} layout='vertical' onFinish={handleSave}>
         <Form.Item
           label='Tên'
@@ -159,7 +159,7 @@ const CreatePersonnelManager: React.FC = () => {
               name='facilityId'
               rules={[{ required: true, message: 'Vui lòng chọn cơ sở' }]}
             >
-              <Select placeholder='Chọn nhà cơ sở'>
+              <Select placeholder='Chọn cơ sở'>
                 {facility.data.items.map((fac) => (
                   <Option key={fac.id} value={fac.id}>
                     {fac.name}
