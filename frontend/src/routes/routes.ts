@@ -38,15 +38,15 @@ import DoctorLayout from '../components/layout/DoctorLayout'
 import ManagerPackageList from '../Pages/Home/Package/PackageListManager'
 import ManagerPackageDetail from '../Pages/Home/Package/PackageDetailManager'
 import ManagerPackageCreate from '../Pages/Home/Package/CreatePackageManager'
-import PersonnelListManager from '../Pages/Home/Personnel/PersonnelListManager'
-import PersonnelDetailManager from '../Pages/Home/Personnel/PersonnelDetailManager'
-import CreatePersonnelManager from '../Pages/Home/Personnel/PersonnelCreateManager'
 import BlogDetail from '../Pages/Home/BlogManager/BlogDetailManager'
 import CreateBlog from '../Pages/Home/BlogManager/CreateBlogManager'
 import ManagerBlogList from '../Pages/Home/BlogManager/BlogListManager'
 import UpdatePassword from '../Pages/Profile/UpdatePassword'
 import UpdateEmail from '../Pages/Profile/UpdateEmail'
 import VaccinationSchedule from '../Pages/Staff/Schedule/VaccinationSchedule'
+import PersonnelListManager from '../Pages/Home/PersonnelManager/PersonnelListManager'
+import PersonnelDetailManager from '../Pages/Home/PersonnelManager/PersonnelDetailManager'
+import CreatePersonnelManager from '../Pages/Home/PersonnelManager/PersonnelCreateManager'
 
 const routes: LayoutRoute[] = [
   {

@@ -9,12 +9,10 @@ import {
   DatePicker,
   Select,
 } from 'antd'
-import {
-  useCreateACcountPersonnelMutation,
-} from '../../../features/account/accountAPI'
+import { useCreateACcountPersonnelMutation } from '../../../features/account/accountAPI'
 import { Facilities } from '../../../types/facilities'
 import { useGetFacilitiesListQuery } from '../../../features/facilities/facilitiesAPI'
-import moment from 'moment'
+import dayjs from 'dayjs'
 
 const { Option } = Select
 const { Title } = Typography
@@ -30,7 +28,7 @@ interface FacilityListResponse {
 
 const CreatePersonnelManager: React.FC = () => {
   const navigate = useNavigate()
-    
+
   const [createPersonnel] = useCreateACcountPersonnelMutation()
 
   const { data: facility, isLoading: facilityLoading } =
@@ -43,40 +41,35 @@ const CreatePersonnelManager: React.FC = () => {
 
   const handleSave = async () => {
     try {
-      const values = await form.validateFields(); 
-      console.log('Validated Values:', values);
-  
+      const values = await form.validateFields()
+      console.log('Validated Values:', values)
+
       const payload = {
         name: values.name,
-        dateOfBirth: values.dateOfBirth ? values.dateOfBirth.format('YYYY-MM-DD') : null,
+        dateOfBirth: values.dateOfBirth
+          ? values.dateOfBirth.format('YYYY-MM-DD')
+          : null,
         gender: values.gender,
         email: values.email,
         role: values.role,
         facilityId: values.facilityId,
-      };
-  
+      }
+
       const createData = (await createPersonnel({
         data: payload,
-      }).unwrap()) as { message: string };
-  
-      message.success(createData.message);
-    } catch (error: any) {
-      console.error('Validation or API Error:', error);
-      message.error(error.data.message);
-    }
-  };
-  
+      }).unwrap()) as { message: string }
 
+      message.success(createData.message)
+    } catch (error: any) {
+      console.error('Validation or API Error:', error)
+      message.error(error.data.message)
+    }
+  }
 
   return (
     <div style={{ padding: '24px' }}>
-      <Title level={2}>Thêm Nhân viên</Title>
-      <Form
-        form={form}
-        layout='vertical'
-        onFinish={handleSave}
-      >
-
+      <Title level={2}>Thêm nhân viên</Title>
+      <Form form={form} layout='vertical' onFinish={handleSave}>
         <Form.Item
           label='Tên'
           name='name'
@@ -86,39 +79,45 @@ const CreatePersonnelManager: React.FC = () => {
         </Form.Item>
 
         <Form.Item
-  label="Ngày sinh"
-  name="dateOfBirth"
-  rules={[
-    { required: true, message: 'Vui lòng nhập ngày sinh' },
-    () => ({
-      validator(_, value) {
-        if (!value) {
-          return Promise.reject(new Error('Vui lòng nhập ngày sinh'));
-        }
+          label='Ngày sinh'
+          name='dateOfBirth'
+          rules={[
+            { required: true, message: 'Vui lòng nhập ngày sinh' },
+            () => ({
+              validator(_, value) {
+                if (!value) {
+                  return Promise.reject(new Error('Vui lòng nhập ngày sinh'))
+                }
 
-        // Chắc chắn rằng giá trị là một đối tượng moment
-        const birthDate = moment(value, 'YYYY-MM-DD', true);
+                const birthDate = dayjs(value, 'DD/MM/YYYY')
+                const today = dayjs()
+                const age = today.diff(birthDate, 'year', true)
 
-        if (!birthDate.isValid()) {
-          return Promise.reject(new Error('Ngày sinh không hợp lệ'));
-        }
+                if (birthDate.isAfter(today)) {
+                  return Promise.reject(
+                    new Error('Ngày sinh không thể ở tương lai')
+                  )
+                }
 
-        const age = moment().diff(birthDate, 'years');
-        console.log('Tuổi tính toán:', age); // Debug để kiểm tra
+                if (age < 18) {
+                  return Promise.reject(
+                    new Error('Người dùng phải ít nhất 18 tuổi')
+                  )
+                }
 
-        if (age < 18) {
-          return Promise.reject(new Error('Người dùng phải ít nhất 18 tuổi'));
-        }
-
-        return Promise.resolve();
-      },
-    }),
-  ]}
->
-  <DatePicker style={{ width: '100%' }} format="DD/MM/YYYY" />
-</Form.Item>
-
-
+                return Promise.resolve()
+              },
+            }),
+          ]}
+        >
+          <DatePicker
+            style={{ width: '100%' }}
+            format='DD/MM/YYYY'
+            disabledDate={(current) =>
+              current && current.isAfter(dayjs().endOf('day'))
+            }
+          />
+        </Form.Item>
 
         <Form.Item
           label='Email'
@@ -160,7 +159,7 @@ const CreatePersonnelManager: React.FC = () => {
               name='facilityId'
               rules={[{ required: true, message: 'Vui lòng chọn cơ sở' }]}
             >
-              <Select placeholder='Chọn nhà cơ sở'>
+              <Select placeholder='Chọn cơ sở'>
                 {facility.data.items.map((fac) => (
                   <Option key={fac.id} value={fac.id}>
                     {fac.name}
@@ -170,7 +169,6 @@ const CreatePersonnelManager: React.FC = () => {
             </Form.Item>
           )
         )}
-
 
         <Form.Item>
           <div style={{ display: 'flex', gap: '16px' }}>
