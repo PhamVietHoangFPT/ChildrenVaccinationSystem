@@ -7,11 +7,14 @@ import {
   LogoutOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  HomeOutlined,
   MedicineBoxOutlined,
+  BarChartOutlined,
+  FileOutlined,
+  ShopOutlined,
 } from '@ant-design/icons'
 import Cookies from 'js-cookie'
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBoxesPacking } from '@fortawesome/free-solid-svg-icons'
 const { Sider } = Layout
 const { Search } = Input
 
@@ -54,14 +57,20 @@ export const SideBar = () => {
   // Define the menu items
   const items = [
     {
+      key: 'manager',
+      icon: <BarChartOutlined />,
+      label: 'Dashboard',
+      onClick: () => navigate('/manager'),
+    },
+    {
       key: 'manager/staff',
-      icon: <HomeOutlined />,
+      icon: <UserOutlined />,
       label: 'Manage Staff',
       onClick: () => navigate('/manager/personnel'),
     },
     {
       key: 'manager/blog',
-      icon: <HomeOutlined />,
+      icon: <FileOutlined />,
       label: 'Manage Blogs',
       onClick: () => navigate('/manager/blog'),
     },
@@ -73,13 +82,13 @@ export const SideBar = () => {
     },
     {
       key: 'manager/package',
-      icon: <HomeOutlined />,
+      icon: <FontAwesomeIcon icon={faBoxesPacking} />,
       label: 'Manage Package',
       onClick: () => navigate('/manager/package'),
     },
     {
       key: 'manager/facility',
-      icon: <HomeOutlined />,
+      icon: <ShopOutlined />,
       label: 'Manage Facility',
       onClick: () => navigate('/manager/facility'),
     },
