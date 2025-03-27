@@ -62,7 +62,12 @@ const ManagerHomePage = () => {
     data: registrations,
     isLoading: registrationsLoading,
     isFetching: registrationsFetching,
-  } = useGetRegistrationsQuery(dataQuery)
+  } = useGetRegistrationsQuery({
+    startMonth: dayjs(dateRange[0], 'MM/YYYY').format('MM'),
+    startYear: dayjs(dateRange[0], 'MM/YYYY').format('YYYY'),
+    endMonth: dayjs(dateRange[1], 'MM/YYYY').format('MM'),
+    endYear: dayjs(dateRange[1], 'MM/YYYY').format('YYYY'),
+  })
 
   const {
     data: revenue,
@@ -138,6 +143,47 @@ const ManagerHomePage = () => {
       </Row>
 
       <Row gutter={16}>
+        {registrationsLoading || registrationsFetching ? (
+          <Col span={24}>
+            <LoadingOutlined
+              style={{
+                fontSize: '50px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            />
+          </Col>
+        ) : (
+          <Col span={24}>
+            <h2 style={{ textAlign: 'center' }}>Số lượt đăng ký</h2>
+            <BarChart
+              dataset={registrations?.data?.result?.map((item: any) => ({
+                period: dayjs(item.period, 'YYYY-MM').format('MM/YYYY'), // Định dạng MM/YYYY
+                count: item.count, // Dữ liệu số lượt đăng ký
+              }))}
+              xAxis={[{ scaleType: 'band', dataKey: 'period' }]}
+              yAxis={[
+                {
+                  scaleType: 'linear',
+                  dataKey: 'count',
+                  valueFormatter: (value) => {
+                    if (value >= 1_000_000)
+                      return `${(value / 1_000_000).toLocaleString()}M` // Triệu
+                    if (value >= 1_000)
+                      return `${(value / 1_000).toLocaleString()}K` // Nghìn
+                    return value.toLocaleString() // Nếu nhỏ hơn 1K thì giữ nguyên
+                  },
+                },
+              ]}
+              series={[{ dataKey: 'count', label: 'Số lượt đăng ký' }]}
+              height={400}
+            />
+          </Col>
+        )}
+      </Row>
+
+      <Row gutter={16}>
         {vaccinationsAdministeredLoading || vaccinationsAdministeredFetching ? (
           <Col span={8}>
             <LoadingOutlined
@@ -182,44 +228,7 @@ const ManagerHomePage = () => {
             />
           </Col>
         )}
-        {registrationsLoading || registrationsFetching ? (
-          <Col span={8}>
-            <LoadingOutlined
-              style={{
-                fontSize: '50px',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            />
-          </Col>
-        ) : (
-          <Col span={8}>
-            <h2 style={{ textAlign: 'center' }}>Số lượt đăng ký</h2>
-            <BarChart
-              dataset={registrations?.data?.result?.map((item: any) => ({
-                period: dayjs(item.period, 'YYYY-MM').format('MM/YYYY'), // Định dạng MM/YYYY
-                count: item.count, // Dữ liệu số lượt đăng ký
-              }))}
-              xAxis={[{ scaleType: 'band', dataKey: 'period' }]}
-              yAxis={[
-                {
-                  scaleType: 'linear',
-                  dataKey: 'count',
-                  valueFormatter: (value) => {
-                    if (value >= 1_000_000)
-                      return `${(value / 1_000_000).toLocaleString()}M` // Triệu
-                    if (value >= 1_000)
-                      return `${(value / 1_000).toLocaleString()}K` // Nghìn
-                    return value.toLocaleString() // Nếu nhỏ hơn 1K thì giữ nguyên
-                  },
-                },
-              ]}
-              series={[{ dataKey: 'count', label: 'Số lượt đăng ký' }]}
-              height={400}
-            />
-          </Col>
-        )}
+
         {revenueLoading || revenueFetching ? (
           <Col span={8}>
             <LoadingOutlined
