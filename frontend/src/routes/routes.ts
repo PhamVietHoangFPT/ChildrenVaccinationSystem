@@ -47,6 +47,7 @@ import VaccinationSchedule from '../Pages/Staff/Schedule/VaccinationSchedule'
 import PersonnelListManager from '../Pages/Home/PersonnelManager/PersonnelListManager'
 import PersonnelDetailManager from '../Pages/Home/PersonnelManager/PersonnelDetailManager'
 import CreatePersonnelManager from '../Pages/Home/PersonnelManager/PersonnelCreateManager'
+import VaccinationsHistoryDetail from '../Pages/Vaccinations/VaccinationsHistoryDetail'
 
 const routes: LayoutRoute[] = [
   {
@@ -90,6 +91,10 @@ const routes: LayoutRoute[] = [
         component: VaccinationsHistory,
       },
       { path: '/blogs/:id', component: BlogDetails },
+      {
+        path: '/vaccinations-history-detail/:vaccinationHistoryId',
+        component: VaccinationsHistoryDetail,
+      },
     ],
   },
   {
