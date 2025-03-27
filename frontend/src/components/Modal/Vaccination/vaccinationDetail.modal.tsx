@@ -118,6 +118,7 @@ const VaccinationUpdateModal: React.FC<VaccinationUpdateModalProps> = ({
         vaccineName: vaccinationDetail.vaccine?.name || '',
         doctorId: vaccinationDetail.doctor?.id || undefined,
         vaccinatorId: vaccinationDetail.vaccinator?.id || undefined,
+        currentSequence: vaccinationDetail.currentSequence || ' '
       })
     }
   }, [vaccinationDetail, form])
@@ -134,6 +135,7 @@ const VaccinationUpdateModal: React.FC<VaccinationUpdateModalProps> = ({
       note: values.note || '',
       doctorId: values.doctorId,
       vaccinatorId: values.vaccinatorId,
+      currentSequence: values.currentSequence
     }
     console.log('Submitting values:', inputValues)
 
@@ -174,12 +176,12 @@ const VaccinationUpdateModal: React.FC<VaccinationUpdateModalProps> = ({
   const isScheduleDisabled = vaccinationDetail?.status === 1 || vaccinationDetail?.status === 0
   return (
     <Modal
-      title='Update Vaccination Details'
+      title='Cập nhật thông tin lịch tiêm'
       visible={visible}
       onCancel={onClose}
       footer={[
         <Button key='close' onClick={onClose}>
-          Cancel
+          Đóng
         </Button>,
       ]}
     >
@@ -208,22 +210,25 @@ const VaccinationUpdateModal: React.FC<VaccinationUpdateModalProps> = ({
             vaccineName: vaccinationDetail.vaccine?.name,
             doctorId: vaccinationDetail.doctor?.id,
             vaccinatorId: vaccinationDetail.vaccinator?.id,
+            currentSequence: vaccinationDetail.currentSequence
           }}
         >
-          <Form.Item label='Child Name' name='childName'>
+          <Form.Item label='Tên trẻ' name='childName'>
             <Input disabled />
           </Form.Item>
 
-          <Form.Item label='Vaccine Name' name='vaccineName'>
+          <Form.Item label='Tên vaccine' name='vaccineName'>
             <Input disabled />
           </Form.Item>
-
-          <Form.Item label='Price' name='price'>
+          <Form.Item label='Thứ tự mũi' name='currentSequence'>
+            <Input />
+          </Form.Item>
+          <Form.Item label='Giá' name='price'>
             <Input disabled />
           </Form.Item>
 
           <Form.Item
-            label='Schedule Date'
+            label='Lịch tiêm'
             name='schedule'
             rules={[
               { required: isScheduleDisabled, message: 'Please select a schedule date' },
@@ -240,7 +245,7 @@ const VaccinationUpdateModal: React.FC<VaccinationUpdateModalProps> = ({
           </Form.Item>
 
           <Form.Item
-            label='Doctor'
+            label='Bác sĩ phụ trách '
             name='doctorId'
             rules={[
               {
@@ -272,7 +277,7 @@ const VaccinationUpdateModal: React.FC<VaccinationUpdateModalProps> = ({
             </Select>
           </Form.Item>
 
-          <Form.Item label='Vaccinator' name='vaccinatorId'>
+          <Form.Item label='Người tiêm phụ trách' name='vaccinatorId'>
             <Select
               showSearch
               placeholder='Select a vaccinator'
@@ -296,12 +301,12 @@ const VaccinationUpdateModal: React.FC<VaccinationUpdateModalProps> = ({
             </Select>
           </Form.Item>
 
-          <Form.Item label='Note' name='note'>
+          <Form.Item label='Ghi chú' name='note'>
             <Input.TextArea rows={3} />
           </Form.Item>
 
           <Button type='primary' htmlType='submit' loading={isUpdating}>
-            Update Vaccination
+            Cập nhật lịch tiêm
           </Button>
         </Form>
       ) : (
