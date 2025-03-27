@@ -5,9 +5,9 @@ import {
   useGetVaccinationsAdministeredQuery,
   useGetRegistrationsQuery,
   useGetRevenueQuery,
-  useGetTopFacilitiesQuery,
-  useGetTopVaccineQuery,
-  useGetVaccinantionsStatusQuery,
+  // useGetTopFacilitiesQuery,
+  // useGetTopVaccineQuery,
+  // useGetVaccinantionsStatusQuery,
 } from '../../features/dashboard/dashboardAPI'
 import { Select, DatePicker } from 'antd'
 import dayjs from 'dayjs'
