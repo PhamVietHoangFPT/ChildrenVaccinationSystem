@@ -112,12 +112,12 @@ const ChildrenDetailModal: React.FC<ChilrenDetailModalProps> = ({
 
   return (
     <Modal
-      title='Child Details'
+      title='Cập nhật thông tin trẻ em'
       open={visible}
       onCancel={onClose}
       footer={[
         <Button key='close' onClick={onClose}>
-          Close
+          Đóng
         </Button>,
       ]}
     >
@@ -147,7 +147,7 @@ const ChildrenDetailModal: React.FC<ChilrenDetailModalProps> = ({
           }}
         >
           <Form.Item
-            label='Child Name'
+            label='Tên trẻ em'
             name='name'
             rules={[{ required: true }]}
           >
@@ -155,7 +155,7 @@ const ChildrenDetailModal: React.FC<ChilrenDetailModalProps> = ({
           </Form.Item>
 
           <Form.Item
-            label='Date Of Birth'
+            label='Ngày sinh'
             name='dateOfBirth'
             rules={[{ required: true, message: 'Vui lòng chọn ngày sinh' }]}
           >
@@ -169,7 +169,7 @@ const ChildrenDetailModal: React.FC<ChilrenDetailModalProps> = ({
           </Form.Item>
 
           <Form.Item
-            label='Height (cm)'
+            label='Chiều cao (cm)'
             name='height'
             rules={[{ required: true, type: 'number' }]}
           >
@@ -177,25 +177,25 @@ const ChildrenDetailModal: React.FC<ChilrenDetailModalProps> = ({
           </Form.Item>
 
           <Form.Item
-            label='Weight (kg)'
+            label='Cân nặng (kg)'
             name='weight'
             rules={[{ required: true, type: 'number' }]}
           >
             <InputNumber style={{ width: '100%' }} min={1} />
           </Form.Item>
 
-          <Form.Item label='Medical Note' name='medicalNote'>
+          <Form.Item label='Ghi chú y tế' name='medicalNote'>
             <Input />
           </Form.Item>
           <Form.Item
-            label='Gender'
+            label='Giới tính'
             name='gender'
             valuePropName='checked' // Switch dùng "checked" thay vì "value"
           >
             <Switch />
           </Form.Item>
           <Button type='primary' htmlType='submit' loading={isUpdating} style={{ display: "flex", justifySelf: "center", marginTop: "30px", width: "50%" }}>
-            Update
+            Cập nhật
           </Button>
         </Form>
       ) : (

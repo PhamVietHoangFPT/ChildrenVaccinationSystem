@@ -80,12 +80,12 @@ const StaffHomePage: React.FC = () => {
         (currentPage - 1) * pageSize + index + 1,
     },
     {
-      title: 'Name',
+      title: 'Tên',
       dataIndex: 'name',
       key: 'name',
     },
     {
-      title: 'Phone Number',
+      title: 'Số điện thoại',
       dataIndex: 'phoneNumber',
       key: 'phoneNumber',
     },
@@ -96,13 +96,13 @@ const StaffHomePage: React.FC = () => {
       render: (email: string) => (email ? email : <Tag icon={<MinusCircleOutlined />} color="default">None</Tag>)
     },
     {
-      title: 'Gender',
+      title: 'Giới tính',
       dataIndex: 'gender',
       key: 'gender',
-      render: (gender: boolean) => (gender ? 'Male' : 'Female'),
+      render: (gender: boolean) => (gender ? 'Nam' : 'Nữ'),
     },
     {
-      title: 'Update',
+      title: 'Cập nhật',
       key: 'update',
       render: (_: any, record: Customer) => (
         <Button
@@ -126,7 +126,7 @@ const StaffHomePage: React.FC = () => {
   return (
     <div style={{ padding: 20, background: '#fff', borderRadius: 8 }}>
       <Input.Search
-        placeholder='Search by phone number'
+        placeholder='Tìm kiếm bằng số điện thoại'
         allowClear
         onSearch={(value) => setSearchTerm(value)}
         style={{ marginBottom: 16, width: 300 }}

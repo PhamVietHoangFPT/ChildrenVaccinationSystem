@@ -37,15 +37,15 @@ const RegisterCustomer: React.FC = () => {
             initialValues={{ gender: true }}
         >
             <Form.Item
-                label="Name"
+                label="Tên khách hàng"
                 name="name"
                 rules={[{ required: true, message: 'Please enter customer name!' }]}
             >
-                <Input placeholder="Enter customer name" />
+                <Input placeholder="Nhập tên khách hàng" />
             </Form.Item>
 
             <Form.Item
-                label="Date Of Birth"
+                label="Ngày sinh"
                 name="dateOfBirth"
                 rules={[{ required: true, message: 'Please enter date of birth!' }]}
             >
@@ -59,23 +59,23 @@ const RegisterCustomer: React.FC = () => {
             </Form.Item>
 
             <Form.Item
-                label="Phone Number"
+                label="Số điện thoại"
                 name="phoneNumber"
                 rules={[{ required: true, message: 'Please enter phone number!' }]}
             >
-                <Input placeholder="Enter phone number" />
+                <Input placeholder="Nhập số điện thoại" />
             </Form.Item>
 
             <Form.Item
-                label="Address"
+                label="Địa chỉ"
                 name="address"
                 rules={[{ required: true, message: 'Please enter address!' }]}
             >
-                <Input placeholder="Enter address" />
+                <Input placeholder="Nhập địa chỉ" />
             </Form.Item>
 
             <Form.Item
-                label="Gender (Male: On, Female: Off)"
+                label="Giới tính (Nam: Bật, Nữ: Tắt)"
                 name="gender"
                 valuePropName="checked"
             >
@@ -84,7 +84,7 @@ const RegisterCustomer: React.FC = () => {
 
             <Form.Item>
                 <Button type="primary" htmlType="submit" loading={isCreating}>
-                    Add Account
+                    Thêm tài khoản
                 </Button>
             </Form.Item>
         </Form>

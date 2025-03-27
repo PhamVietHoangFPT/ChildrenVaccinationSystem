@@ -76,29 +76,29 @@ const RegiterVaccinationStaff: React.FC = () => {
         (currentPage - 1) * pageSize + index + 1,
     },
     {
-      title: 'Child Name',
+      title: 'Tên trẻ em',
       dataIndex: 'name',
       key: 'name',
     },
     {
-      title: 'Date Of Birth',
+      title: 'Ngày sinh',
       dataIndex: 'dateOfBirth',
       key: 'dateOfBirth',
     },
     {
-      title: 'Medical Note',
+      title: 'Ghi chú y tế',
       dataIndex: 'medicalNote',
       key: 'medicalNote',
       render: (medicalNote: string) => (medicalNote  ? medicalNote :  <Tag icon={<MinusCircleOutlined />} color="default">None</Tag>)
     },
     {
-      title: 'Gender',
+      title: 'Giới tính',
       dataIndex: 'gender',
       key: 'gender',
-      render: (gender: boolean) => (gender ? 'Male' : 'Female'),
+      render: (gender: boolean) => (gender ? 'Nam' : 'Nữ'),
     },
     {
-      title: 'Vaccination',
+      title: 'Đăng ký lịch tiêm',
       key: 'action',
       render: (record: Children) => (
         <Button
@@ -108,7 +108,7 @@ const RegiterVaccinationStaff: React.FC = () => {
             setCurrentChildren(record)
           }}
         >
-          Register
+          Đăng ký
         </Button>
       ),
     },
@@ -130,13 +130,13 @@ const RegiterVaccinationStaff: React.FC = () => {
     <div style={{ padding: 20, background: '#fff', borderRadius: 8 }}>
       <div style={{ display: 'flex' }}>
         <Input.Search
-          placeholder='Search by phone number'
+          placeholder='Tìm kiếm bằng số điện thoại'
           allowClear
           onSearch={(value) => setSearchPhoneTerm(value)}
           style={{ marginBottom: 16, width: 300 }}
         />
         <Input.Search
-          placeholder='Search by chidren name'
+          placeholder='Tìm kiếm bằng tên trẻ em'
           allowClear
           onSearch={(value) => setSearchNameTerm(value)}
           style={{ marginBottom: 16, width: 300 }}

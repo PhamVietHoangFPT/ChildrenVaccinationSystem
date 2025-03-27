@@ -26,7 +26,7 @@ const VaccinationDateFilter: React.FC<VaccinationDateFilterProps> = ({
       <Space direction='vertical' size='middle' style={{ width: '100%' }}>
         <Space direction='horizontal' size='middle'>
           <Space>
-            <span>Schedule From:</span>
+            <span>Lịch tiêm từ:</span>
             <DatePicker
               value={scheduleFrom ? dayjs(scheduleFrom) : null}
               onChange={onScheduleFromChange}
@@ -35,7 +35,7 @@ const VaccinationDateFilter: React.FC<VaccinationDateFilterProps> = ({
             />
           </Space>
           <Space>
-            <span>Schedule To:</span>
+            <span>Lịch tiêm đến:</span>
             <DatePicker
               value={scheduleTo ? dayjs(scheduleTo) : null}
               onChange={onScheduleToChange}
@@ -45,11 +45,11 @@ const VaccinationDateFilter: React.FC<VaccinationDateFilterProps> = ({
           </Space>
         </Space>
         <Space>
-          <span>Status:</span>
+          <span>Trạng thái:</span>
           <Select
             value={status}
             onChange={onStatusChange}
-            placeholder='Select status'
+            placeholder='Chọn trạng thái'
             style={{ width: 200 }}
             allowClear
           >

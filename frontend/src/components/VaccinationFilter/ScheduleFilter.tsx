@@ -19,21 +19,21 @@ const ScheduleFilter: React.FC <ScheduleDateFilterProps>= ({
              <Space direction='vertical' size='middle' style={{ width: '100%' }}>
                <Space direction='horizontal' size='middle'>
                  <Space>
-                   <span>Schedule From:</span>
+                   <span>Lịch tiêm từ:</span>
                    <DatePicker
                      value={scheduleFrom ? dayjs(scheduleFrom) : null}
                      onChange={onScheduleFromChange}
                      format='YYYY-MM-DD'
-                     placeholder='Select start date'
+                     placeholder='Chọn ngày bắt đầu'
                    />
                  </Space>
                  <Space>
-                   <span>Schedule To:</span>
+                   <span>Lịch tiêm đến:</span>
                    <DatePicker
                      value={scheduleTo ? dayjs(scheduleTo) : null}
                      onChange={onScheduleToChange}
                      format='YYYY-MM-DD'
-                     placeholder='Select end date'
+                     placeholder='Chọn ngày kết thúc'
                    />
                  </Space>
                </Space>
