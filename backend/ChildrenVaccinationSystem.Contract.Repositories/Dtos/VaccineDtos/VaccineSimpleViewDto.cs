@@ -5,5 +5,6 @@
 		public string Id { get; set; } = default!;
 		public string Name { get; set; } = default!;
 		public double Price { get; set; } = default!;
+		public int Sequence { get; set; } = default!;
 	}
 }
