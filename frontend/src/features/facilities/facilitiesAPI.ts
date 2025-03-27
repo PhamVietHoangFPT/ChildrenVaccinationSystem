@@ -2,7 +2,6 @@ import { apiSlice } from '../../apis/apiSlice'
 
 const facilitiesApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-
     getFacilitiesList: builder.query({
       query: ({ pageNumber, pageSize }) => ({
         url: '/facilities',
@@ -34,7 +33,7 @@ const facilitiesApi = apiSlice.injectEndpoints({
       transformResponse: (res) => res,
       providesTags: ['facilities'],
     }),
-    
+
     updateFacilities: builder.mutation({
       query: ({ data, id }) => ({
         url: `/facilities/${id}`,
@@ -82,6 +81,16 @@ const facilitiesApi = apiSlice.injectEndpoints({
       invalidatesTags: ['facilities'],
     }),
 
+    getFacilitiesMinimal: builder.query({
+      query: ({ pageNumber, pageSize }) => ({
+        url: '/facilities/minimal',
+        method: 'GET',
+        params: {
+          pageNumber,
+          pageSize,
+        },
+      }),
+    }),
   }),
 })
 
@@ -94,4 +103,5 @@ export const {
   useGetFacilitiesInventoryQuery,
   useGetFacilitiesBatchesQuery,
   useImportFacilitiesMutation,
+  useGetFacilitiesMinimalQuery,
 } = facilitiesApi

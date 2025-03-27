@@ -44,6 +44,8 @@ import CreatePersonnelManager from '../Pages/Home/Personnel/PersonnelCreateManag
 import BlogDetail from '../Pages/Home/BlogManager/BlogDetailManager'
 import CreateBlog from '../Pages/Home/BlogManager/CreateBlogManager'
 import ManagerBlogList from '../Pages/Home/BlogManager/BlogListManager'
+import UpdatePassword from '../Pages/Profile/UpdatePassword'
+import UpdateEmail from '../Pages/Profile/UpdateEmail'
 
 const routes: LayoutRoute[] = [
   {
@@ -57,6 +59,14 @@ const routes: LayoutRoute[] = [
       {
         path: '/profile',
         component: ProfilePage,
+      },
+      {
+        path: '/profile/update-password',
+        component: UpdatePassword,
+      },
+      {
+        path: '/profile/update-email',
+        component: UpdateEmail,
       },
       {
         path: '/vaccines',

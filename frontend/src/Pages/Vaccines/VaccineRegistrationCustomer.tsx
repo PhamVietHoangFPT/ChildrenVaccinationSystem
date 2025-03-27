@@ -13,7 +13,7 @@ import {
   Space,
 } from 'antd'
 const { Text } = Typography
-import { useGetFacilitiesListQuery } from '../../features/facilities/facilitiesAPI'
+import { useGetFacilitiesMinimalQuery } from '../../features/facilities/facilitiesAPI'
 import { useGetVaccineListMiniMalQuery } from '../../features/vaccine/vaccineAPI'
 import { useGetChildrenListQuery } from '../../features/children/childrenAPI'
 import {
@@ -157,7 +157,7 @@ export default function VaccineRegistrationCustomer() {
     )
 
   const { data: facilities, isLoading: facilitiesLoading } =
-    useGetFacilitiesListQuery<FacilitiesListResponse>({
+    useGetFacilitiesMinimalQuery<FacilitiesListResponse>({
       pageSize: -1,
       pageNumber: -1,
     })
