@@ -9,6 +9,7 @@ export interface Vaccination {
   status?: number
   child?: Children
   doctor?: Staff
+  currentSequence: number;
   vaccinator?: Staff
   vaccine?: Vaccines
   price?: number

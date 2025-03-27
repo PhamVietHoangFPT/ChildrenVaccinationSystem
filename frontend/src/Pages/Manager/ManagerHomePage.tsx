@@ -7,20 +7,20 @@ import {
   useGetVaccinationsAdministeredQuery,
   useGetRegistrationsQuery,
   useGetRevenueQuery,
-  // useGetTopFacilitiesQuery,
-  // useGetTopVaccineQuery,
-  // useGetVaccinantionsStatusQuery,
+  useGetTopFacilitiesQuery,
+  useGetTopVaccineQuery,
+  useGetVaccinantionsStatusQuery,
 } from '../../features/dashboard/dashboardAPI'
-import { Select, DatePicker, Row, Col, ConfigProvider } from 'antd'
+import { Select, DatePicker, Row, Col, ConfigProvider, Card } from 'antd'
 import viVN from 'antd/locale/vi_VN'
 import dayjs from 'dayjs'
-
 import 'dayjs/locale/vi' // Import ngôn ngữ tiếng Việt cho dayjs
-
 dayjs.locale('vi') // Thiết lập locale mặc định cho dayjs
 import { Facilities } from '../../types/facility'
 const { RangePicker } = DatePicker
 const { Option } = Select
+
+const rankColors = ['#FFD700', '#C0C0C0', '#CD7F32', '#85a5ff', '#73d13d']
 import { LoadingOutlined } from '@ant-design/icons'
 interface FacilitiesListResponse {
   data: {
@@ -75,6 +75,29 @@ const ManagerHomePage = () => {
     isFetching: revenueFetching,
   } = useGetRevenueQuery(dataQuery)
 
+  const {
+    data: vaccinationsStatus,
+    isLoading: vaccinationsStatusLoading,
+    isFetching: vaccinationsStatusFetching,
+  } = useGetVaccinantionsStatusQuery(dataQuery)
+
+  const {
+    data: topVaccine,
+    isLoading: topVaccineLoading,
+    isFetching: topVaccineFetching,
+  } = useGetTopVaccineQuery({
+    topN: 5,
+    facilityId: selectedFacility,
+  })
+
+  const {
+    data: topFacilities,
+    isLoading: topFacilitiesLoading,
+    isFetching: topFacilitiesFetching,
+  } = useGetTopFacilitiesQuery({
+    topN: 5,
+  })
+
   const handleDateChange = (
     dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] | null
   ) => {
@@ -83,14 +106,28 @@ const ManagerHomePage = () => {
     }
   }
 
+  const statusLabels: Record<number, string> = {
+    0: 'Chưa thanh toán',
+    6: 'Hoàn thành',
+    8: 'Đã hủy',
+    9: 'Hoàn tiền',
+  }
+
   return (
     <>
       <Row>
         <Col span={12}>
           <div>
             <h2 style={{ textAlign: 'center' }}>Chọn cơ sở y tế</h2>
-            {facilitiesLoading || vaccinationsAdministeredFetching ? (
-              <p>Loading...</p>
+            {facilitiesLoading ? (
+              <LoadingOutlined
+                style={{
+                  fontSize: '50px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              />
             ) : (
               <Select
                 style={{
@@ -140,6 +177,171 @@ const ManagerHomePage = () => {
             </ConfigProvider>
           </div>
         </Col>
+      </Row>
+
+      <Row gutter={16} style={{ marginTop: 20 }}>
+        {topVaccineLoading || topVaccineFetching ? (
+          <Col span={12}>
+            <LoadingOutlined
+              style={{
+                fontSize: '50px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            />
+          </Col>
+        ) : (
+          <Col span={12}>
+            <Card
+              style={{
+                borderRadius: 12,
+                boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+              }}
+            >
+              <h3
+                style={{
+                  textAlign: 'center',
+                  fontSize: 18,
+                  fontWeight: 600,
+                  marginBottom: 10,
+                }}
+              >
+                🌟 Top 5 vắc xin được sử dụng nhiều nhất
+              </h3>
+              <ul style={{ listStyleType: 'none', padding: 0, margin: 0 }}>
+                {topVaccine?.data
+                  ?.slice(0, 5)
+                  .map((item: any, index: number) => (
+                    <li
+                      key={item.vaccineId}
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        padding: '10px 15px',
+                        borderBottom:
+                          index !== 4 ? '1px solid #f0f0f0' : 'none',
+                        fontSize: 16,
+                        fontWeight: index === 0 ? 700 : 500, // Nhấn mạnh top 1
+                        color: index === 0 ? '#222' : '#555',
+                      }}
+                    >
+                      <span
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 10,
+                        }}
+                      >
+                        <span
+                          style={{
+                            backgroundColor: rankColors[index], // Màu theo thứ hạng
+                            color: '#fff',
+                            width: 24,
+                            height: 24,
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            borderRadius: '50%',
+                            fontSize: 14,
+                            fontWeight: 600,
+                          }}
+                        >
+                          {index + 1}
+                        </span>
+                        {item.vaccineName}
+                      </span>
+                      <span style={{ fontWeight: 600, fontSize: 16 }}>
+                        {item.totalCount.toLocaleString()}
+                      </span>
+                    </li>
+                  ))}
+              </ul>
+            </Card>
+          </Col>
+        )}
+        {topFacilitiesLoading || topFacilitiesFetching ? (
+          <Col span={12}>
+            <LoadingOutlined
+              style={{
+                fontSize: '50px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            />
+          </Col>
+        ) : (
+          <Col span={12}>
+            <Card
+              style={{
+                borderRadius: 12,
+                boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+              }}
+            >
+              <h3
+                style={{
+                  textAlign: 'center',
+                  fontSize: 18,
+                  fontWeight: 600,
+                  marginBottom: 10,
+                }}
+              >
+                🌟 Top 5 cơ sở có doanh thu cao nhất
+              </h3>
+              <ul style={{ listStyleType: 'none', padding: 0, margin: 0 }}>
+                {topFacilities?.data
+                  ?.slice(0, 5)
+                  .map((item: any, index: number) => (
+                    <li
+                      key={item.facilityId}
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        padding: '10px 15px',
+                        borderBottom:
+                          index !== 4 ? '1px solid #f0f0f0' : 'none',
+                        fontSize: 16,
+                        fontWeight: index === 0 ? 700 : 500, // Nhấn mạnh top 1
+                        color: index === 0 ? '#222' : '#555',
+                      }}
+                    >
+                      <span
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 10,
+                        }}
+                      >
+                        <span
+                          style={{
+                            backgroundColor: rankColors[index], // Màu theo thứ hạng
+                            color: '#fff',
+                            width: 24,
+                            height: 24,
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            borderRadius: '50%',
+                            fontSize: 14,
+                            fontWeight: 600,
+                          }}
+                        >
+                          {index + 1}
+                        </span>
+                        {item.facilityName}
+                      </span>
+                      <span style={{ fontWeight: 600, fontSize: 16 }}>
+                        {item.totalRevenue.toLocaleString()} VND
+                      </span>
+                    </li>
+                  ))}
+              </ul>
+            </Card>
+          </Col>
+        )}
       </Row>
 
       <Row gutter={16}>
@@ -223,6 +425,70 @@ const ManagerHomePage = () => {
               ]}
               series={[
                 { dataKey: 'totalCount', label: 'Số mũi vắc xin đã tiêm' },
+              ]}
+              height={400}
+            />
+          </Col>
+        )}
+
+        {vaccinationsStatusLoading || vaccinationsStatusFetching ? (
+          <Col span={8}>
+            <LoadingOutlined
+              style={{
+                fontSize: '50px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            />
+          </Col>
+        ) : (
+          <Col span={8}>
+            <h2 style={{ textAlign: 'center' }}>Tình trạng tiêm chủng</h2>
+            <BarChart
+              dataset={vaccinationsStatus?.data?.map((item: any) => ({
+                period: dayjs(item.period, 'YYYY-MM').format('MM/YYYY'),
+                ...Object.fromEntries(
+                  item.statusCounts.map((statusItem: any) => [
+                    statusLabels[statusItem.status],
+                    statusItem.count,
+                  ])
+                ),
+              }))}
+              xAxis={[{ scaleType: 'band', dataKey: 'period' }]}
+              yAxis={[
+                {
+                  scaleType: 'linear',
+                  valueFormatter: (value) => {
+                    if (value >= 1_000_000)
+                      return `${(value / 1_000_000).toLocaleString()}M` // Triệu
+                    if (value >= 1_000)
+                      return `${(value / 1_000).toLocaleString()}K` // Nghìn
+                    return value.toLocaleString() // Nếu nhỏ hơn 1K thì giữ nguyên
+                  },
+                },
+              ]}
+              series={[
+                {
+                  dataKey: 'Chưa thanh toán',
+                  label: 'Chưa thanh toán',
+                  color: '#FF4D4F',
+                },
+                {
+                  dataKey: 'Hoàn thành',
+                  label: 'Hoàn thành',
+                  color: '#FA8C16',
+                },
+                {
+                  dataKey: 'Đã hủy',
+                  label: 'Đã hủy',
+                  color: '#52C41A',
+                },
+                {
+                  dataKey: 'Hoàn tiền',
+                  label: 'Hoàn tiền',
+                  color: '#1890FF',
+                },
               ]}
               height={400}
             />
