@@ -310,6 +310,11 @@ const ManagerPackageDetail: React.FC = () => {
                   `${new Intl.NumberFormat('en-US').format(price || 0)} `,
               },
               {
+                title: 'Số mũi tiêm',
+                dataIndex: 'sequence',
+                key: 'sequence',
+              },
+              {
                 title: 'Hành động',
                 key: 'action',
                 render: (_, record) => (
