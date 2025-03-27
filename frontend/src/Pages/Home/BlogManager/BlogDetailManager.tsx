@@ -52,11 +52,11 @@ const BlogDetail: React.FC = () => {
 
   const handleDelete = () => {
     Modal.confirm({
-      title: 'Are you sure you want to delete this blog post?',
-      content: 'This action cannot be undone',
-      okText: 'Delete',
+      title: 'Bạn có chắc chắn muốn xóa bài viết blog này không?',
+      content: 'Hành động này không thể hoàn tác',
+      okText: 'Xóa',
       okType: 'danger',
-      cancelText: 'Cancel',
+      cancelText: 'Hủy',
       onOk: async () => {
         try {
           const dataDelete = await deleteBlog(id).unwrap() as { message: string };
@@ -78,7 +78,7 @@ const BlogDetail: React.FC = () => {
   }
 
   if (!data) {
-    return <div>Blog post not found</div>;
+    return <div>Không tìm thấy Blog</div>;
   }
 
   const initialValues = {
@@ -87,7 +87,7 @@ const BlogDetail: React.FC = () => {
 
   return (
     <div style={{ padding: '24px' }}>
-      <Title level={2}>Blog Details</Title>
+      <Title level={2}>Thông tin Blog</Title>
       <Form
         form={form}
         layout="vertical"
@@ -99,23 +99,23 @@ const BlogDetail: React.FC = () => {
         </Form.Item>
 
         <Form.Item
-          label="Title"
+          label="Tiêu đề"
           name="title"
-          rules={[{ required: true, message: 'Please enter the blog title' }]}
+          rules={[{ required: true, message: 'Vui lòng nhập tiêu đề' }]}
         >
           <Input />
         </Form.Item>
 
         <Form.Item
-          label="Content"
+          label="Nội dung"
           name='content'
-          rules={[{ required: true, message: 'Please enter the blog content' }]}
+          rules={[{ required: true, message: 'Vui lòng nhập nội dung' }]}
         >
-          {/* <Input.TextArea rows={6} /> */}
+
           <ReactQuill
       ref={reactQuillRef}
       theme="snow"
-      placeholder="Start writing..."
+      placeholder="Bắt đầu viết nội dung....."
       modules={{
         toolbar: {
           container: [
@@ -164,13 +164,13 @@ const BlogDetail: React.FC = () => {
         <Form.Item>
           <div style={{ display: 'flex', gap: '16px' }}>
             <Button type="primary" htmlType="submit">
-              Save
+              Lưu
             </Button>
             <Button danger onClick={handleDelete}>
-              Delete
+              Xóa
             </Button>
             <Button onClick={() => navigate('/manager/blog')}>
-              Back
+              Trở lại
             </Button>
           </div>
         </Form.Item>
