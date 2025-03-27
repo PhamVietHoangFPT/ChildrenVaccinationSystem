@@ -145,7 +145,7 @@ const ManagerPackageDetail: React.FC = () => {
   const calculateTotalPrice = () => {
     return data.data.packageItems.reduce((sum, item) => {
       if (item.vaccine && typeof item.vaccine.price === 'number') {
-        return sum + item.vaccine.price
+        return sum + (item.vaccine.price * item.vaccine.sequence)
       }
       return sum
     }, 0)
