@@ -34,7 +34,7 @@ const ManagerBlogList: React.FC = () => {
 
   useEffect(() => {
     if (data?.data?.items) {
-      // Filter thanh search
+
       const filtered = data.data.items.filter((blog) =>
         blog.title.toLowerCase().includes(searchText.toLowerCase())
       );
@@ -48,13 +48,13 @@ const ManagerBlogList: React.FC = () => {
 
   const columns: ColumnsType<Blogs> = [
     {
-      title: 'No.',
+      title: 'STT',
       dataIndex: 'index',
       key: 'index',
       render: (_, __, index) => (currentPage - 1) * pageSize + index + 1,
     },
     {
-      title: 'Title',
+      title: 'Tiêu đề',
       dataIndex: 'title',
       key: 'title',
       sorter: (a, b) => a.title.localeCompare(b.title),
@@ -69,7 +69,7 @@ const ManagerBlogList: React.FC = () => {
           icon={<EyeOutlined />}
           onClick={() => navigate(`/manager/blog/${record.id}`)}
         >
-          Details
+          Chi tiết
         </Button>
       ),
     },
@@ -77,7 +77,7 @@ const ManagerBlogList: React.FC = () => {
 
   return (
     <div style={{ padding: '24px' }}>
-      <Title level={2}>Blog List</Title>
+      <Title level={2}>Quản lý Blog</Title>
 
       <div
         style={{
@@ -88,7 +88,7 @@ const ManagerBlogList: React.FC = () => {
         }}
       >
         <Input
-          placeholder='Search by blog title'
+          placeholder='Tìm kiếm Blog theo tiêu đề'
           prefix={<SearchOutlined />}
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
@@ -100,7 +100,7 @@ const ManagerBlogList: React.FC = () => {
           icon={<PlusOutlined />}
           onClick={() => navigate('/manager/blog/create')}
         >
-          Create Blog
+          Tạo Blog
         </Button>
       </div>
 
