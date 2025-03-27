@@ -145,7 +145,7 @@ const ManagerPackageDetail: React.FC = () => {
   const calculateTotalPrice = () => {
     return data.data.packageItems.reduce((sum, item) => {
       if (item.vaccine && typeof item.vaccine.price === 'number') {
-        return sum + (item.vaccine.price * item.vaccine.sequence)
+        return sum + item.vaccine.price * item.vaccine.sequence
       }
       return sum
     }, 0)
@@ -218,7 +218,20 @@ const ManagerPackageDetail: React.FC = () => {
         </Form.Item>
 
         <div style={{ marginTop: '20px' }}>
-          <div style={{ fontSize: '21px', fontWeight: 'bold', color: 'red' }}>
+          <div style={{ fontSize: '21px', fontWeight: 'bold' }}>
+            <span>
+              Giá hiện tại: {Intl.NumberFormat('en-US').format(data.data.price)}{' '}
+              VND
+            </span>
+          </div>
+          <div
+            style={{
+              marginTop: '10px',
+              fontSize: '21px',
+              fontWeight: 'bold',
+              color: 'red',
+            }}
+          >
             <span>Giá trước khi giảm: </span>
             <span>
               {new Intl.NumberFormat('en-US').format(calculateTotalPrice())} VND

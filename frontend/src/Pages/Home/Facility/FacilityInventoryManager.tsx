@@ -78,26 +78,28 @@ const ManagerFacilityInventory: React.FC = () => {
 
   const batchColumns = [
     {
-      title: 'Batch Number',
+      title: 'Số lô',
       dataIndex: 'batchNumber',
       key: 'batchNumber',
     },
     {
-      title: 'Import Date',
+      title: 'Ngày nhập',
       dataIndex: 'importDate',
       key: 'importDate',
       render: (_text: any, record: any) =>
-        record ? new Date(record.importedDate).toLocaleDateString() : '-',
+        record
+          ? new Date(record.importedDate).toLocaleDateString('vi-VN')
+          : '-',
     },
     {
-      title: 'Expire Date',
+      title: 'Ngày hết hạn',
       dataIndex: 'expireDate',
       key: 'expireDate',
       render: (_text: any, record: any) =>
-        record ? new Date(record.importedDate).toLocaleDateString() : '-',
+        record ? new Date(record.expiryDate).toLocaleDateString('vi-VN') : '-',
     },
     {
-      title: 'Vaccine & Stock',
+      title: 'Vaccine & Số lượng',
       dataIndex: 'vaccines',
       key: 'vaccineStock',
       render: (vaccines: any[]) => (
@@ -111,7 +113,7 @@ const ManagerFacilityInventory: React.FC = () => {
               render: (name: string) => <Tag>{name}</Tag>,
             },
             {
-              title: 'Stock',
+              title: 'Số lượng',
               dataIndex: 'stock',
               key: 'stock',
               align: 'center',

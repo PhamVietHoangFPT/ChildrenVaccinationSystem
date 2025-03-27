@@ -81,6 +81,21 @@ export default function ProfilePage() {
               {userData.Address}
             </Descriptions.Item>
           </Descriptions>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Button
+              type='primary'
+              danger
+              onClick={() => navigate('/profile/update-password')}
+            >
+              Đổi mật khẩu
+            </Button>
+            <Button
+              type='primary'
+              onClick={() => navigate('/profile/update-email')}
+            >
+              Đổi email
+            </Button>
+          </div>
         </Card>
 
         {/* Danh sách trẻ em */}
