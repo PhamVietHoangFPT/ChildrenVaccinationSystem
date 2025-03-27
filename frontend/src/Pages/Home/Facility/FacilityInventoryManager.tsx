@@ -5,6 +5,8 @@ import {
   useGetFacilitiesBatchesQuery,
 } from '../../../features/facilities/facilitiesAPI'
 
+import { useGetFacilitiesDetailQuery } from '../../../features/facilities/facilitiesAPI'
+import { Facilities } from '../../../types/facilities'
 const { Title } = Typography
 const { TabPane } = Tabs
 
@@ -38,6 +40,13 @@ interface BatchData {
   isFetching: boolean
 }
 
+interface FacilityDataResponse {
+  data: {
+    data: Facilities
+  }
+  isLoading: boolean
+}
+
 const ManagerFacilityInventory: React.FC = () => {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -53,6 +62,9 @@ const ManagerFacilityInventory: React.FC = () => {
     isLoading: batchLoading,
     isFetching: batchFetching,
   } = useGetFacilitiesBatchesQuery<BatchData>(id as string)
+
+  const { data: facilityData } =
+    useGetFacilitiesDetailQuery<FacilityDataResponse>(id as string)
 
   if (inventoryLoading || inventoryFetching || batchLoading || batchFetching) {
     return (
@@ -133,10 +145,10 @@ const ManagerFacilityInventory: React.FC = () => {
 
   return (
     <div style={{ padding: '24px' }}>
-      <Title level={2}>Inventory của Facility</Title>
+      <Title level={2}>Kho vắc xin của cơ sở {facilityData.data.name}</Title>
 
       <Tabs defaultActiveKey='1'>
-        <TabPane tab='Inventory' key='1'>
+        <TabPane tab='Kho hàng' key='1'>
           <Table
             columns={inventoryColumns}
             dataSource={
@@ -148,7 +160,7 @@ const ManagerFacilityInventory: React.FC = () => {
           />
         </TabPane>
 
-        <TabPane tab='Batch' key='2'>
+        <TabPane tab='Lô hàng' key='2'>
           <div style={{ marginBottom: '16px' }}>
             <Button
               type='primary'
@@ -156,7 +168,7 @@ const ManagerFacilityInventory: React.FC = () => {
                 navigate(`/manager/facility/inventory/import/${id}`)
               }
             >
-              + Create Batch
+              + Tạo lô mới
             </Button>
           </div>
           <Table

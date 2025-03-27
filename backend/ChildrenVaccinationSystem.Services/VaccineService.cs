@@ -119,7 +119,7 @@ namespace ChildrenVaccinationSystem.Services
         {
 
             IQueryable<Vaccine> query = _unitOfWork.GetRepository<Vaccine>().Entities
-				.Where(v => (string.IsNullOrWhiteSpace(name) || v.Name.ToLower().Contains(name.ToLower())) && (string.IsNullOrWhiteSpace(categoryName) || (v.Category.Name.Contains(categoryName))) && (string.IsNullOrWhiteSpace(manufacturerCountry) || (v.Manufacturer.Country.Name.Contains(manufacturerCountry))) && v.DeletedBy == null);
+				.Where(v => (string.IsNullOrWhiteSpace(name) || v.Name.ToLower().Contains(name.ToLower())) && (string.IsNullOrWhiteSpace(categoryName) || (v.Category.Name.Contains(categoryName))) && (string.IsNullOrWhiteSpace(manufacturerCountry) || (v.Manufacturer.Country.Name.Contains(manufacturerCountry))) && v.DeletedBy == null).OrderBy(v => v.Name);
 
 
 
@@ -136,7 +136,7 @@ namespace ChildrenVaccinationSystem.Services
         public async Task<BasePaginatedList<object>> GetVaccinesMinimal(string? name, string? categoryName, string? manufacturerCountry, int pageNumber, int pageSize)
         {
 			IQueryable<Vaccine> query = _unitOfWork.GetRepository<Vaccine>().Entities
-				.Where(v => (string.IsNullOrWhiteSpace(name) || (v.Name.Contains(name))) && (string.IsNullOrWhiteSpace(categoryName) || (v.Category.Name.Contains(categoryName))) && (string.IsNullOrWhiteSpace(manufacturerCountry) || (v.Manufacturer.Country.Name.Contains(manufacturerCountry))) && v.DeletedBy == null);
+				.Where(v => (string.IsNullOrWhiteSpace(name) || (v.Name.Contains(name))) && (string.IsNullOrWhiteSpace(categoryName) || (v.Category.Name.Contains(categoryName))) && (string.IsNullOrWhiteSpace(manufacturerCountry) || (v.Manufacturer.Country.Name.Contains(manufacturerCountry))) && v.DeletedBy == null).OrderBy(v => v.Name);
 
 			BasePaginatedList<Vaccine> resultQuery = (pageNumber <= 0 || pageSize <= 0)
 				? await _unitOfWork.GetRepository<Vaccine>().GetPaging(query, 1, query.Count())
@@ -162,7 +162,7 @@ namespace ChildrenVaccinationSystem.Services
 		public async Task<BasePaginatedList<object>> GetVaccinesMini()
 		{
 			IQueryable<Vaccine> query = _unitOfWork.GetRepository<Vaccine>().Entities
-				.Where(v => v.DeletedBy == null);
+				.Where(v => v.DeletedBy == null).OrderBy(v => v.Name);
 
 			BasePaginatedList<Vaccine> resultQuery = await _unitOfWork.GetRepository<Vaccine>().GetPaging(query, 1, query.Count());
 

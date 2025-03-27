@@ -18,5 +18,6 @@ namespace ChildrenVaccinationSystem.Contract.Services
 		Task<string> RegisterVaccination(HttpContext context, VaccinationRegisterDto dto);
 		Task UpdateVaccinationByStaff(string id, VaccinationUpdateDto dto);
 		Task ShiftVaccinationStatus(string id, VaccinationStatusEnum status);
+		Task BgRemoveOverExpiredVaccinations();
 	}
 }

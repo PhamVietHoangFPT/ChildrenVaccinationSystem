@@ -160,7 +160,8 @@ namespace ChildrenVaccinationSystem.Services
 		public async Task<BasePaginatedList<AccountViewDto>> GetPersonnelAccounts(string? facilityId, RoleEnum? role, int pageNumber, int pageSize)
 		{
 
-			IQueryable<Account> query = _unitOfWork.GetRepository<Account>().Entities.Where(a => (a.Role == RoleEnum.Staff || a.Role == RoleEnum.Doctor || a.Role == RoleEnum.Vaccinator) && (facilityId == null || a.FacilityId == facilityId) && (role == null || a.Role == role) && a.DeletedBy == null);
+			IQueryable<Account> query = _unitOfWork.GetRepository<Account>().Entities.Where(a => (a.Role == RoleEnum.Staff || a.Role == RoleEnum.Doctor || a.Role == RoleEnum.Vaccinator) && (facilityId == null || a.FacilityId == facilityId) && (role == null || a.Role == role) && a.DeletedBy == null).OrderBy(a => a.FacilityId).ThenBy(a => a.Role).ThenBy(a => a.Name); ;
+			;
 			BasePaginatedList<Account> resultQuery = (pageNumber <= 0 || pageSize <= 0)
 			? await _unitOfWork.GetRepository<Account>().GetPaging(query, 1, query.Count())
 				: await _unitOfWork.GetRepository<Account>().GetPaging(query, pageNumber, pageSize);
@@ -172,7 +173,7 @@ namespace ChildrenVaccinationSystem.Services
 
 		public async Task<BasePaginatedList<object>> GetPersonnelAccountsMinimal(string? facilityId, RoleEnum? role, int pageNumber, int pageSize)
 		{
-			IQueryable<Account> query = _unitOfWork.GetRepository<Account>().Entities.Where(a => (a.Role == RoleEnum.Staff || a.Role == RoleEnum.Doctor || a.Role == RoleEnum.Vaccinator) && (facilityId == null || a.FacilityId == facilityId) && (role == null || a.Role == role) && a.DeletedBy == null);
+			IQueryable<Account> query = _unitOfWork.GetRepository<Account>().Entities.Where(a => (a.Role == RoleEnum.Staff || a.Role == RoleEnum.Doctor || a.Role == RoleEnum.Vaccinator) && (facilityId == null || a.FacilityId == facilityId) && (role == null || a.Role == role) && a.DeletedBy == null).OrderBy(a => a.FacilityId).ThenBy(a => a.Role).ThenBy(a => a.Name); ;
 
 			BasePaginatedList<Account> resultQuery = (pageNumber <= 0 || pageSize <= 0)
 				? await _unitOfWork.GetRepository<Account>().GetPaging(query, 1, query.Count())

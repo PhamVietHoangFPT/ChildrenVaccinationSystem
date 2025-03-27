@@ -45,21 +45,21 @@ const ManagerPackageList: React.FC = () => {
 
   const columns: ColumnsType<Packages> = [
     {
-      title: 'Name',
+      title: 'Tên gói',
       dataIndex: 'name',
       key: 'name',
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
-      title: 'Price',
+      title: 'Giá',
       dataIndex: 'price',
       key: 'price',
       render: (price) =>
-        price ? `${new Intl.NumberFormat('en-US').format(price)} ` : 'N/A',
+        price ? `${new Intl.NumberFormat('vi-VN').format(price)} ` : 'N/A',
       sorter: (a, b) => a.price! - b.price!,
     },
     {
-      title: 'Actions',
+      title: 'Hành động',
       key: 'actions',
       render: (_, record) => (
         <Button
@@ -67,7 +67,7 @@ const ManagerPackageList: React.FC = () => {
           icon={<EyeOutlined />}
           onClick={() => navigate(`/manager/package/${record.id}`)}
         >
-          Details
+          Chi tiết
         </Button>
       ),
     },
@@ -75,7 +75,7 @@ const ManagerPackageList: React.FC = () => {
 
   return (
     <div style={{ padding: '24px' }}>
-      <Title level={2}>Package List</Title>
+      <Title level={2}>Danh sách gói</Title>
 
       <div
         style={{
@@ -86,7 +86,7 @@ const ManagerPackageList: React.FC = () => {
         }}
       >
         <Input
-          placeholder='Search by package name'
+          placeholder='Tìm kiếm theo tên gói'
           prefix={<SearchOutlined />}
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
@@ -98,7 +98,7 @@ const ManagerPackageList: React.FC = () => {
           icon={<PlusOutlined />}
           onClick={() => navigate('/manager/package/create')}
         >
-          Create Package
+          Tạo gói mới
         </Button>
       </div>
 
