@@ -84,28 +84,28 @@ const VaccinatorHomePage: React.FC = () => {
         (currentPage - 1) * pageSize + index + 1,
     },
     {
-      title: 'Child Name',
+      title: 'Tên trẻ em',
       dataIndex: 'child.name',
       key: 'childName',
       render: (_: string | undefined, record: Vaccination) =>
         <span>{record.child?.name ?? 'N/A'}</span>,
     },
     {
-      title: 'Vaccine',
+      title: 'Tên vaccine',
       dataIndex: 'vaccine.name',
       key: 'vaccineName',
       render: (_: string | undefined, record: Vaccination) =>
         <span>{record.vaccine?.name ?? 'N/A'}</span>,
     },
     {
-      title: 'Schedule',
+      title: 'Lịch tiêm',
       dataIndex: 'schedule',
       key: 'schedule',
       render: (schedule: Date | undefined) =>
         <span>{schedule ? dayjs(schedule).format('YYYY-MM-DD') : 'N/A'}</span>,
     },
     {
-      title: 'Status',
+      title: 'Trạng thái',
       dataIndex: 'status',
       key: 'status',
       render: (status: number | undefined) => {
@@ -144,7 +144,7 @@ const VaccinatorHomePage: React.FC = () => {
       },
     },
     {
-      title: 'Monitoring',
+      title: 'Xác nhận đã tiêm',
       key: 'changeStatus',
       render: (_: any, record: Vaccination) => (
         <div style={{ display: "flex", justifyContent: "center" }}>
