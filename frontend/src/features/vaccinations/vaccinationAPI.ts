@@ -106,6 +106,14 @@ export const vaccinationsApi = apiSlice.injectEndpoints({
       transformResponse: (res) => res,
       providesTags: ['vaccinations'],
     }),
+    paymentVaccination: build.mutation({
+      query: ({ data }) => ({
+        url: '/vaccinations/payment/',
+        method: 'PATCH',
+        body: data
+      }),
+      invalidatesTags:['vaccinations']
+    })
   }),
 })
 
@@ -117,5 +125,6 @@ export const {
   useUpdateVaccinationStatusMutation,
   useGetVaccinationsHistoryQuery,
   useGetVaccinationListDoctorQuery,
-  useGetVaccinationListVaccinatorQuery
+  useGetVaccinationListVaccinatorQuery,
+  usePaymentVaccinationMutation
 } = vaccinationsApi

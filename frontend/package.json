@@ -11,9 +11,13 @@
     "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "@mui/material": "^6.4.8",
+    "@mui/x-charts": "^7.28.0",
     "@reduxjs/toolkit": "^2.5.1",
     "@types/redux-persist": "^4.3.1",
     "antd": "^5.23.3",

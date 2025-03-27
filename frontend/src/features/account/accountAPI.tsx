@@ -80,7 +80,7 @@ export const accountApi = apiSlice.injectEndpoints({
     }),
 
     createACcountPersonnel: build.mutation({
-      query: ({data}) => ({
+      query: ({ data }) => ({
         url: '/accounts/personnel',
         method: 'POST',
         body: data,
@@ -131,5 +131,5 @@ export const {
   useCreateACcountPersonnelMutation,
   useGetAccountPersonnelQuery,
   useUpdateAccountPersonnelMutation,
-  useGetPersonnelDetailQuery
+  useGetPersonnelDetailQuery,
 } = accountApi

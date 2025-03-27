@@ -38,12 +38,15 @@ import DoctorLayout from '../components/layout/DoctorLayout'
 import ManagerPackageList from '../Pages/Home/Package/PackageListManager'
 import ManagerPackageDetail from '../Pages/Home/Package/PackageDetailManager'
 import ManagerPackageCreate from '../Pages/Home/Package/CreatePackageManager'
-import PersonnelListManager from '../Pages/Home/PersonnelManager/PersonnelListManager'
-import PersonnelDetailManager from '../Pages/Home/PersonnelManager/PersonnelDetailManager'
-import CreatePersonnelManager from '../Pages/Home/PersonnelManager/PersonnelCreateManager'
 import BlogDetail from '../Pages/Home/BlogManager/BlogDetailManager'
 import CreateBlog from '../Pages/Home/BlogManager/CreateBlogManager'
 import ManagerBlogList from '../Pages/Home/BlogManager/BlogListManager'
+import UpdatePassword from '../Pages/Profile/UpdatePassword'
+import UpdateEmail from '../Pages/Profile/UpdateEmail'
+import VaccinationSchedule from '../Pages/Staff/Schedule/VaccinationSchedule'
+import PersonnelListManager from '../Pages/Home/PersonnelManager/PersonnelListManager'
+import PersonnelDetailManager from '../Pages/Home/PersonnelManager/PersonnelDetailManager'
+import CreatePersonnelManager from '../Pages/Home/PersonnelManager/PersonnelCreateManager'
 
 const routes: LayoutRoute[] = [
   {
@@ -57,6 +60,14 @@ const routes: LayoutRoute[] = [
       {
         path: '/profile',
         component: ProfilePage,
+      },
+      {
+        path: '/profile/update-password',
+        component: UpdatePassword,
+      },
+      {
+        path: '/profile/update-email',
+        component: UpdateEmail,
       },
       {
         path: '/vaccines',
@@ -117,6 +128,12 @@ const routes: LayoutRoute[] = [
       {
         path: '/staff/vaccination/register-vaccination',
         component: RegiterVaccinationStaff,
+        exact: true,
+        role: ['Staff'],
+      },
+      {
+        path: '/staff/vaccination/schedule',
+        component: VaccinationSchedule,
         exact: true,
         role: ['Staff'],
       },

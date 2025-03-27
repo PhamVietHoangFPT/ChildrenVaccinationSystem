@@ -184,7 +184,7 @@ export default function VaccineRegistrationCustomer() {
 
     if (packageDetail?.data?.packageItems?.length) {
       total = packageDetail.data.packageItems.reduce(
-        (sum, v) => sum + (v.vaccine?.price || 0),
+        (sum, v) => sum + (v.vaccine?.price * v.vaccine?.sequence || 0),
         0
       )
     }
@@ -228,7 +228,13 @@ export default function VaccineRegistrationCustomer() {
       render: (record: any) =>
         record.price.toLocaleString().toUpperCase() + ' VND',
       width: 120,
-      sorter: (a: any, b: any) => a.price - b.price,
+    },
+    {
+      title: 'Số mũi tiêm',
+      dataIndex: 'sequence',
+      key: 'sequence',
+      width: 120,
+      render: (sequence: any) => sequence,
     },
     {
       title: '',
@@ -324,6 +330,12 @@ export default function VaccineRegistrationCustomer() {
       key: 'price',
       render: (price: any) => price.toLocaleString(),
     },
+    {
+      title: 'Số mũi tiêm',
+      dataIndex: 'sequence',
+      key: 'sequence',
+      render: (sequence: any) => sequence,
+    },
   ]
 
   const selectPackageDataSource = packageDetail?.data?.packageItems.map(
@@ -331,6 +343,7 @@ export default function VaccineRegistrationCustomer() {
       key: index,
       name: item.vaccine.name,
       price: item.vaccine.price,
+      sequence: item.vaccine.sequence,
     })
   )
 
@@ -591,6 +604,9 @@ export default function VaccineRegistrationCustomer() {
                     </p>
                     <p>
                       <strong>Phòng bệnh:</strong> {vaccine.category.name}
+                    </p>
+                    <p>
+                      <strong>Số mũi:</strong> {vaccine.sequence}
                     </p>
                     <p>
                       <strong>Liều lượng:</strong> {vaccine.dosage} ml

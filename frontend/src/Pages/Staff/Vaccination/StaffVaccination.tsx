@@ -103,14 +103,22 @@ const StaffVaccination: React.FC = () => {
         setSearchParams(params);
     }, [currentPage, scheduleFrom, scheduleTo, status, childCode, setSearchParams]);
 
-    // Handle date changes
+    // Handle date changes with validation
     const handleScheduleFromChange = (date: Dayjs | null) => {
-        setScheduleFrom(date ? date.format('YYYY-MM-DD') : undefined);
+        const newDate = date ? date.format('YYYY-MM-DD') : undefined;
+        if (newDate && scheduleTo && dayjs(scheduleTo).isBefore(newDate)) {
+            setScheduleTo(undefined);
+        }
+        setScheduleFrom(newDate);
         setCurrentPage(1);
     };
 
     const handleScheduleToChange = (date: Dayjs | null) => {
-        setScheduleTo(date ? date.format('YYYY-MM-DD') : undefined);
+        const newDate = date ? date.format('YYYY-MM-DD') : undefined;
+        if (newDate && scheduleFrom && dayjs(newDate).isBefore(scheduleFrom)) {
+            return; // Prevent invalid date selection
+        }
+        setScheduleTo(newDate);
         setCurrentPage(1);
     };
 
@@ -171,7 +179,7 @@ const StaffVaccination: React.FC = () => {
             />
         );
     }
-
+    console.log(dateVaccinations)
     const columns = [
         {
             title: 'No.',
@@ -180,7 +188,7 @@ const StaffVaccination: React.FC = () => {
                 (currentPage - 1) * pageSize + index + 1,
         },
         {
-            title: 'Child Name',
+            title: 'Tên trẻ',
             dataIndex: 'child.name',
             key: 'childName',
             render: (_: string | undefined, record: Vaccination) =>
@@ -194,14 +202,20 @@ const StaffVaccination: React.FC = () => {
                 <span style={{ fontSize: '12px' }}>{record.vaccine?.name ?? 'N/A'}</span>,
         },
         {
-            title: 'Schedule',
+            title: 'Thứ tự mũi',
+            dataIndex: 'currentSequence',
+            key: 'currentSequence',
+            render: (currentSequence: number) => (<span style={{ fontSize: '12px' }}>Mũi thứ {currentSequence}</span>)
+        },
+        {
+            title: 'Lịch tiêm',
             dataIndex: 'schedule',
             key: 'schedule',
             render: (schedule: Date | undefined) =>
                 <span style={{ fontSize: '12px' }}>{schedule ? dayjs(schedule).format('YYYY-MM-DD') : 'N/A'}</span>,
         },
         {
-            title: 'Status',
+            title: 'Trạng thái',
             dataIndex: 'status',
             key: 'status',
             render: (status: number | undefined) => {
@@ -212,7 +226,7 @@ const StaffVaccination: React.FC = () => {
                     alignItems: 'center', // valid align-items value
                     justifyContent: 'center', // valid justify-content value
                 };
-        
+
                 switch (status) {
                     case 0:
                         return <Tag color="geekblue" style={tagStyle}>Pending</Tag>;
@@ -240,7 +254,7 @@ const StaffVaccination: React.FC = () => {
             },
         },
         {
-            title: 'Update',
+            title: 'Cập nhật',
             key: 'update',
             render: (_: any, record: Vaccination) => (
                 <Button
@@ -254,7 +268,7 @@ const StaffVaccination: React.FC = () => {
             ),
         },
         {
-            title: 'Change Status',
+            title: 'Đổi trạng thái',
             key: 'changeStatus',
             render: (_: any, record: Vaccination) => (
                 <>
