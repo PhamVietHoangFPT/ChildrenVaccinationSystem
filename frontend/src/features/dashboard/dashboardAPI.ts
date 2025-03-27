@@ -3,72 +3,70 @@ import { apiSlice } from '../../apis/apiSlice'
 const dashboardAPI = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getVaccinationsAdministered: builder.query({
-      query: ({ start, end, facilityId }) => ({
-        url: '/dashboard/vaccinations-administered',
+      query: ({ startMonth, startYear, endMonth, endYear, facilityId }) => ({
+        url: `/dashboard/vaccinations-administered?startMonth=${startMonth}&startYear=${startYear}&endMonth=${endMonth}&endYear=${endYear}&facilityId=${facilityId}`,
         method: 'GET',
-        params: {
-          start,
-          end,
-          facilityId,
-        },
       }),
       providesTags: ['dashboard'],
     }),
     getVaccinantionsStatus: builder.query({
-      query: ({ start, end, facilityId }) => ({
+      query: ({ startMonth, startYear, endMonth, endYear, facilityId }) => ({
         url: '/dashboard/vaccinations-status',
         method: 'GET',
         params: {
-          start,
-          end,
-          facilityId,
-        },
-      }),
-      providesTags: ['dashboard'],
-    }),
-    getCompletionRate: builder.query({
-      query: ({ start, end, facilityId }) => ({
-        url: '/dashboard/completion-rate',
-        method: 'GET',
-        params: {
-          start,
-          end,
-          facilityId,
-        },
-      }),
-      providesTags: ['dashboard'],
-    }),
-    getStockData: builder.query({
-      query: ({ start, end, facilityId }) => ({
-        url: '/dashboard/stock-data',
-        method: 'GET',
-        params: {
-          start,
-          end,
+          startMonth,
+          startYear,
+          endMonth,
+          endYear,
           facilityId,
         },
       }),
       providesTags: ['dashboard'],
     }),
     getRegistrations: builder.query({
-      query: ({ start, end }) => ({
+      query: ({ startMonth, startYear, endMonth, endYear }) => ({
         url: '/dashboard/registrations',
         method: 'GET',
         params: {
-          start,
-          end,
+          startMonth,
+          startYear,
+          endMonth,
+          endYear,
         },
       }),
       providesTags: ['dashboard'],
     }),
     getRevenue: builder.query({
-      query: ({ start, end, facilityId }) => ({
+      query: ({ startMonth, startYear, endMonth, endYear, facilityId }) => ({
         url: '/dashboard/revenue',
         method: 'GET',
         params: {
-          start,
-          end,
+          startMonth,
+          startYear,
+          endMonth,
+          endYear,
           facilityId,
+        },
+      }),
+      providesTags: ['dashboard'],
+    }),
+    getTopVaccine: builder.query({
+      query: ({ topN, facilityId }) => ({
+        url: '/dashboard/top-vaccines',
+        method: 'GET',
+        params: {
+          topN,
+          facilityId,
+        },
+      }),
+      providesTags: ['dashboard'],
+    }),
+    getTopFacilities: builder.query({
+      query: ({ topN }) => ({
+        url: '/dashboard/top-facilities',
+        method: 'GET',
+        params: {
+          topN,
         },
       }),
       providesTags: ['dashboard'],
@@ -79,8 +77,8 @@ const dashboardAPI = apiSlice.injectEndpoints({
 export const {
   useGetVaccinationsAdministeredQuery,
   useGetVaccinantionsStatusQuery,
-  useGetCompletionRateQuery,
-  useGetStockDataQuery,
   useGetRegistrationsQuery,
   useGetRevenueQuery,
+  useGetTopVaccineQuery,
+  useGetTopFacilitiesQuery,
 } = dashboardAPI

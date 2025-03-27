@@ -1,19 +1,19 @@
 // src/components/Table/vaccine.table.tsx
-import React from 'react';
-import { Button, Table } from 'antd';
-import { Vaccines } from '../../types/vaccine';
+import React from 'react'
+import { Button, Table } from 'antd'
+import { Vaccines } from '../../types/vaccine'
 
 interface VaccineTableProps {
-  vaccines: Vaccines[];
-  loading: boolean;
-  totalItems: number;
-  selectedVaccines: string[];
-  setSelectedVaccines: (vaccines: string[]) => void;
-  selectedPackages: any;
-  calculateTotalPriceAddSingleVaccine: (items: any[]) => void;
-  onPaginationChange: (page: number, pageSize: number) => void;
-  pageNumber: number; // Nhận pageNumber từ props
-  pageSize: number;   // Nhận pageSize từ props
+  vaccines: Vaccines[]
+  loading: boolean
+  totalItems: number
+  selectedVaccines: string[]
+  setSelectedVaccines: (vaccines: string[]) => void
+  selectedPackages: any
+  calculateTotalPriceAddSingleVaccine: (items: any[]) => void
+  onPaginationChange: (page: number, pageSize: number) => void
+  pageNumber: number // Nhận pageNumber từ props
+  pageSize: number // Nhận pageSize từ props
 }
 
 const VaccineTable: React.FC<VaccineTableProps> = ({
@@ -41,6 +41,15 @@ const VaccineTable: React.FC<VaccineTableProps> = ({
       render: (record: any) => record.category.name,
       width: 350,
     },
+
+    {
+      title: 'Số mũi tiêm',
+      dataIndex: 'sequence',
+      key: 'sequence',
+      width: 100,
+      render: (sequence: any) => sequence,
+    },
+
     {
       title: '',
       key: 'action',
@@ -48,10 +57,12 @@ const VaccineTable: React.FC<VaccineTableProps> = ({
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Button
             onClick={() => {
-              setSelectedVaccines([...selectedVaccines, record]);
-              calculateTotalPriceAddSingleVaccine([...selectedVaccines, record]);
+              setSelectedVaccines([...selectedVaccines, record])
+              calculateTotalPriceAddSingleVaccine([...selectedVaccines, record])
             }}
-            disabled={selectedVaccines.includes(record) || selectedPackages !== null}
+            disabled={
+              selectedVaccines.includes(record) || selectedPackages !== null
+            }
             title={
               selectedVaccines.includes(record)
                 ? 'Vaccine đã được chọn'
@@ -66,7 +77,7 @@ const VaccineTable: React.FC<VaccineTableProps> = ({
       ),
       width: 100,
     },
-  ];
+  ]
 
   return (
     <Table
@@ -74,10 +85,10 @@ const VaccineTable: React.FC<VaccineTableProps> = ({
       columns={columns}
       loading={loading}
       style={{ marginBottom: '16px' }}
-      tableLayout="fixed"
+      tableLayout='fixed'
       pagination={{
         current: pageNumber, // Sử dụng pageNumber từ props
-        pageSize: pageSize,  // Sử dụng pageSize từ props
+        pageSize: pageSize, // Sử dụng pageSize từ props
         total: totalItems,
         onChange: onPaginationChange, // Gọi callback khi thay đổi
         locale: {
@@ -85,7 +96,7 @@ const VaccineTable: React.FC<VaccineTableProps> = ({
         },
       }}
     />
-  );
-};
+  )
+}
 
-export default VaccineTable;
+export default VaccineTable

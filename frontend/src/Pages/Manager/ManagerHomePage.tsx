@@ -4,9 +4,9 @@ import { useGetFacilitiesMinimalQuery } from '../../features/facilities/faciliti
 import {
   useGetVaccinationsAdministeredQuery,
   useGetRegistrationsQuery,
-  useGetStockDataQuery,
-  useGetCompletionRateQuery,
   useGetRevenueQuery,
+  useGetTopFacilitiesQuery,
+  useGetTopVaccineQuery,
   useGetVaccinantionsStatusQuery,
 } from '../../features/dashboard/dashboardAPI'
 import { Select, DatePicker } from 'antd'
@@ -29,66 +29,131 @@ const ManagerHomePage = () => {
       pageSize: -1,
       pageNumber: -1,
     })
-  const [dateRange, setDateRange] = useState<[string, string]>([
-    '2024-01-01',
-    '2024-12-31',
+  const [dateRange, setDateRange] = useState<[dayjs.Dayjs, dayjs.Dayjs]>([
+    dayjs('01/2025', 'MM/YYYY'),
+    dayjs('12/2025', 'MM/YYYY'),
   ])
-  const [selectedFacility, setSelectedFacility] = useState<string | null>(null)
 
-  const { data: vaccinationsAdministered } =
-    useGetVaccinationsAdministeredQuery({
-      start: dateRange[0],
-      end: dateRange[1],
-    })
+  const [selectedFacility, setSelectedFacility] = useState<string | null>('')
 
-  const handleDateChange = (dates: any, dateStrings: [string, string]) => {
-    if (dates) {
-      setDateRange(dateStrings)
+  const dataQuery = {
+    startMonth: dayjs(dateRange[0], 'MM/YYYY').format('MM'),
+    startYear: dayjs(dateRange[0], 'MM/YYYY').format('YYYY'),
+    endMonth: dayjs(dateRange[1], 'MM/YYYY').format('MM'),
+    endYear: dayjs(dateRange[1], 'MM/YYYY').format('YYYY'),
+    facilityId: selectedFacility,
+  }
+
+  const {
+    data: vaccinationsAdministered,
+    isLoading: vaccinationsAdministeredLoading,
+  } = useGetVaccinationsAdministeredQuery(dataQuery)
+
+  const { data: registrations, isLoading: registrationsLoading } =
+    useGetRegistrationsQuery(dataQuery)
+
+  const { data: revenue, isLoading: revenueLoading } =
+    useGetRevenueQuery(dataQuery)
+
+  const handleDateChange = (
+    dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] | null
+  ) => {
+    if (dates && dates[0] && dates[1]) {
+      setDateRange([dates[0], dates[1]])
     }
   }
+
   return (
     <>
       <h2 style={{ textAlign: 'center' }}>Chọn cơ sở y tế</h2>
-      <Select
-        style={{
-          width: '50%',
-          margin: 'auto',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '16px',
-          fontSize: '18px', // Tăng kích thước font cho Select
-        }}
-        size='large'
-        dropdownStyle={{ fontSize: '18px' }} // Tăng kích thước font cho dropdown
-        placeholder='Chọn cơ sở y tế'
-        onChange={(value) => setSelectedFacility(value)}
-      >
-        {facilities?.data.items.map((facility) => (
-          <Option
-            key={facility.id}
-            value={facility.id}
-            style={{ fontSize: 'large' }}
-          >
-            {facility.name}
+      {facilitiesLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <Select
+          style={{
+            width: '50%',
+            margin: 'auto',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px',
+            fontSize: '18px', // Tăng kích thước font cho Select
+          }}
+          size='large'
+          dropdownStyle={{ fontSize: '18px' }} // Tăng kích thước font cho dropdown
+          placeholder='Chọn cơ sở y tế'
+          onChange={(value) => setSelectedFacility(value)}
+        >
+          {facilities?.data.items.map((facility) => (
+            <Option
+              key={facility.id}
+              value={facility.id}
+              style={{ fontSize: 'large' }}
+            >
+              {facility.name}
+            </Option>
+          ))}
+          <Option value='' style={{ fontSize: 'large' }}>
+            Tất cả cơ sở
           </Option>
-        ))}
-      </Select>
+        </Select>
+      )}
 
       <RangePicker
         style={{ width: '100%' }}
         size='large'
-        format='YYYY-MM-DD'
-        defaultValue={[dayjs(dateRange[0]), dayjs(dateRange[1])]}
+        picker='month'
+        format='MM/YYYY'
+        defaultValue={[
+          dayjs(dateRange[0], 'MM/YYYY'),
+          dayjs(dateRange[1], 'MM/YYYY'),
+        ]}
         onChange={handleDateChange}
       />
 
-      <BarChart
-        data={vaccinationsAdministered?.data}
-        xField='date'
-        yField='count'
-        groupField='status'
-        height={400}
-      />
+      {!vaccinationsAdministeredLoading && (
+        <>
+          <h2 style={{ textAlign: 'center' }}>Số lượng liều vắc xin đã tiêm</h2>
+          <BarChart
+            dataset={vaccinationsAdministered?.data?.result?.map(
+              (item: any) => ({
+                period: dayjs(item.period, 'YYYY-MM').format('MM/YYYY'), // Chuyển thành MM/YYYY
+                totalCount: item.totalCount, // Giữ nguyên giá trị
+              })
+            )}
+            xAxis={[{ scaleType: 'band', dataKey: 'period' }]}
+            series={[{ dataKey: 'totalCount', label: 'Tổng' }]}
+            height={400}
+          />
+        </>
+      )}
+      {!registrationsLoading && (
+        <>
+          <h2 style={{ textAlign: 'center' }}>Số lượt đăng ký</h2>
+          <BarChart
+            dataset={registrations?.data?.result?.map((item: any) => ({
+              period: dayjs(item.period, 'YYYY-MM').format('MM/YYYY'), // Chuyển thành MM/YYYY
+              count: item.count, // Giữ nguyên giá trị
+            }))}
+            xAxis={[{ scaleType: 'band', dataKey: 'period' }]}
+            series={[{ dataKey: 'count', label: 'Tổng' }]}
+            height={400}
+          />
+        </>
+      )}
+      {!revenueLoading && (
+        <>
+          <h2 style={{ textAlign: 'center' }}>Số lượt đăng ký</h2>
+          <BarChart
+            dataset={revenue?.data?.result?.map((item: any) => ({
+              period: dayjs(item.period, 'YYYY-MM').format('MM/YYYY'), // Chuyển thành MM/YYYY
+              revenue: item.revenue, // Giữ nguyên giá trị
+            }))}
+            xAxis={[{ scaleType: 'band', dataKey: 'period' }]}
+            series={[{ dataKey: 'revenue', label: 'Tổng' }]}
+            height={400}
+          />
+        </>
+      )}
     </>
   )
 }
