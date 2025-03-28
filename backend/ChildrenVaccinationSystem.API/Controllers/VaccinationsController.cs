@@ -122,10 +122,15 @@ namespace ChildrenVaccinationSystem.API.Controllers
 		{
 			if (!ModelState.IsValid)
 			{
-				throw new ErrorException(400, "bad_request", "Vui lòng chọn tất cả thông tin đăng ký");
+				return BadRequest(new BaseResponse<object>(
+					statusCode: StatusCodeEnum.BadRequest,
+					code: StatusCodeEnum.BadRequest.ToString(),
+					message: "Vui lòng chọn tất cả thông tin đăng ký",
+					data: ModelState
+				));
 			}
 
-				string vnPayUrl = await _vaccinationService.RegisterVaccination(HttpContext, dto);
+			string vnPayUrl = await _vaccinationService.RegisterVaccination(HttpContext, dto);
 
 
 			return Ok(new BaseResponse<object>(
