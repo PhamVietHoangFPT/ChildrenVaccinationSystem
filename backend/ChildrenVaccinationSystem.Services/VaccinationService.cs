@@ -380,11 +380,6 @@ namespace ChildrenVaccinationSystem.Services
 				throw new ErrorException(404, "not_found", "Không tìm thấy vaccination id");
 			}
 
-			if (vaccination.Status != VaccinationStatusEnum.Pending && vaccination.Status != VaccinationStatusEnum.Paid)
-			{
-				throw new ErrorException(400, "bad_request", "Đã quá hạn để cập nhật");
-			}
-
 			if (dto.DoctorId != null)
 			{
 				Account? doctor = await _unitOfWork.GetRepository<Account>().Entities.Where(d => d.Id == dto.DoctorId && d.Role == RoleEnum.Doctor && d.DeletedBy == null).FirstOrDefaultAsync();
