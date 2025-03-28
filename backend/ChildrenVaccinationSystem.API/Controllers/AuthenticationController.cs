@@ -79,7 +79,7 @@ namespace ChildrenVaccinationSystem.API.Controllers
 		{
 			await _authenticationService.VerifyResetPassowrd(token);
 
-			return Redirect(_configuration["VerifySuccessUrl"]!);
+			return Redirect($"http://localhost:5173/forgot-password?token={token}");
 		}
 
 		[HttpPost("reset-password")]
