@@ -36,8 +36,16 @@ export const LoginForm = () => {
     return Promise.reject('Email hoặc số điện thoại không hợp lệ!')
   }
 
-  const handleSubmit = async (values: any) => {
-    const response = await login(values)
+  const handleSubmit = async (values: {
+    email?: string
+    phoneNumber?: string
+    password: string
+  }) => {
+    const response = await login({
+      email: values.email || '',
+      phoneNumber: values.phoneNumber || '',
+      password: values.password,
+    })
 
     if ('data' in response) {
       navigate('/')

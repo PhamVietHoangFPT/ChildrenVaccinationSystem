@@ -49,6 +49,7 @@ import PersonnelDetailManager from '../Pages/Home/PersonnelManager/PersonnelDeta
 import CreatePersonnelManager from '../Pages/Home/PersonnelManager/PersonnelCreateManager'
 import VaccinationsHistoryDetail from '../Pages/Vaccinations/VaccinationsHistoryDetail'
 import Blog from '../Pages/Blogs/Blog'
+import ForgotPassword from '../Pages/Profile/ForgotPassword'
 
 const routes: LayoutRoute[] = [
   {
@@ -164,6 +165,10 @@ const routes: LayoutRoute[] = [
       {
         path: '/register',
         component: Register,
+      },
+      {
+        path: '/forgot-password',
+        component: ForgotPassword,
       },
     ],
   },
