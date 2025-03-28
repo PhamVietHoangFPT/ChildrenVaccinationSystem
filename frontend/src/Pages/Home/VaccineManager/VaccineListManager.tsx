@@ -138,7 +138,7 @@ const ManagerVaccineList: React.FC = () => {
               current={pageNumber}
               pageSize={pageSize}
               total={data?.data.totalItems}
-              style={{ textAlign: 'center' }}
+              style={{ textAlign: 'center' , paddingTop: '20px'}}
               align='center'
               onChange={(page, size) => {
                 setPageNumber(page)
