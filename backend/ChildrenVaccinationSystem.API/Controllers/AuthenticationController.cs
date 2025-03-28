@@ -83,9 +83,9 @@ namespace ChildrenVaccinationSystem.API.Controllers
 		}
 
 		[HttpPost("reset-password")]
-		public async Task<IActionResult> ResetPassword(string newPassword)
+		public async Task<IActionResult> ResetPassword(string token, string newPassword)
 		{
-			await _authenticationService.ResetPassword(newPassword);
+			await _authenticationService.ResetPassword(token, newPassword);
 
 			return Ok(new BaseResponse<object>(
 				statusCode: StatusCodeEnum.OK,
