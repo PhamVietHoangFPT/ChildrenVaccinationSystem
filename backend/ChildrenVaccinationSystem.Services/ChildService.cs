@@ -112,6 +112,8 @@ namespace ChildrenVaccinationSystem.Services
 				c.Id,
 				c.Name,
 				c.ChildCode,
+				c.Height,
+				c.Weight,
 				c.DateOfBirth,
 				c.Gender,
 				c.MedicalNote
