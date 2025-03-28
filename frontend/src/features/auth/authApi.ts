@@ -44,8 +44,35 @@ export const authAPI = apiSlice.injectEndpoints({
         body: credentials,
       }),
     }),
+    updatePassword: builder.mutation({
+      query: ({ password, newPassword }) => ({
+        url: `/authentication/update-password?password=${password}&newPassword=${newPassword}`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['account'],
+    }),
+    updateEmail: builder.mutation({
+      query: ({ email }) => ({
+        url: `/authentication/update-email?newEmail=${email}`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['account'],
+    }),
+    confirmUpdateEmail: builder.mutation({
+      query: ({ otp }) => ({
+        url: `/authentication/confirm-update-email?otp=${otp}`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['account'],
+    }),
   }),
 })
 
-export const { useLoginMutation, useLogoutMutation, useRegisterMutation } =
-  authAPI
+export const {
+  useLoginMutation,
+  useLogoutMutation,
+  useRegisterMutation,
+  useUpdatePasswordMutation,
+  useUpdateEmailMutation,
+  useConfirmUpdateEmailMutation,
+} = authAPI

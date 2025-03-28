@@ -20,7 +20,7 @@ namespace ChildrenVaccinationSystem.Services
 
 		protected override async Task ExecuteAsync(CancellationToken stoppingToken)
 		{
-			var task1 = RunTaskEvery(TimeSpan.FromMinutes(1), stoppingToken, async () =>
+			var task1 = RunTaskEvery(TimeSpan.FromMinutes(15), stoppingToken, async () =>
 			{
 				using var scope = _serviceScopeFactory.CreateScope();
 				var accountService = scope.ServiceProvider.GetRequiredService<IAccountService>();
@@ -33,8 +33,14 @@ namespace ChildrenVaccinationSystem.Services
 				var accountService = scope.ServiceProvider.GetRequiredService<IAccountService>();
 				await accountService.BgRemoveExpiredResetPasswordToken();
 			});
+			var task3 = RunTaskEvery(TimeSpan.FromHours(1), stoppingToken, async () =>
+			{
+				using var scope = _serviceScopeFactory.CreateScope();
+				var vaccinationService = scope.ServiceProvider.GetRequiredService<IVaccinationService>();
+				await vaccinationService.BgRemoveOverExpiredVaccinations();
+			});
 
-			await Task.WhenAll(task1, task2);
+			await Task.WhenAll(task1, task2, task3);
 		}
 
 		private async Task RunTaskEvery(TimeSpan interval, CancellationToken stoppingToken, Func<Task> taskToRun)

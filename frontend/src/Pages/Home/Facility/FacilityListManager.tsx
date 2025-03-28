@@ -50,7 +50,7 @@ const ManagerFacilityList: React.FC = () => {
 
   const columns: ColumnsType<Facilities> = [
     {
-      title: 'Name',
+      title: 'Tên cơ sở',
       dataIndex: 'name',
       key: 'name',
       sorter: (a, b) => a.name.localeCompare(b.name),
@@ -71,14 +71,14 @@ const ManagerFacilityList: React.FC = () => {
             icon={<EyeOutlined />}
             onClick={() => navigate(`/manager/facility/${record.id}`)}
           >
-            Details
+            Chi tiết
           </Button>
           <Button
             type='primary'
             icon={<ContainerOutlined />}
             onClick={() => navigate(`/manager/facility/inventory/${record.id}`)}
           >
-            Inventory
+            Kho
           </Button>
         </Space>
       ),
@@ -87,7 +87,7 @@ const ManagerFacilityList: React.FC = () => {
 
   return (
     <div style={{ padding: '24px' }}>
-      <Title level={2}>Facility List</Title>
+      <Title level={2}>Danh sách cơ sở</Title>
 
       <div
         style={{
@@ -98,7 +98,7 @@ const ManagerFacilityList: React.FC = () => {
         }}
       >
         <Input
-          placeholder='Search by facility name'
+          placeholder='Tìm kiếm theo tên cơ sở'
           prefix={<SearchOutlined />}
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
@@ -110,7 +110,7 @@ const ManagerFacilityList: React.FC = () => {
           icon={<PlusOutlined />}
           onClick={() => navigate('/manager/facility/create')}
         >
-          Create Facility
+          Tạo cơ sở mới
         </Button>
       </div>
 

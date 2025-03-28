@@ -109,12 +109,12 @@ const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
 
   return (
     <Modal
-      title='Customer Details'
+      title='Cập nhật thông tin khách hàng'
       visible={visible}
       onCancel={onClose}
       footer={[
         <Button key='close' onClick={onClose}>
-          Close
+          Đóng
         </Button>,
       ]}
     >
@@ -144,7 +144,7 @@ const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
           }}
         >
           <Form.Item
-            label='Customer Name'
+            label='Tên khách hàng'
             name='name'
             rules={[{ required: true }]}
           >
@@ -152,7 +152,7 @@ const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
           </Form.Item>
 
           <Form.Item
-            label='Date Of Birth'
+            label='Ngày sinh'
             name='dateOfBirth'
             rules={[{ required: true, message: 'Vui lòng chọn ngày sinh' }]}
           >
@@ -166,7 +166,7 @@ const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
           </Form.Item>
 
           <Form.Item
-            label='Phone Number'
+            label='Số điện thoại'
             name='phoneNumber'
             rules={[{ required: true }]}
           >
@@ -174,21 +174,21 @@ const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
           </Form.Item>
 
           <Form.Item
-            label='Address'
+            label='Địa chỉ'
             name='address'
             rules={[{ required: true }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            label='Gender'
+            label='Giới tính'
             name='gender'
             valuePropName='checked' // Switch dùng "checked" thay vì "value"
           >
             <Switch checked={form.getFieldValue('gender') ?? false} />
           </Form.Item>
           <Button type='primary' htmlType='submit' loading={isUpdating}>
-            Update
+            Cập nhật
           </Button>
         </Form>
       ) : (

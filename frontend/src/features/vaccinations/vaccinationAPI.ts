@@ -35,10 +35,7 @@ export const vaccinationsApi = apiSlice.injectEndpoints({
       providesTags: ['vaccinations'],
     }),
     getVaccinationListDoctor: build.query({
-      query: ({
-        pageNumber,
-        pageSize,
-      }) => ({
+      query: ({ pageNumber, pageSize }) => ({
         url: '/vaccinations/doctor',
         method: 'GET',
         params: {
@@ -50,11 +47,7 @@ export const vaccinationsApi = apiSlice.injectEndpoints({
       providesTags: ['vaccinations'],
     }),
     getVaccinationListVaccinator: build.query({
-      query: ({
-        pageNumber,
-        pageSize,
-        childCode,
-      }) => ({
+      query: ({ pageNumber, pageSize, childCode }) => ({
         url: '/vaccinations/vaccinator',
         method: 'GET',
         params: {
@@ -106,6 +99,14 @@ export const vaccinationsApi = apiSlice.injectEndpoints({
       transformResponse: (res) => res,
       providesTags: ['vaccinations'],
     }),
+    paymentVaccination: build.mutation({
+      query: ({ data }) => ({
+        url: '/vaccinations/payment/',
+        method: 'PATCH',
+        body: data,
+      }),
+      invalidatesTags: ['vaccinations'],
+    }),
   }),
 })
 
@@ -117,5 +118,6 @@ export const {
   useUpdateVaccinationStatusMutation,
   useGetVaccinationsHistoryQuery,
   useGetVaccinationListDoctorQuery,
-  useGetVaccinationListVaccinatorQuery
+  useGetVaccinationListVaccinatorQuery,
+  usePaymentVaccinationMutation,
 } = vaccinationsApi

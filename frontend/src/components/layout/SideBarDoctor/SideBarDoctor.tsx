@@ -1,8 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react'
-import {
-  LogoutOutlined,
-  SmileOutlined,
-} from '@ant-design/icons'
+import { LogoutOutlined, SmileOutlined } from '@ant-design/icons'
 import { MenuProps, Layout } from 'antd'
 import { Menu } from 'antd'
 import { useNavigate, useLocation } from 'react-router-dom'
@@ -45,12 +42,12 @@ const SideBarDoctor: React.FC = () => {
     return [
       {
         key: 'sub0',
-        label: `Welcome, ${userData?.Name}`,
+        label: `Xin chào, ${userData?.Name}`,
         icon: <SmileOutlined />,
       },
       {
         key: 'sub5',
-        label: 'Log Out',
+        label: 'Đăng xuất',
         icon: <LogoutOutlined />,
         url: '/logout',
         danger: true,

@@ -18,7 +18,7 @@ const ManagerFacilityImport: React.FC = () => {
   const { id } = useParams()
   const navigate = useNavigate()
 
-  // Hook to fetch vaccine list
+  // Hook để lấy danh sách vaccine
   const { data: vaccineData, isLoading: vaccineLoading } =
     useGetVaccineListMiniMalQuery<VaccineDataResponse>({
       pageNumber: 1,
@@ -28,10 +28,10 @@ const ManagerFacilityImport: React.FC = () => {
   const [importFacilities, { isLoading }] = useImportFacilitiesMutation()
   const [form] = Form.useForm()
 
-  // Handle form submission
+  // Xử lý khi submit form
   const handleSubmit = async (values: any) => {
     try {
-      // Prepare the data for import
+      // Chuẩn bị dữ liệu để import
       const importData = {
         facilityId: id,
         vaccineImports: values.vaccineImports.map((vaccine: any) => ({
@@ -61,7 +61,7 @@ const ManagerFacilityImport: React.FC = () => {
 
   return (
     <div style={{ padding: '24px' }}>
-      <Title level={2}>Import Vaccine to Facility</Title>
+      <Title level={2}>Nhập Vaccine vào Cơ Sở</Title>
 
       {vaccineLoading || isLoading ? (
         <div style={{ textAlign: 'center', marginTop: '50px' }}>
@@ -76,15 +76,15 @@ const ManagerFacilityImport: React.FC = () => {
         >
           {/* Chọn danh sách vaccine */}
           <Form.Item
-            label='Select Vaccines'
+            label='Chọn Vaccine'
             name='selectedVaccines'
             rules={[
-              { required: true, message: 'Please select at least one vaccine' },
+              { required: true, message: 'Vui lòng chọn ít nhất một vaccine' },
             ]}
           >
             <Select
               mode='multiple'
-              placeholder='Select vaccines'
+              placeholder='Chọn vaccine'
               onChange={handleSelectChange}
               allowClear
             >
@@ -136,9 +136,9 @@ const ManagerFacilityImport: React.FC = () => {
                       <Form.Item
                         {...restField}
                         name={[name, 'stock']}
-                        label='Stock'
+                        label='Số Lượng'
                         rules={[
-                          { required: true, message: 'Please enter stock' },
+                          { required: true, message: 'Vui lòng nhập số lượng' },
                         ]}
                       >
                         <Input type='number' min={1} />
@@ -157,7 +157,7 @@ const ManagerFacilityImport: React.FC = () => {
                           })
                         }}
                       >
-                        Remove Vaccine
+                        Xóa Vaccine
                       </Button>
                     </div>
                   )
@@ -168,7 +168,7 @@ const ManagerFacilityImport: React.FC = () => {
 
           <Form.Item>
             <Button type='primary' htmlType='submit' loading={isLoading}>
-              {isLoading ? 'Importing...' : 'Import Vaccines'}
+              {isLoading ? 'Đang Nhập...' : 'Nhập Vaccine'}
             </Button>
           </Form.Item>
         </Form>

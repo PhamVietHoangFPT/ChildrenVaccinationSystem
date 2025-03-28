@@ -30,7 +30,7 @@ export default function BlogDetails() {
     )
   }
   return (
-    <div style={{ maxWidth: 800, margin: 'auto', padding: '20px' }}>
+    <div style={{ margin: 'auto', padding: '20px' }}>
       <Card
         style={{
           background: '#fff',

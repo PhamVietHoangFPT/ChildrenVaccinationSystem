@@ -80,7 +80,7 @@ namespace ChildrenVaccinationSystem.Services
         public async Task<BasePaginatedList<PackageViewDto>> GetPackages(string? name, int pageNumber, int pageSize)
         {
             IQueryable<Package> query = _unitOfWork.GetRepository<Package>().Entities
-                .Where(p => (string.IsNullOrWhiteSpace(name) || p.Name.Contains(name)) && p.DeletedBy == null);
+                .Where(p => (string.IsNullOrWhiteSpace(name) || p.Name.Contains(name)) && p.DeletedBy == null).OrderBy(p => p.Order);
 
 
             BasePaginatedList<Package> resultQuery = (pageNumber <= 0 || pageSize <= 0)
@@ -94,7 +94,7 @@ namespace ChildrenVaccinationSystem.Services
 
 		public async Task<BasePaginatedList<object>> GetPackagesMinimal(int pageNumber, int pageSize)
 		{
-			IQueryable<Package> query = _unitOfWork.GetRepository<Package>().Entities.Where(p => p.DeletedBy == null);
+			IQueryable<Package> query = _unitOfWork.GetRepository<Package>().Entities.Where(p => p.DeletedBy == null).OrderBy(p => p.Order);
 
 			BasePaginatedList<Package> resultQuery = (pageNumber <= 0 || pageSize <= 0)
 				? await _unitOfWork.GetRepository<Package>().GetPaging(query, 1, query.Count())
@@ -119,8 +119,18 @@ namespace ChildrenVaccinationSystem.Services
 
             if (package == null)
                 throw new BaseException.ErrorException(404, "not_found", "Không tìm thấy package id");
+			// Map the package to DTO
+			var packageDto = _mapper.Map<PackageViewDto>(package);
 
-            return _mapper.Map<PackageViewDto>(package);
+			// Sort PackageItems before returning
+			if (packageDto.PackageItems != null)
+			{
+				packageDto.PackageItems = packageDto.PackageItems
+					.OrderBy(p => p.Vaccine.Name)
+					.ToList(); // Convert back to List
+			}
+
+			return _mapper.Map<PackageViewDto>(packageDto);
         }
 
         public async Task<PackageDeleteVaccineDto> RemoveVaccineFromPackage(string packageId, string vaccineId)

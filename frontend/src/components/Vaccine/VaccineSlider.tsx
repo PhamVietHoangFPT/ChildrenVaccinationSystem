@@ -64,15 +64,17 @@ export const VaccineSlider: FC<VaccineSliderProps> = ({ vaccines }) => {
                 {vaccine.description}
               </Paragraph>
               <Space direction='vertical' size='middle'>
-                <Text strong>Price: ${vaccine.price}</Text>
+                <Text strong>Giá: {vaccine.price?.toLocaleString()} VND</Text>
                 <Text>
-                  Recommended Age: {vaccine.startRecommendedAge} -{' '}
-                  {vaccine.endRecommendedAge} years
+                  Độ tuổi khuyến nghị: {vaccine.startRecommendedAge} -{' '}
+                  {vaccine.endRecommendedAge} tuổi
                 </Text>
-                <Text>Sequence: {vaccine.sequence}</Text>
-                <Text>Dosage: {vaccine.dosage}</Text>
-                <Text>Dosage Interval: {vaccine.dosageInterval} months</Text>
-                <Button type='primary'>Book Appointment</Button>
+                <Text>Thứ tự: {vaccine.sequence}</Text>
+                <Text>Liều lượng: {vaccine.dosage}</Text>
+                <Text>
+                  Khoảng cách giữa các liều: {vaccine.dosageInterval} tháng
+                </Text>
+                <Button type='primary'>Xem chi tiết</Button>
               </Space>
             </div>
           </Card>

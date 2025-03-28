@@ -2,7 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { Children } from '../../../types/children'
 import { useSearchParams } from 'react-router-dom'
 import { useGetChildrenListQuery } from '../../../features/children/childrenAPI'
-import { EditOutlined, LoadingOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
+import {
+  EditOutlined,
+  LoadingOutlined,
+  MinusCircleOutlined,
+  PlusOutlined,
+} from '@ant-design/icons'
 import { Button, Input, Table, Tag } from 'antd'
 import ChildrenDetailModal from '../../../components/Modal/ChildrenDetail'
 import AddChildrenModal from '../../../components/Modal/AddChildren'
@@ -78,29 +83,36 @@ const ChildrenPage: React.FC = () => {
         (currentPage - 1) * pageSize + index + 1,
     },
     {
-      title: 'Child Name',
+      title: 'Tên trẻ em',
       dataIndex: 'name',
       key: 'name',
     },
     {
-      title: 'Date Of Birth',
+      title: 'Ngày sinh',
       dataIndex: 'dateOfBirth',
       key: 'dateOfBirth',
     },
     {
-      title: 'Medical Note',
+      title: 'Ghi chú y tế',
       dataIndex: 'medicalNote',
       key: 'medicalNote',
-      render: (medicalNote: string) => (medicalNote ? medicalNote : <Tag icon={<MinusCircleOutlined />} color="default">None</Tag>)
+      render: (medicalNote: string) =>
+        medicalNote ? (
+          medicalNote
+        ) : (
+          <Tag icon={<MinusCircleOutlined />} color='default'>
+            None
+          </Tag>
+        ),
     },
     {
-      title: 'Gender',
+      title: 'Giới tính',
       dataIndex: 'gender',
       key: 'gender',
-      render: (gender: boolean) => (gender ? 'Male' : 'Female'),
+      render: (gender: boolean) => (gender ? 'Nam' : 'Nữ'),
     },
     {
-      title: 'Update',
+      title: 'Cập nhật',
       key: 'update',
       render: (_: any, record: Children) => (
         <Button
@@ -127,13 +139,13 @@ const ChildrenPage: React.FC = () => {
   return (
     <div style={{ padding: 20, background: '#fff', borderRadius: 8 }}>
       <Input.Search
-        placeholder='Search by phone number'
+        placeholder='Tìm kiếm bằng số điện thoại người giám hộ'
         allowClear
         onSearch={(value) => setSearchPhoneTerm(value)}
         style={{ marginBottom: 16, width: 300 }}
       />
       <Input.Search
-        placeholder='Search by chidren name'
+        placeholder='Tìm kiếm bằng tên trẻ '
         allowClear
         onSearch={(value) => setSearchNameTerm(value)}
         style={{ marginBottom: 16, width: 300 }}

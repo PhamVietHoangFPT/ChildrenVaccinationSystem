@@ -14,7 +14,7 @@ const ManagerFacilityCreate: React.FC = () => {
 
       await createFacility({ name, address }).unwrap()
 
-      message.success('Facility created successfully')
+      message.success('Tạo cơ sở thành công')
 
       navigate('/manager/facility')
     } catch (error: any) {
@@ -24,7 +24,7 @@ const ManagerFacilityCreate: React.FC = () => {
 
   return (
     <div style={{ padding: '24px' }}>
-      <Title level={2}>Create New Facility</Title>
+      <Title level={2}>Tạo Cơ Sở Mới</Title>
 
       <Form
         layout='vertical'
@@ -32,26 +32,24 @@ const ManagerFacilityCreate: React.FC = () => {
         style={{ maxWidth: '600px', margin: 'auto' }}
       >
         <Form.Item
-          label='Facility Name'
+          label='Tên Cơ Sở'
           name='name'
-          rules={[
-            { required: true, message: 'Please enter the facility name' },
-          ]}
+          rules={[{ required: true, message: 'Vui lòng nhập tên cơ sở' }]}
         >
           <Input />
         </Form.Item>
 
         <Form.Item
-          label='Address'
+          label='Địa Chỉ'
           name='address'
-          rules={[{ required: true, message: 'Please enter the address' }]}
+          rules={[{ required: true, message: 'Vui lòng nhập địa chỉ' }]}
         >
           <Input />
         </Form.Item>
 
         <Form.Item>
           <Button type='primary' htmlType='submit' loading={isLoading}>
-            {isLoading ? 'Creating...' : 'Create Facility'}
+            {isLoading ? 'Đang Tạo...' : 'Tạo Cơ Sở'}
           </Button>
         </Form.Item>
       </Form>

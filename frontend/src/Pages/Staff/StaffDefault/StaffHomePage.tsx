@@ -3,7 +3,11 @@ import { useSearchParams } from 'react-router-dom'
 import { Customer } from '../../../types/customer'
 import { useGetCustomerListQuery } from '../../../features/customer/customerAPI'
 import { Button, Input, Table, Tag } from 'antd'
-import { EditOutlined, LoadingOutlined, MinusCircleOutlined } from '@ant-design/icons'
+import {
+  EditOutlined,
+  LoadingOutlined,
+  MinusCircleOutlined,
+} from '@ant-design/icons'
 import CustomerDetailModal from '../../../components/Modal/CustomerDetail'
 
 interface CustomerListResponse {
@@ -80,12 +84,12 @@ const StaffHomePage: React.FC = () => {
         (currentPage - 1) * pageSize + index + 1,
     },
     {
-      title: 'Name',
+      title: 'Tên',
       dataIndex: 'name',
       key: 'name',
     },
     {
-      title: 'Phone Number',
+      title: 'Số điện thoại',
       dataIndex: 'phoneNumber',
       key: 'phoneNumber',
     },
@@ -93,16 +97,23 @@ const StaffHomePage: React.FC = () => {
       title: 'Email',
       dataIndex: 'email',
       key: 'email',
-      render: (email: string) => (email ? email : <Tag icon={<MinusCircleOutlined />} color="default">None</Tag>)
+      render: (email: string) =>
+        email ? (
+          email
+        ) : (
+          <Tag icon={<MinusCircleOutlined />} color='default'>
+            None
+          </Tag>
+        ),
     },
     {
-      title: 'Gender',
+      title: 'Giới tính',
       dataIndex: 'gender',
       key: 'gender',
-      render: (gender: boolean) => (gender ? 'Male' : 'Female'),
+      render: (gender: boolean) => (gender ? 'Nam' : 'Nữ'),
     },
     {
-      title: 'Update',
+      title: 'Cập nhật',
       key: 'update',
       render: (_: any, record: Customer) => (
         <Button
@@ -126,7 +137,7 @@ const StaffHomePage: React.FC = () => {
   return (
     <div style={{ padding: 20, background: '#fff', borderRadius: 8 }}>
       <Input.Search
-        placeholder='Search by phone number'
+        placeholder='Tìm kiếm bằng số điện thoại'
         allowClear
         onSearch={(value) => setSearchTerm(value)}
         style={{ marginBottom: 16, width: 300 }}

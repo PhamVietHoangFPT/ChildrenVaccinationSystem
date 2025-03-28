@@ -181,10 +181,10 @@ namespace ChildrenVaccinationSystem.Services
 				vaccination!.Note,
 				vaccination.Status,
 				vaccination.CurrentSequence,
-				Child = new { vaccination.Child.Id, vaccination.Child.Name },
+				Child = new { vaccination.Child.Id, vaccination.Child.Name, vaccination.Child.ChildCode },
 				Doctor = new { vaccination.Doctor?.Id, vaccination.Doctor?.Name },
 				Vaccinator = new { vaccination.Vaccinator?.Id, vaccination.Vaccinator?.Name },
-				Vaccine = new { vaccination.Vaccine.Id, vaccination.Vaccine.Name },
+				Vaccine = new { vaccination.Vaccine.Id, vaccination.Vaccine.Name, Category = new { vaccination.Vaccine.Category.Name } },
 				Facility = new { vaccination.Facility?.Id, vaccination.Facility?.Name, vaccination.Facility?.Address }
 			};
 		}
@@ -451,6 +451,23 @@ namespace ChildrenVaccinationSystem.Services
 			else
 				throw new ErrorException(400, "bad_request", "Trạng thái không hợp lệ");
 
+		}
+
+
+
+
+		public async Task BgRemoveOverExpiredVaccinations()
+		{
+			int numberOfExpiredMonths = 1;
+			var vaccinations = _unitOfWork.GetRepository<Vaccination>().Entities
+				.Where(v => v.Status == VaccinationStatusEnum.Pending
+					&& v.Schedule < DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(-numberOfExpiredMonths)));
+
+			foreach (var vaccination in vaccinations)
+			{
+				await _unitOfWork.GetRepository<Vaccination>().DeleteAsync(vaccination);
+			}
+			await _unitOfWork.SaveAsync();
 		}
 	}
 }

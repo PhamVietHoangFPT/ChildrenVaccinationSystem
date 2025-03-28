@@ -128,21 +128,17 @@ namespace ChildrenVaccinationSystem.Services
 
 			if (account == null)
 			{
-				throw new ErrorException(502, "bad_gateway", "Token is not valid or is expired");
+				throw new ErrorException(502, "bad_gateway", "Đường dẫn đổi mật khẩu đã hết hạn, vui lòng thử lại sau");
 			}
 		}
 
-		public async Task ResetPassword(string newPassword)
+		public async Task ResetPassword(string token, string newPassword)
 		{
-			string accountId = GetCurrentAccountId();
-
 			Account? account = await _unitOfWork.GetRepository<Account>().Entities
-				.Where(a => a.Id == accountId && a.DeletedBy == null).FirstOrDefaultAsync();
-			if (account == null)
-				throw new ErrorException(404, "not_found", "Không tìm thấy account id.");
+				.Where(a => a.ResetPasswordToken == token && a.DeletedBy == null).FirstOrDefaultAsync();
 
-			if (account.ResetPasswordToken == null)
-				throw new ErrorException(401, "unauthorized", "Bạn không được thay đổi mật khẩu theo cách này");
+			if (account == null)
+				throw new ErrorException(502, "bad_gateway", "Đường dẫn đổi mật khẩu đã hết hạn, vui lòng thử lại sau");
 
 			var hashedPassword = BCrypt.Net.BCrypt.HashPassword(newPassword);
 			account.Password = hashedPassword;

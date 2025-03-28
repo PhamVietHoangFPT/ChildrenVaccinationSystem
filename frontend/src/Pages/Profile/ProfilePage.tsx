@@ -1,8 +1,9 @@
-import { Layout, Card, Descriptions, message, Spin, Button } from 'antd'
+import { Layout, Card, Descriptions, message, Button } from 'antd'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Cookies from 'js-cookie'
 import { useGetChildrenListQuery } from '../../features/children/childrenAPI'
+import { LoadingOutlined } from '@ant-design/icons'
 
 const { Content } = Layout
 import { Children } from '../../types/children'
@@ -81,12 +82,35 @@ export default function ProfilePage() {
               {userData.Address}
             </Descriptions.Item>
           </Descriptions>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Button
+              type='primary'
+              danger
+              onClick={() => navigate('/profile/update-password')}
+            >
+              Đổi mật khẩu
+            </Button>
+            <Button
+              type='primary'
+              onClick={() => navigate('/profile/update-email')}
+            >
+              Đổi email
+            </Button>
+          </div>
         </Card>
 
         {/* Danh sách trẻ em */}
         <h3>Danh sách trẻ em</h3>
         {isLoading ? (
-          <Spin size='large' />
+          <LoadingOutlined
+            style={{
+              fontSize: '50px',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: '30vh',
+            }}
+          />
         ) : (
           childrenResponse?.data?.items?.map((child) => (
             <Card
@@ -151,7 +175,7 @@ export default function ProfilePage() {
                   {child.weight ? `${child.weight} kg` : 'Chưa có'}
                 </Descriptions.Item>
                 <Descriptions.Item label='Giới tính'>
-                  {child.gender ? 'Nữ' : 'Nam'}
+                  {child.gender ? 'Nam' : 'Nữ'}
                 </Descriptions.Item>
                 <Descriptions.Item label='Ghi chú y tế'>
                   {child.medicalNote || 'Không có'}

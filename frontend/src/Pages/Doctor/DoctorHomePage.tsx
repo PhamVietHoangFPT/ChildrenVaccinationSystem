@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { Vaccination } from '../../types/vaccination';
-import { useSearchParams } from 'react-router-dom';
-import { useGetVaccinationListDoctorQuery, useUpdateVaccinationStatusMutation } from '../../features/vaccinations/vaccinationAPI';
+import { Vaccination } from '../../types/vaccination'
+import { useSearchParams } from 'react-router-dom'
+import {
+  useGetVaccinationListDoctorQuery,
+  useUpdateVaccinationStatusMutation,
+} from '../../features/vaccinations/vaccinationAPI'
 import {
   CheckCircleOutlined,
   CheckOutlined,
@@ -12,26 +15,26 @@ import {
   LoadingOutlined,
   MinusCircleOutlined,
   SyncOutlined,
-} from '@ant-design/icons';
+} from '@ant-design/icons'
 import dayjs from 'dayjs'
-import { Button, message, Table, Tag } from 'antd';
-import ChildrenDetailModalDoctor from '../../components/Modal/ChildrenDoctor.modal';
+import { Button, message, Table, Tag } from 'antd'
+import ChildrenDetailModalDoctor from '../../components/Modal/ChildrenDoctor.modal'
 interface VaccinationListResponse {
   data: {
     data: {
-      items: Vaccination[];
-      totalItems: number;
-    };
-  };
-  isLoading: boolean;
-  isFetching: boolean;
+      items: Vaccination[]
+      totalItems: number
+    }
+  }
+  isLoading: boolean
+  isFetching: boolean
 }
 const DoctorHomePage: React.FC = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams()
 
-  const initialPage = parseInt(searchParams.get('page') || '1', 10);
-  const [currentPage, setCurrentPage] = useState(initialPage);
-  const pageSize = 7;
+  const initialPage = parseInt(searchParams.get('page') || '1', 10)
+  const [currentPage, setCurrentPage] = useState(initialPage)
+  const pageSize = 7
   // Modal state
   const [isDetailModalVisible, setIsDetailModalVisible] = useState(false)
   const [selectedChildId, setSelectedChildId] = useState<string | null>(null)
@@ -44,18 +47,19 @@ const DoctorHomePage: React.FC = () => {
   } = useGetVaccinationListDoctorQuery<VaccinationListResponse>({
     pageNumber: currentPage,
     pageSize: pageSize,
-  });
+  })
 
-  const dataVaccinations = vaccinations?.data.items ?? [];
-  const totalVaccinations = vaccinations?.data.totalItems ?? 0;
-  const [updateVaccinationStatus, { isLoading: isUpdating }] = useUpdateVaccinationStatusMutation();
+  const dataVaccinations = vaccinations?.data.items ?? []
+  const totalVaccinations = vaccinations?.data.totalItems ?? 0
+  const [updateVaccinationStatus, { isLoading: isUpdating }] =
+    useUpdateVaccinationStatusMutation()
   // Update URL search params for pagination, date filters, status, and childCode
   useEffect(() => {
     const params: { [key: string]: string } = {
       page: currentPage.toString(),
-    };
-    setSearchParams(params);
-  }, [currentPage, setSearchParams]);
+    }
+    setSearchParams(params)
+  }, [currentPage, setSearchParams])
 
   // Loading state for the table
   if (vaccinationLoading && !vaccinationFetching) {
@@ -69,18 +73,18 @@ const DoctorHomePage: React.FC = () => {
           height: '30vh',
         }}
       />
-    );
+    )
   }
 
   const handleStatusChangeClick = async (id: string, newStatus: number) => {
     try {
-      await updateVaccinationStatus({ id, status: newStatus }).unwrap();
-      message.success('Status updated successfully');
+      await updateVaccinationStatus({ id, status: newStatus }).unwrap()
+      message.success('Status updated successfully')
     } catch (error) {
-      console.error('Failed to update status:', error);
-      message.error('Failed to update status');
+      console.error('Failed to update status:', error)
+      message.error('Failed to update status')
     }
-  };
+  }
 
   const columns = [
     {
@@ -90,28 +94,31 @@ const DoctorHomePage: React.FC = () => {
         (currentPage - 1) * pageSize + index + 1,
     },
     {
-      title: 'Child Name',
+      title: 'Tên trẻ em',
       dataIndex: 'child.name',
       key: 'childName',
-      render: (_: string | undefined, record: Vaccination) =>
-        <span>{record.child?.name ?? 'N/A'}</span>,
+      render: (_: string | undefined, record: Vaccination) => (
+        <span>{record.child?.name ?? 'N/A'}</span>
+      ),
     },
     {
       title: 'Vaccine',
       dataIndex: 'vaccine.name',
       key: 'vaccineName',
-      render: (_: string | undefined, record: Vaccination) =>
-        <span>{record.vaccine?.name ?? 'N/A'}</span>,
+      render: (_: string | undefined, record: Vaccination) => (
+        <span>{record.vaccine?.name ?? 'N/A'}</span>
+      ),
     },
     {
-      title: 'Schedule',
+      title: 'Lịch tiêm',
       dataIndex: 'schedule',
       key: 'schedule',
-      render: (schedule: Date | undefined) =>
-        <span>{schedule ? dayjs(schedule).format('YYYY-MM-DD') : 'N/A'}</span>,
+      render: (schedule: Date | undefined) => (
+        <span>{schedule ? dayjs(schedule).format('YYYY-MM-DD') : 'N/A'}</span>
+      ),
     },
     {
-      title: 'Status',
+      title: 'Trạng thái',
       dataIndex: 'status',
       key: 'status',
       render: (status: number | undefined) => {
@@ -121,57 +128,119 @@ const DoctorHomePage: React.FC = () => {
           display: 'inline-flex', // valid display value
           alignItems: 'center', // valid align-items value
           justifyContent: 'center', // valid justify-content value
-        };
+        }
 
         switch (status) {
           case 0:
-            return <Tag color="geekblue" style={tagStyle}>Pending</Tag>;
+            return (
+              <Tag color='geekblue' style={tagStyle}>
+                Pending
+              </Tag>
+            )
           case 1:
-            return <Tag color="processing" style={tagStyle}>Paid</Tag>;
+            return (
+              <Tag color='processing' style={tagStyle}>
+                Paid
+              </Tag>
+            )
           case 2:
-            return <Tag color="purple" style={tagStyle}>Consulting</Tag>;
+            return (
+              <Tag color='purple' style={tagStyle}>
+                Consulting
+              </Tag>
+            )
           case 3:
-            return <Tag color="blue" icon={<SyncOutlined spin />} style={tagStyle}>Queued</Tag>;
+            return (
+              <Tag color='blue' icon={<SyncOutlined spin />} style={tagStyle}>
+                Queued
+              </Tag>
+            )
           case 4:
-            return <Tag color="magenta" icon={<ExclamationCircleOutlined />} style={tagStyle}>Injecting</Tag>;
+            return (
+              <Tag
+                color='magenta'
+                icon={<ExclamationCircleOutlined />}
+                style={tagStyle}
+              >
+                Injecting
+              </Tag>
+            )
           case 5:
-            return <Tag color="orange" icon={<ExclamationCircleOutlined />} style={tagStyle}>Monitoring</Tag>;
+            return (
+              <Tag
+                color='orange'
+                icon={<ExclamationCircleOutlined />}
+                style={tagStyle}
+              >
+                Monitoring
+              </Tag>
+            )
           case 6:
-            return <Tag color="success" icon={<CheckCircleOutlined />} style={tagStyle}>Completed</Tag>;
+            return (
+              <Tag
+                color='success'
+                icon={<CheckCircleOutlined />}
+                style={tagStyle}
+              >
+                Completed
+              </Tag>
+            )
           case 7:
-            return <Tag color="error" icon={<ClockCircleOutlined />} style={tagStyle}>Emergency</Tag>;
+            return (
+              <Tag
+                color='error'
+                icon={<ClockCircleOutlined />}
+                style={tagStyle}
+              >
+                Emergency
+              </Tag>
+            )
           case 8:
-            return <Tag color="red" icon={<MinusCircleOutlined />} style={tagStyle}>Canceled</Tag>;
+            return (
+              <Tag color='red' icon={<MinusCircleOutlined />} style={tagStyle}>
+                Canceled
+              </Tag>
+            )
           case 9:
-            return <Tag color="red" style={tagStyle}>Refunded</Tag>;
+            return (
+              <Tag color='red' style={tagStyle}>
+                Refunded
+              </Tag>
+            )
           default:
-            return <Tag color="gray" style={tagStyle}>Unknown</Tag>;
+            return (
+              <Tag color='gray' style={tagStyle}>
+                Unknown
+              </Tag>
+            )
         }
       },
     },
     {
-      title: 'Update',
+      title: 'Cập nhật',
       key: 'update',
       render: (_: any, record: Vaccination) => (
         <Button
-          type="primary"
+          type='primary'
           icon={<EditOutlined />}
           onClick={() => {
-            if (record.child?.id) { // Check if child and child.id exist
-              setSelectedChildId(record.child.id); // Set the selected child ID
-              setIsDetailModalVisible(true); // Show the modal
+            if (record.child?.id) {
+              // Check if child and child.id exist
+              setSelectedChildId(record.child.id) // Set the selected child ID
+              setIsDetailModalVisible(true) // Show the modal
             }
           }}
         />
       ),
     },
     {
-      title: 'Go to queue',
+      title: 'Có thể tiêm',
       key: 'changeStatus',
       render: (_: any, record: Vaccination) => (
-        <div style={{ display: "flex", justifyContent: "center" }}>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
           <Button
-            color="green" variant="solid"
+            color='green'
+            variant='solid'
             loading={isUpdating}
             onClick={() => handleStatusChangeClick(record.id, 3)}
             disabled={isUpdating}
@@ -182,12 +251,13 @@ const DoctorHomePage: React.FC = () => {
       ),
     },
     {
-      title: 'Back to paid',
+      title: 'Không tiêm',
       key: 'statusToPaid',
       render: (_: any, record: Vaccination) => (
-        <div style={{ display: "flex", justifyContent: "center" }}>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
           <Button
-            color="danger" variant="solid"
+            color='danger'
+            variant='solid'
             loading={isUpdating}
             onClick={() => handleStatusChangeClick(record.id, 1)}
             disabled={isUpdating}
@@ -197,16 +267,16 @@ const DoctorHomePage: React.FC = () => {
         </div>
       ),
     },
-  ];
+  ]
 
   // Handle modal close and refetch data after update
   const handleDetailModalClose = (updated: boolean = false) => {
-    setIsDetailModalVisible(false);
-    setSelectedChildId(null);
+    setIsDetailModalVisible(false)
+    setSelectedChildId(null)
     if (updated) {
-      refetch(); // Trigger refetch after successful update
+      refetch() // Trigger refetch after successful update
     }
-  };
+  }
 
   return (
     <>
@@ -223,7 +293,7 @@ const DoctorHomePage: React.FC = () => {
           pageSize: pageSize,
           total: totalVaccinations,
           onChange: (page) => {
-            setCurrentPage(page);
+            setCurrentPage(page)
           },
         }}
       />

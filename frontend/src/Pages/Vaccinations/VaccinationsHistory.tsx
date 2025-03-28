@@ -10,7 +10,7 @@ import {
   VaccinationHistory,
 } from '../../types/vaccination'
 import { useSearchParams } from 'react-router-dom'
-import { Card, Collapse, Select, Tag, Typography } from 'antd'
+import { Card, Collapse, Empty, Select, Tag, Typography } from 'antd'
 import { useCallback, useEffect, useState } from 'react'
 import Cookies from 'js-cookie'
 import { useNavigate } from 'react-router-dom'
@@ -185,7 +185,7 @@ export default function VaccinationsHistory() {
               height: '30vh',
             }}
           />
-        ) : (
+        ) : data.data.length !== 0 ? (
           <Collapse
             accordion
             style={{
@@ -220,9 +220,10 @@ export default function VaccinationsHistory() {
                       boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
                       marginBottom: 10,
                     }}
-                    onClick={() => {
-                      console.log('Card clicked')
-                    }}
+                    hoverable
+                    onClick={() =>
+                      navigate(`/vaccinations-history-detail/${vaccine.id}`)
+                    }
                   >
                     <Text strong style={{ fontSize: '14px', color: '#0050b3' }}>
                       {vaccine.name}
@@ -263,6 +264,17 @@ export default function VaccinationsHistory() {
               </Panel>
             ))}
           </Collapse>
+        ) : (
+          <Card
+            style={{
+              borderRadius: 12,
+              boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+              textAlign: 'center',
+              padding: '20px',
+            }}
+          >
+            <Empty description='Chưa có dữ liệu tiêm chủng' />
+          </Card>
         ))}
     </>
   )
