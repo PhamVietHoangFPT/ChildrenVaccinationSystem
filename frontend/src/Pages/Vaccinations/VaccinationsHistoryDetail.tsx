@@ -107,7 +107,7 @@ export default function VaccinationsHistoryDetail() {
             <br />
             {vaccinationDetail.facility?.id && (
               <Text>
-                <b>Cơ sở y tế:</b> {vaccinationDetail.facility?.name} -{' '}
+                <b>Cơ sở tiêm chủng:</b> {vaccinationDetail.facility?.name} -{' '}
                 {vaccinationDetail.facility?.address}
               </Text>
             )}

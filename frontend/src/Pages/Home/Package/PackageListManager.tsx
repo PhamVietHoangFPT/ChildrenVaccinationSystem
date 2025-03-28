@@ -36,7 +36,7 @@ const ManagerPackageList: React.FC = () => {
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedPackageName(searchText)
-    }, 500) 
+    }, 500)
 
     return () => {
       clearTimeout(handler)

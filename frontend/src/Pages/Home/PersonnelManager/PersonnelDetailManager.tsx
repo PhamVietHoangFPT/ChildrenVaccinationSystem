@@ -12,7 +12,6 @@ import {
 import {
   useGetPersonnelDetailQuery,
   useUpdateAccountPersonnelMutation,
- 
 } from '../../../features/account/accountAPI'
 import { Personnel } from '../../../types/personnel'
 import moment from 'moment'
@@ -175,8 +174,6 @@ const PersonnelDetailManager: React.FC = () => {
             </Form.Item>
           )
         )}
-
-        
 
         <Form.Item
           label='Đặt lại mật khẩu'

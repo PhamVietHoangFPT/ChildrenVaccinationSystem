@@ -1,9 +1,6 @@
 import { Outlet, useNavigate, Link } from 'react-router-dom'
 import { Avatar, Dropdown, Layout, Menu, Typography } from 'antd'
-import {
-  LogoutOutlined,
-  UserOutlined,
-} from '@ant-design/icons'
+import { LogoutOutlined, UserOutlined } from '@ant-design/icons'
 import { SideBarVaccinator } from './SideBarVaccinator/SideBarVaccinator'
 import Cookies from 'js-cookie'
 import { useEffect } from 'react'
@@ -69,7 +66,7 @@ export const VaccinatorLayout = () => {
           }}
         >
           <Title level={4} style={{ margin: 0 }}>
-            Vaccination Vaccinator 
+            Vaccination Vaccinator
           </Title>
 
           <div
@@ -89,7 +86,7 @@ export const VaccinatorLayout = () => {
               }}
             >
               <Link
-                to='/vaccinator/dashboard' 
+                to='/vaccinator/dashboard'
                 style={{
                   color: '#333',
                   textDecoration: 'none',
@@ -103,7 +100,7 @@ export const VaccinatorLayout = () => {
                 Dashboard
               </Link>
               <Link
-                to='/vaccinator/appointments' 
+                to='/vaccinator/appointments'
                 style={{
                   color: '#333',
                   textDecoration: 'none',
@@ -117,7 +114,7 @@ export const VaccinatorLayout = () => {
                 Appointments
               </Link>
               <Link
-                to='/vaccinator/vaccines' 
+                to='/vaccinator/vaccines'
                 style={{
                   color: '#333',
                   textDecoration: 'none',

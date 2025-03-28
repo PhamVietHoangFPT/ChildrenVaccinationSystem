@@ -89,7 +89,14 @@ const RegiterVaccinationStaff: React.FC = () => {
       title: 'Ghi chú y tế',
       dataIndex: 'medicalNote',
       key: 'medicalNote',
-      render: (medicalNote: string) => (medicalNote  ? medicalNote :  <Tag icon={<MinusCircleOutlined />} color="default">None</Tag>)
+      render: (medicalNote: string) =>
+        medicalNote ? (
+          medicalNote
+        ) : (
+          <Tag icon={<MinusCircleOutlined />} color='default'>
+            None
+          </Tag>
+        ),
     },
     {
       title: 'Giới tính',
