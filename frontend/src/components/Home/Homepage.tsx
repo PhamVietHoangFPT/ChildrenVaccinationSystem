@@ -38,8 +38,8 @@ const Homepage: React.FC = () => {
 
   const { data: dataBlog, isLoading: isLoadingBlog } =
     useGetBlogsMinimalListQuery<BlogListResponse>({
-      pageNumber: -1,
-      pageSize: -1,
+      pageNumber: 1,
+      pageSize: 6,
     })
 
   const dataVaccine = data?.data.items ?? []

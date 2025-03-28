@@ -34,9 +34,7 @@ const ManagerFacilityCreate: React.FC = () => {
         <Form.Item
           label='Tên Cơ Sở'
           name='name'
-          rules={[
-            { required: true, message: 'Vui lòng nhập tên cơ sở' },
-          ]}
+          rules={[{ required: true, message: 'Vui lòng nhập tên cơ sở' }]}
         >
           <Input />
         </Form.Item>

@@ -48,6 +48,7 @@ import PersonnelListManager from '../Pages/Home/PersonnelManager/PersonnelListMa
 import PersonnelDetailManager from '../Pages/Home/PersonnelManager/PersonnelDetailManager'
 import CreatePersonnelManager from '../Pages/Home/PersonnelManager/PersonnelCreateManager'
 import VaccinationsHistoryDetail from '../Pages/Vaccinations/VaccinationsHistoryDetail'
+import Blog from '../Pages/Blogs/Blog'
 
 const routes: LayoutRoute[] = [
   {
@@ -65,10 +66,12 @@ const routes: LayoutRoute[] = [
       {
         path: '/profile/update-password',
         component: UpdatePassword,
+        role: ['Customer'],
       },
       {
         path: '/profile/update-email',
         component: UpdateEmail,
+        role: ['Customer'],
       },
       {
         path: '/vaccines',
@@ -85,15 +88,22 @@ const routes: LayoutRoute[] = [
       {
         path: '/force-update',
         component: ForceUpdateAccount,
+        role: ['Customer'],
       },
       {
         path: '/vaccinations-history',
         component: VaccinationsHistory,
+        role: ['Customer'],
       },
       { path: '/blogs/:id', component: BlogDetails },
       {
         path: '/vaccinations-history-detail/:vaccinationHistoryId',
         component: VaccinationsHistoryDetail,
+        role: ['Customer'],
+      },
+      {
+        path: '/blogs',
+        component: Blog,
       },
     ],
   },

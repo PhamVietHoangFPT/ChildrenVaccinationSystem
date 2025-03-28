@@ -1,8 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react'
-import {
-  LogoutOutlined,
-  SmileOutlined,
-} from '@ant-design/icons'
+import { LogoutOutlined, SmileOutlined } from '@ant-design/icons'
 import { MenuProps, Layout } from 'antd'
 import { Menu } from 'antd'
 import { useNavigate, useLocation } from 'react-router-dom'
