@@ -6,6 +6,7 @@ import Cookies from 'js-cookie'
 import { useNavigate } from 'react-router-dom'
 const { Content } = Layout
 import { useEffect } from 'react'
+import AppFooter from './Footer/Footer'
 
 function MainLayout() {
   const navigate = useNavigate()
@@ -43,6 +44,7 @@ function MainLayout() {
       >
         <Outlet />
       </Content>
+      <AppFooter />
     </Layout>
   )
 }
