@@ -194,7 +194,17 @@ const ChildrenDetailModal: React.FC<ChilrenDetailModalProps> = ({
           >
             <Switch />
           </Form.Item>
-          <Button type='primary' htmlType='submit' loading={isUpdating} style={{ display: "flex", justifySelf: "center", marginTop: "30px", width: "50%" }}>
+          <Button
+            type='primary'
+            htmlType='submit'
+            loading={isUpdating}
+            style={{
+              display: 'flex',
+              justifySelf: 'center',
+              marginTop: '30px',
+              width: '50%',
+            }}
+          >
             Cập nhật
           </Button>
         </Form>

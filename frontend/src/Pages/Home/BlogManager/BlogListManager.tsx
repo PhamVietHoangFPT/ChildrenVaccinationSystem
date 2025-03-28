@@ -1,50 +1,49 @@
-import React, { useEffect, useState } from 'react';
-import { Table, Button, Input, Typography, Spin } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
-import { EyeOutlined, SearchOutlined, PlusOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
-import { useGetBlogsListQuery } from '../../../features/blogs/blogsAPI';
-import { Blogs } from '../../../types/blog';
+import React, { useEffect, useState } from 'react'
+import { Table, Button, Input, Typography, Spin } from 'antd'
+import type { ColumnsType } from 'antd/es/table'
+import { EyeOutlined, SearchOutlined, PlusOutlined } from '@ant-design/icons'
+import { useNavigate } from 'react-router-dom'
+import { useGetBlogsListQuery } from '../../../features/blogs/blogsAPI'
+import { Blogs } from '../../../types/blog'
 
-const { Title } = Typography;
+const { Title } = Typography
 
 interface BlogsListResponse {
   data: {
     data: {
-      items: Blogs[];
-    totalItems: number;
-    } 
-  };
-  isLoading: boolean,
+      items: Blogs[]
+      totalItems: number
+    }
+  }
+  isLoading: boolean
   isFetching: boolean
 }
 
 const ManagerBlogList: React.FC = () => {
-  const navigate = useNavigate();
-  const [searchText, setSearchText] = useState<string>('');
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const navigate = useNavigate()
+  const [searchText, setSearchText] = useState<string>('')
+  const [currentPage, setCurrentPage] = useState<number>(1)
   const pageSize = 7
-  const [filteredData, setFilteredData] = useState<Blogs[]>([]);
+  const [filteredData, setFilteredData] = useState<Blogs[]>([])
 
-
-  const { data, isLoading, isFetching } = useGetBlogsListQuery<BlogsListResponse>({
-    pageNumber: currentPage,
-    pageSize: pageSize,
-  });
+  const { data, isLoading, isFetching } =
+    useGetBlogsListQuery<BlogsListResponse>({
+      pageNumber: currentPage,
+      pageSize: pageSize,
+    })
 
   useEffect(() => {
     if (data?.data?.items) {
-
       const filtered = data.data.items.filter((blog) =>
         blog.title.toLowerCase().includes(searchText.toLowerCase())
-      );
-      setFilteredData(filtered);
+      )
+      setFilteredData(filtered)
     }
-  }, [data, searchText]);
+  }, [data, searchText])
 
-  console.log('data:', data);
- 
-  const totalItems = data?.data?.totalItems || 0;
+  console.log('data:', data)
+
+  const totalItems = data?.data?.totalItems || 0
 
   const columns: ColumnsType<Blogs> = [
     {
@@ -59,7 +58,7 @@ const ManagerBlogList: React.FC = () => {
       key: 'title',
       sorter: (a, b) => a.title.localeCompare(b.title),
     },
-  
+
     {
       title: '',
       key: 'actions',
@@ -73,7 +72,7 @@ const ManagerBlogList: React.FC = () => {
         </Button>
       ),
     },
-  ];
+  ]
 
   return (
     <div style={{ padding: '24px' }}>
@@ -121,13 +120,13 @@ const ManagerBlogList: React.FC = () => {
             pageSize: pageSize,
             total: totalItems,
             onChange: (page) => {
-              setCurrentPage(page);
+              setCurrentPage(page)
             },
           }}
         />
       )}
     </div>
-  );
-};
+  )
+}
 
-export default ManagerBlogList;
+export default ManagerBlogList

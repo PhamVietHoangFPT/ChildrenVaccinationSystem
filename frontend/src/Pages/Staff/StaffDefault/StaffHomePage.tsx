@@ -3,7 +3,11 @@ import { useSearchParams } from 'react-router-dom'
 import { Customer } from '../../../types/customer'
 import { useGetCustomerListQuery } from '../../../features/customer/customerAPI'
 import { Button, Input, Table, Tag } from 'antd'
-import { EditOutlined, LoadingOutlined, MinusCircleOutlined } from '@ant-design/icons'
+import {
+  EditOutlined,
+  LoadingOutlined,
+  MinusCircleOutlined,
+} from '@ant-design/icons'
 import CustomerDetailModal from '../../../components/Modal/CustomerDetail'
 
 interface CustomerListResponse {
@@ -93,7 +97,14 @@ const StaffHomePage: React.FC = () => {
       title: 'Email',
       dataIndex: 'email',
       key: 'email',
-      render: (email: string) => (email ? email : <Tag icon={<MinusCircleOutlined />} color="default">None</Tag>)
+      render: (email: string) =>
+        email ? (
+          email
+        ) : (
+          <Tag icon={<MinusCircleOutlined />} color='default'>
+            None
+          </Tag>
+        ),
     },
     {
       title: 'Giới tính',

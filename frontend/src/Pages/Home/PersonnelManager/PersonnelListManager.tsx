@@ -34,7 +34,6 @@ const PersonnelListManager: React.FC = () => {
 
   useEffect(() => {
     if (data?.data?.items) {
-
       const filtered = data.data.items.filter((personnel) =>
         personnel.name.toLowerCase().includes(searchText.toLowerCase())
       )
@@ -72,11 +71,10 @@ const PersonnelListManager: React.FC = () => {
           1: 'Nhân viên',
           2: 'Bác sĩ',
           3: 'Người tiêm',
-        };
-        return roleMap[role] || 'N/A';
+        }
+        return roleMap[role] || 'N/A'
       },
     },
-    
 
     {
       title: 'Số điện thoại',

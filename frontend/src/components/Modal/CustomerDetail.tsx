@@ -188,7 +188,7 @@ const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
             <Switch checked={form.getFieldValue('gender') ?? false} />
           </Form.Item>
           <Button type='primary' htmlType='submit' loading={isUpdating}>
-            Cập nhật 
+            Cập nhật
           </Button>
         </Form>
       ) : (

@@ -26,4 +26,4 @@ function DoctorLayout() {
   )
 }
 
-export default DoctorLayout;
+export default DoctorLayout

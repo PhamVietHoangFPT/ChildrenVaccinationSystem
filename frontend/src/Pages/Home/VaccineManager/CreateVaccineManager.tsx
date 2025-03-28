@@ -236,7 +236,12 @@ const CreateVaccine: React.FC = () => {
         <Form.Item
           label='Khoảng cách giữa các liều'
           name='dosageInterval'
-          rules={[{ required: true, message: 'Vui lòng nhập khoảng cách giữa các liều' }]}
+          rules={[
+            {
+              required: true,
+              message: 'Vui lòng nhập khoảng cách giữa các liều',
+            },
+          ]}
         >
           <Input />
         </Form.Item>
@@ -248,9 +253,7 @@ const CreateVaccine: React.FC = () => {
             <Form.Item
               label='Danh mục Vaccines'
               name='categoryId'
-              rules={[
-                { required: true, message: 'Vui lòng chọn danh mục' },
-              ]}
+              rules={[{ required: true, message: 'Vui lòng chọn danh mục' }]}
             >
               <Select placeholder='Chọn danh mục Vaccine'>
                 {categories.data.items.map((cat) => (
@@ -300,7 +303,7 @@ const CreateVaccine: React.FC = () => {
           <Upload
             name='image'
             listType='picture'
-            beforeUpload={() => false} 
+            beforeUpload={() => false}
             maxCount={1}
           >
             <Button icon={<UploadOutlined />}>Nhấp vào để đăng tải</Button>
@@ -312,7 +315,9 @@ const CreateVaccine: React.FC = () => {
             <Button type='primary' htmlType='submit'>
               Lưu
             </Button>
-            <Button onClick={() => navigate('/manager/vaccine')}>Trở lại</Button>
+            <Button onClick={() => navigate('/manager/vaccine')}>
+              Trở lại
+            </Button>
           </div>
         </Form.Item>
       </Form>

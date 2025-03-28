@@ -2,7 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { Children } from '../../../types/children'
 import { useSearchParams } from 'react-router-dom'
 import { useGetChildrenListQuery } from '../../../features/children/childrenAPI'
-import { EditOutlined, LoadingOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
+import {
+  EditOutlined,
+  LoadingOutlined,
+  MinusCircleOutlined,
+  PlusOutlined,
+} from '@ant-design/icons'
 import { Button, Input, Table, Tag } from 'antd'
 import ChildrenDetailModal from '../../../components/Modal/ChildrenDetail'
 import AddChildrenModal from '../../../components/Modal/AddChildren'
@@ -91,7 +96,14 @@ const ChildrenPage: React.FC = () => {
       title: 'Ghi chú y tế',
       dataIndex: 'medicalNote',
       key: 'medicalNote',
-      render: (medicalNote: string) => (medicalNote ? medicalNote : <Tag icon={<MinusCircleOutlined />} color="default">None</Tag>)
+      render: (medicalNote: string) =>
+        medicalNote ? (
+          medicalNote
+        ) : (
+          <Tag icon={<MinusCircleOutlined />} color='default'>
+            None
+          </Tag>
+        ),
     },
     {
       title: 'Giới tính',
