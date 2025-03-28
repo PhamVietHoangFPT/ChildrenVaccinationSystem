@@ -11,7 +11,7 @@ namespace ChildrenVaccinationSystem.Contract.Services
 		Task<bool> VerifyAccount(string token);
 		Task ForgetPassword(string email);
 		Task VerifyResetPassowrd(string token);
-		Task ResetPassword(string newPassword);
+		Task ResetPassword(string token, string newPassword);
 		Task UpdatePassword(string password, string newPassword);
 		Task UpdateEmail(string newEmail);
 		Task ConfirmUpdateEmail(string otp);
