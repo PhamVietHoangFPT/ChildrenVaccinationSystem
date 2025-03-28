@@ -109,7 +109,7 @@ const VaccineDetail: React.FC = () => {
       }).unwrap()) as { message: string }
 
       message.success(dataUpdate.message)
-      // navigate('/manager/vaccine')
+      navigate('/manager/vaccine')
     } catch (error: any) {
       message.error(error.message)
     }
@@ -121,7 +121,7 @@ const VaccineDetail: React.FC = () => {
       content: `Hành động này không thể hoàn tác`,
       okText: 'Xóa',
       okType: 'danger',
-      cancelText: 'Cancel',
+      cancelText: 'Hủy',
       onOk: async () => {
         try {
           const dataDelete = (await deleteVaccine(id).unwrap()) as {
@@ -145,7 +145,7 @@ const VaccineDetail: React.FC = () => {
   }
 
   if (!data) {
-    return <div>Không tìm thấy Vắc Xin</div>
+    return <div>Không tìm thấy Vaccine</div>
   }
 
   const initialValues = {
@@ -156,7 +156,7 @@ const VaccineDetail: React.FC = () => {
 
   return (
     <div style={{ padding: '24px' }}>
-      <Title level={2}>Thông tin Vắc Xin</Title>
+      <Title level={2}>Thông tin Vaccine</Title>
       <Form
         form={form}
         layout='vertical'
@@ -170,7 +170,7 @@ const VaccineDetail: React.FC = () => {
         <Form.Item
           label='Tên'
           name='name'
-          rules={[{ required: true, message: 'Vui lòng nhập tên Vắc-Xin' }]}
+          rules={[{ required: true, message: 'Vui lòng nhập tên Vaccine' }]}
         >
           <Input />
         </Form.Item>
@@ -179,7 +179,7 @@ const VaccineDetail: React.FC = () => {
           label='Giá'
           name='price'
           rules={[
-            { required: true, message: 'Vui lòng nhập giá cả' },
+            { required: true, message: 'Vui lòng nhập giá Vaccine' },
             {
               validator: (_, value) => {
                 const num = Number(value)
@@ -201,7 +201,7 @@ const VaccineDetail: React.FC = () => {
           <Input.TextArea rows={3} />
         </Form.Item>
 
-        <Form.Item label='Recommended Age' style={{ marginBottom: 0 }}>
+        <Form.Item label='Tuổi khuyến khích' style={{ marginBottom: 0 }}>
           <Form.Item
             name='startRecommendedAge'
             style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}
@@ -213,8 +213,10 @@ const VaccineDetail: React.FC = () => {
                     return Promise.reject('Yêu cầu nhập tuổi bắt đầu')
                   }
                   const num = Number(value)
-                  if (isNaN(num)) {
-                    return Promise.reject('Tuổi bắt đầu phỉa là một số hợp lệ')
+                  if (isNaN(num) || !Number.isInteger(num)) {
+                    return Promise.reject(
+                      'Tuổi bắt đầu phải là một số nguyên dương'
+                    )
                   }
                   if (num < 0 || num > 15) {
                     return Promise.reject(
@@ -226,7 +228,7 @@ const VaccineDetail: React.FC = () => {
               },
             ]}
           >
-            <Input placeholder='Start Age' />
+            <Input placeholder='Tuổi bắt đầu' />
           </Form.Item>
 
           <span
@@ -252,8 +254,10 @@ const VaccineDetail: React.FC = () => {
                   }
                   const endNum = Number(value)
                   const startNum = Number(getFieldValue('startRecommendedAge'))
-                  if (isNaN(endNum)) {
-                    return Promise.reject('Tuổi kết thúc phải là một số hợp lệ')
+                  if (isNaN(endNum) || !Number.isInteger(endNum)) {
+                    return Promise.reject(
+                      'Tuổi kết thúc phải là một số nguyên dương'
+                    )
                   }
                   if (endNum < 1 || endNum > 16) {
                     return Promise.reject(
@@ -274,7 +278,24 @@ const VaccineDetail: React.FC = () => {
           </Form.Item>
         </Form.Item>
 
-        <Form.Item label='Số mũi' name='sequence'>
+        <Form.Item
+          label='Số mũi tiêm'
+          name='sequence'
+          rules={[
+            { required: true, message: 'Vui lòng nhập số mũi tiêm' },
+            {
+              validator: (_, value) => {
+                const num = Number(value)
+                if (isNaN(num) || !Number.isInteger(num) || num <= 0) {
+                  return Promise.reject(
+                    new Error('Số mũi tiêm phải là số nguyên dương')
+                  )
+                }
+                return Promise.resolve()
+              },
+            },
+          ]}
+        >
           <Input />
         </Form.Item>
 
@@ -291,7 +312,7 @@ const VaccineDetail: React.FC = () => {
         ) : (
           categories && (
             <Form.Item
-              label='Danh mục'
+              label='Danh mục Vaccine'
               name='categoryId'
               rules={[{ required: true, message: 'Vui lòng chọn danh mục' }]}
             >
@@ -356,7 +377,7 @@ const VaccineDetail: React.FC = () => {
           <Upload
             name='image'
             listType='picture'
-            beforeUpload={() => false} // ngan chan tu dong upload
+            beforeUpload={() => false}
             maxCount={1}
           >
             <Button icon={<UploadOutlined />}>Tải tệp lên</Button>

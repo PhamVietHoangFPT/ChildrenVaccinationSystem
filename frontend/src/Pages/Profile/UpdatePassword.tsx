@@ -1,8 +1,10 @@
 import { Button, Form, Input, message } from 'antd'
 import { useUpdatePasswordMutation } from '../../features/auth/authApi'
+import { useNavigate } from 'react-router-dom'
 
 export default function UpdatePassword() {
   const [form] = Form.useForm()
+  const navigate = useNavigate()
   const [updatePassword, { isLoading }] = useUpdatePasswordMutation()
 
   const onFinish = async (values: any) => {
@@ -17,6 +19,7 @@ export default function UpdatePassword() {
       }).unwrap()
       message.success(dataResponse.message)
       form.resetFields()
+      navigate('/profile')
     } catch (error: any) {
       message.error(error?.data?.message || 'Cập nhật thất bại!')
     }

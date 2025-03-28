@@ -52,7 +52,7 @@ const ManagerFacilityDetail: React.FC = () => {
   }
 
   if (!data) {
-    return <div>Không tìm thấy Facility</div>
+    return <div>Không tìm thấy cơ sở</div>
   }
 
   const initialValues = {
@@ -72,9 +72,7 @@ const ManagerFacilityDetail: React.FC = () => {
         <Form.Item
           label='Địa chỉ Facility'
           name='address'
-          rules={[
-            { required: true, message: 'Vui lòng nhập địa chỉ facility' },
-          ]}
+          rules={[{ required: true, message: 'Vui lòng nhập địa chỉ cơ sở' }]}
         >
           <Input />
         </Form.Item>

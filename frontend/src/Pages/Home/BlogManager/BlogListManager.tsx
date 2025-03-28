@@ -1,65 +1,64 @@
-import React, { useEffect, useState } from 'react';
-import { Table, Button, Input, Typography, Spin } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
-import { EyeOutlined, SearchOutlined, PlusOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
-import { useGetBlogsListQuery } from '../../../features/blogs/blogsAPI';
-import { Blogs } from '../../../types/blog';
+import React, { useEffect, useState } from 'react'
+import { Table, Button, Input, Typography, Spin } from 'antd'
+import type { ColumnsType } from 'antd/es/table'
+import { EyeOutlined, SearchOutlined, PlusOutlined } from '@ant-design/icons'
+import { useNavigate } from 'react-router-dom'
+import { useGetBlogsListQuery } from '../../../features/blogs/blogsAPI'
+import { Blogs } from '../../../types/blog'
 
-const { Title } = Typography;
+const { Title } = Typography
 
 interface BlogsListResponse {
   data: {
     data: {
-      items: Blogs[];
-    totalItems: number;
-    } 
-  };
-  isLoading: boolean,
+      items: Blogs[]
+      totalItems: number
+    }
+  }
+  isLoading: boolean
   isFetching: boolean
 }
 
 const ManagerBlogList: React.FC = () => {
-  const navigate = useNavigate();
-  const [searchText, setSearchText] = useState<string>('');
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const navigate = useNavigate()
+  const [searchText, setSearchText] = useState<string>('')
+  const [currentPage, setCurrentPage] = useState<number>(1)
   const pageSize = 7
-  const [filteredData, setFilteredData] = useState<Blogs[]>([]);
+  const [filteredData, setFilteredData] = useState<Blogs[]>([])
 
-
-  const { data, isLoading, isFetching } = useGetBlogsListQuery<BlogsListResponse>({
-    pageNumber: currentPage,
-    pageSize: pageSize,
-  });
+  const { data, isLoading, isFetching } =
+    useGetBlogsListQuery<BlogsListResponse>({
+      pageNumber: currentPage,
+      pageSize: pageSize,
+    })
 
   useEffect(() => {
     if (data?.data?.items) {
-      // Filter thanh search
       const filtered = data.data.items.filter((blog) =>
         blog.title.toLowerCase().includes(searchText.toLowerCase())
-      );
-      setFilteredData(filtered);
+      )
+      setFilteredData(filtered)
     }
-  }, [data, searchText]);
+  }, [data, searchText])
 
-  console.log('data:', data);
- 
-  const totalItems = data?.data?.totalItems || 0;
+  console.log('data:', data)
+
+  const totalItems = data?.data?.totalItems || 0
 
   const columns: ColumnsType<Blogs> = [
     {
-      title: 'No.',
+      title: 'STT',
       dataIndex: 'index',
       key: 'index',
       render: (_, __, index) => (currentPage - 1) * pageSize + index + 1,
     },
     {
-      title: 'Title',
+      title: 'Tiêu đề',
       dataIndex: 'title',
       key: 'title',
       sorter: (a, b) => a.title.localeCompare(b.title),
     },
-  
+
     {
       title: '',
       key: 'actions',
@@ -69,15 +68,15 @@ const ManagerBlogList: React.FC = () => {
           icon={<EyeOutlined />}
           onClick={() => navigate(`/manager/blog/${record.id}`)}
         >
-          Details
+          Chi tiết
         </Button>
       ),
     },
-  ];
+  ]
 
   return (
     <div style={{ padding: '24px' }}>
-      <Title level={2}>Blog List</Title>
+      <Title level={2}>Quản lý Blog</Title>
 
       <div
         style={{
@@ -88,7 +87,7 @@ const ManagerBlogList: React.FC = () => {
         }}
       >
         <Input
-          placeholder='Search by blog title'
+          placeholder='Tìm kiếm Blog theo tiêu đề'
           prefix={<SearchOutlined />}
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
@@ -100,7 +99,7 @@ const ManagerBlogList: React.FC = () => {
           icon={<PlusOutlined />}
           onClick={() => navigate('/manager/blog/create')}
         >
-          Create Blog
+          Tạo Blog
         </Button>
       </div>
 
@@ -120,14 +119,16 @@ const ManagerBlogList: React.FC = () => {
             current: currentPage,
             pageSize: pageSize,
             total: totalItems,
+            style: { textAlign: 'center' , justifyContent: 'center'},
+            align: 'center',
             onChange: (page) => {
-              setCurrentPage(page);
+              setCurrentPage(page)
             },
           }}
         />
       )}
     </div>
-  );
-};
+  )
+}
 
-export default ManagerBlogList;
+export default ManagerBlogList

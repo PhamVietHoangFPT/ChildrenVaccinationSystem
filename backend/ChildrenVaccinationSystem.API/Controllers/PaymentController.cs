@@ -25,14 +25,14 @@ namespace ChildrenVaccinationSystem.API.Controllers
 
 			if (vnPayResponse.VnPayResponseCode != "00")
 			{
-				return Redirect(_config["PaymentFail"]!);
+				return Redirect(_config["FRONTEND_URL"]! + "/payment-fail");
 			}
 
 			Console.WriteLine("Localhost");
 
 			await _vnPayService.InsertVaccinationsData(vnPayResponse.OrderInfo);
 
-			return Redirect(_config["PaymentSuccess"]!);
+			return Redirect(_config["FRONTEND_URL"]! + "/payment-success");
 		}
 
 	}

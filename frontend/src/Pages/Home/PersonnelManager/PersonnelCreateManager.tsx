@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import {
   Form,
   Input,
@@ -9,25 +9,13 @@ import {
   DatePicker,
   Select,
 } from 'antd'
-import {
-  useGetPersonnelDetailQuery,
-  useUpdateAccountPersonnelMutation,
- 
-} from '../../../features/account/accountAPI'
-import { Personnel } from '../../../types/personnel'
-import moment from 'moment'
+import { useCreateACcountPersonnelMutation } from '../../../features/account/accountAPI'
 import { Facilities } from '../../../types/facilities'
 import { useGetFacilitiesListQuery } from '../../../features/facilities/facilitiesAPI'
+import dayjs from 'dayjs'
 
 const { Option } = Select
 const { Title } = Typography
-
-interface PersonnelDetailResponse {
-  data: {
-    data: Personnel
-  }
-  isLoading: boolean
-}
 
 interface FacilityListResponse {
   data: {
@@ -38,13 +26,10 @@ interface FacilityListResponse {
   isLoading: boolean
 }
 
-const PersonnelDetailManager: React.FC = () => {
+const CreatePersonnelManager: React.FC = () => {
   const navigate = useNavigate()
-  const { id } = useParams()
 
-  const { data, isLoading } =
-    useGetPersonnelDetailQuery<PersonnelDetailResponse>(id as string)
-  const [updatePersonnel] = useUpdateAccountPersonnelMutation()
+  const [createPersonnel] = useCreateACcountPersonnelMutation()
 
   const { data: facility, isLoading: facilityLoading } =
     useGetFacilitiesListQuery<FacilityListResponse>({
@@ -54,61 +39,37 @@ const PersonnelDetailManager: React.FC = () => {
 
   const [form] = Form.useForm()
 
-  const handleSave = async (values: any) => {
+  const handleSave = async () => {
     try {
+      const values = await form.validateFields()
+      console.log('Validated Values:', values)
+
       const payload = {
-        ...values,
+        name: values.name,
         dateOfBirth: values.dateOfBirth
           ? values.dateOfBirth.format('YYYY-MM-DD')
           : null,
+        gender: values.gender,
+        email: values.email,
+        role: values.role,
+        facilityId: values.facilityId,
       }
 
-      const dataUpdate = (await updatePersonnel({
-        id,
+      const createData = (await createPersonnel({
         data: payload,
       }).unwrap()) as { message: string }
-      message.success(dataUpdate.message)
+
+      message.success(createData.message)
     } catch (error: any) {
-      message.error(error.message)
+      console.error('Validation or API Error:', error)
+      message.error(error.data.message)
     }
-  }
-
-  if (isLoading) {
-    return (
-      <div style={{ textAlign: 'center', marginTop: '50px' }}>
-        <Spin size='large' />
-      </div>
-    )
-  }
-
-  if (!data) {
-    return <div>Personnel not found</div>
-  }
-
-  const initialValues = {
-    name: data.data.name,
-    dateOfBirth: data.data.dateOfBirth ? moment(data.data.dateOfBirth) : null,
-    email: data.data.email,
-    gender: data.data.gender,
-    role: data.data.role,
-    facilityId: data.data.facility?.id,
-    facilityAddress: data.data.facility?.address,
-    isResettingPassword: false,
   }
 
   return (
     <div style={{ padding: '24px' }}>
-      <Title level={2}>Thông tin Nhân viên</Title>
-      <Form
-        form={form}
-        layout='vertical'
-        onFinish={handleSave}
-        initialValues={initialValues}
-      >
-        <Form.Item name='id' hidden>
-          <Input />
-        </Form.Item>
-
+      <Title level={2}>Thêm nhân viên</Title>
+      <Form form={form} layout='vertical' onFinish={handleSave}>
         <Form.Item
           label='Tên'
           name='name'
@@ -120,9 +81,42 @@ const PersonnelDetailManager: React.FC = () => {
         <Form.Item
           label='Ngày sinh'
           name='dateOfBirth'
-          rules={[{ required: true, message: 'Vui lòng nhập ngày sinh' }]}
+          rules={[
+            { required: true, message: 'Vui lòng nhập ngày sinh' },
+            () => ({
+              validator(_, value) {
+                if (!value) {
+                  return Promise.reject(new Error('Vui lòng nhập ngày sinh'))
+                }
+
+                const birthDate = dayjs(value, 'DD/MM/YYYY')
+                const today = dayjs()
+                const age = today.diff(birthDate, 'year', true)
+
+                if (birthDate.isAfter(today)) {
+                  return Promise.reject(
+                    new Error('Ngày sinh không thể ở tương lai')
+                  )
+                }
+
+                if (age < 18) {
+                  return Promise.reject(
+                    new Error('Người dùng phải ít nhất 18 tuổi')
+                  )
+                }
+
+                return Promise.resolve()
+              },
+            }),
+          ]}
         >
-          <DatePicker style={{ width: '100%' }} format='DD/MM/YYYY' />
+          <DatePicker
+            style={{ width: '100%' }}
+            format='DD/MM/YYYY'
+            disabledDate={(current) =>
+              current && current.isAfter(dayjs().endOf('day'))
+            }
+          />
         </Form.Item>
 
         <Form.Item
@@ -165,7 +159,7 @@ const PersonnelDetailManager: React.FC = () => {
               name='facilityId'
               rules={[{ required: true, message: 'Vui lòng chọn cơ sở' }]}
             >
-              <Select placeholder='Chọn nhà cơ sở'>
+              <Select placeholder='Chọn cơ sở'>
                 {facility.data.items.map((fac) => (
                   <Option key={fac.id} value={fac.id}>
                     {fac.name}
@@ -175,19 +169,6 @@ const PersonnelDetailManager: React.FC = () => {
             </Form.Item>
           )
         )}
-
-        
-
-        <Form.Item
-          label='Đặt lại mật khẩu'
-          name='isResettingPassword'
-          rules={[{ required: true, message: 'Vui lòng chọn tùy chọn' }]}
-        >
-          <Select placeholder='Chọn tùy chọn'>
-            <Option value={true}>Có</Option>
-            <Option value={false}>Không</Option>
-          </Select>
-        </Form.Item>
 
         <Form.Item>
           <div style={{ display: 'flex', gap: '16px' }}>
@@ -204,4 +185,4 @@ const PersonnelDetailManager: React.FC = () => {
   )
 }
 
-export default PersonnelDetailManager
+export default CreatePersonnelManager

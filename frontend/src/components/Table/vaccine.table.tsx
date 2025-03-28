@@ -10,7 +10,6 @@ interface VaccineTableProps {
   selectedVaccines: string[]
   setSelectedVaccines: (vaccines: string[]) => void
   selectedPackages: any
-  calculateTotalPriceAddSingleVaccine: (items: any[]) => void
   onPaginationChange: (page: number, pageSize: number) => void
   pageNumber: number // Nhận pageNumber từ props
   pageSize: number // Nhận pageSize từ props
@@ -23,7 +22,6 @@ const VaccineTable: React.FC<VaccineTableProps> = ({
   selectedVaccines,
   setSelectedVaccines,
   selectedPackages,
-  calculateTotalPriceAddSingleVaccine,
   onPaginationChange,
   pageNumber,
   pageSize,
@@ -58,7 +56,6 @@ const VaccineTable: React.FC<VaccineTableProps> = ({
           <Button
             onClick={() => {
               setSelectedVaccines([...selectedVaccines, record])
-              calculateTotalPriceAddSingleVaccine([...selectedVaccines, record])
             }}
             disabled={
               selectedVaccines.includes(record) || selectedPackages !== null

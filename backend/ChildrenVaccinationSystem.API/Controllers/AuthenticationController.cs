@@ -11,11 +11,11 @@ namespace ChildrenVaccinationSystem.API.Controllers
 	public class AuthenticationController : ControllerBase
 	{
 		private readonly IAuthenticationService _authenticationService;
-		private readonly IConfiguration _configuration;
-		public AuthenticationController(IAuthenticationService authenticationService, IConfiguration configuration)
+		private readonly IConfiguration _config;
+		public AuthenticationController(IAuthenticationService authenticationService, IConfiguration config)
 		{
 			_authenticationService = authenticationService;
-			_configuration = configuration;
+			_config = config;
 		}
 
 		[HttpPost("login")]
@@ -58,7 +58,7 @@ namespace ChildrenVaccinationSystem.API.Controllers
 					data: null
 				));
 			}
-			return Redirect(_configuration["ProductWeb"]+"/login");
+			return Redirect(_config["FRONTEND_URL"] +"/login");
 		}
 
 		[HttpPost("forget-password")]
@@ -78,14 +78,13 @@ namespace ChildrenVaccinationSystem.API.Controllers
 		public async Task<IActionResult> VerifyResetPassowrd(string token)
 		{
 			await _authenticationService.VerifyResetPassowrd(token);
-
-			return Redirect(_configuration["VerifySuccessUrl"]!);
+			return Redirect(_config["FRONTEND_URL"]! + $"/forgot-password?token={token}");
 		}
 
 		[HttpPost("reset-password")]
-		public async Task<IActionResult> ResetPassword(string newPassword)
+		public async Task<IActionResult> ResetPassword(string token, string newPassword)
 		{
-			await _authenticationService.ResetPassword(newPassword);
+			await _authenticationService.ResetPassword(token, newPassword);
 
 			return Ok(new BaseResponse<object>(
 				statusCode: StatusCodeEnum.OK,

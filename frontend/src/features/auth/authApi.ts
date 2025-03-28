@@ -65,6 +65,20 @@ export const authAPI = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['account'],
     }),
+    forgetPassowrd: builder.mutation({
+      query: ({ email }) => ({
+        url: `/authentication/forget-password?email=${email}`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['account'],
+    }),
+    resetPassword: builder.mutation({
+      query: ({ newPassword, token }) => ({
+        url: `/authentication/reset-password?token=${token}&newPassword=${newPassword}`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['account'],
+    }),
   }),
 })
 
@@ -75,4 +89,6 @@ export const {
   useUpdatePasswordMutation,
   useUpdateEmailMutation,
   useConfirmUpdateEmailMutation,
+  useForgetPassowrdMutation,
+  useResetPasswordMutation,
 } = authAPI

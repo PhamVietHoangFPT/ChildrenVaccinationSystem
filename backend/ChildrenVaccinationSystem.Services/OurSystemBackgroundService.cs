@@ -33,8 +33,14 @@ namespace ChildrenVaccinationSystem.Services
 				var accountService = scope.ServiceProvider.GetRequiredService<IAccountService>();
 				await accountService.BgRemoveExpiredResetPasswordToken();
 			});
+			var task3 = RunTaskEvery(TimeSpan.FromHours(1), stoppingToken, async () =>
+			{
+				using var scope = _serviceScopeFactory.CreateScope();
+				var vaccinationService = scope.ServiceProvider.GetRequiredService<IVaccinationService>();
+				await vaccinationService.BgRemoveOverExpiredVaccinations();
+			});
 
-			await Task.WhenAll(task1, task2);
+			await Task.WhenAll(task1, task2, task3);
 		}
 
 		private async Task RunTaskEvery(TimeSpan interval, CancellationToken stoppingToken, Func<Task> taskToRun)

@@ -13,9 +13,9 @@ import { MenuProps, Layout } from 'antd'
 import { Menu } from 'antd'
 import { useNavigate, useLocation } from 'react-router-dom'
 import Cookies from 'js-cookie'
-
+import { useGetFacilitiesDetailQuery } from '../../../features/facilities/facilitiesAPI'
 const { Sider } = Layout
-
+import { Facilities } from '../../../types/facility'
 type MenuItem = Required<MenuProps>['items'][number]
 
 // Define the shape of your custom menu items
@@ -26,6 +26,12 @@ interface CustomMenuItem {
   url?: string
   children?: CustomMenuItem[]
   danger?: boolean
+}
+
+interface facilityResponse {
+  data: {
+    data: Facilities
+  }
 }
 
 const SideBarStaff: React.FC = () => {
@@ -45,6 +51,9 @@ const SideBarStaff: React.FC = () => {
   const userData = Cookies.get('userData')
     ? JSON.parse(Cookies.get('userData') as string)
     : null
+
+  const { data: facilitiesData } =
+    useGetFacilitiesDetailQuery<facilityResponse>(userData?.Facility)
 
   // Define menu items with useMemo for performance
   const items = useMemo((): CustomMenuItem[] => {
@@ -151,6 +160,18 @@ const SideBarStaff: React.FC = () => {
         background: '#001529',
       }}
     >
+      <Menu>
+        <Menu.Item
+          key='logo'
+          style={{
+            fontSize: '20px',
+            textAlign: 'center',
+            fontWeight: 'bold',
+          }}
+        >
+          <div>{facilitiesData?.data.name}</div>
+        </Menu.Item>
+      </Menu>
       <Menu
         onClick={onClick}
         style={{

@@ -7,7 +7,7 @@ import {
   CalendarOutlined,
 } from '@ant-design/icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSyringe } from '@fortawesome/free-solid-svg-icons'
+import { faSyringe, faBlog } from '@fortawesome/free-solid-svg-icons'
 import type { MenuProps } from 'antd'
 import { Menu, Layout } from 'antd'
 const { Header } = Layout
@@ -50,6 +50,12 @@ const Navbar: React.FC = () => {
         icon: <CalendarOutlined />,
         label: 'Lịch hẹn',
         url: '/vaccine-registration',
+      },
+      {
+        key: 'blogs',
+        icon: <FontAwesomeIcon icon={faBlog} />,
+        label: 'Cẩm nang',
+        url: '/blogs',
       },
       {
         key: userData ? 'profile' : 'login',

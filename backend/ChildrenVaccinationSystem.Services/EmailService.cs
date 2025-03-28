@@ -35,9 +35,9 @@ namespace ChildrenVaccinationSystem.Services
 				Credentials = new NetworkCredential(mail, pw)
 			};
 
-			var productDomain = _confg["ProductDomain"];
+			var backendUrl = _confg["BACKEND_URL"];
 
-			string verificationUrl = $"{productDomain}/api/authentication/verify-account?token={verificationToken}";
+			string verificationUrl = $"{backendUrl}/api/authentication/verify-account?token={verificationToken}";
 
 			var message = $@"
 				<div style='font-family: Arial, sans-serif; line-height: 1.5;'>
@@ -85,8 +85,8 @@ namespace ChildrenVaccinationSystem.Services
 				Credentials = new NetworkCredential(mail, pw)
 			};
 
-			var productDomain = _confg["ProductDomain"];
-			string resetUrl = $"{productDomain}/api/authentication/verify-reset-password?token={resetToken}";
+			var backendUrl = _confg["BACKEND_URL"];
+			string resetUrl = $"{backendUrl}/api/authentication/verify-reset-password?token={resetToken}";
 
 			var message = $@"
 				<div style='font-family: Arial, sans-serif; line-height: 1.5;'>
@@ -120,7 +120,6 @@ namespace ChildrenVaccinationSystem.Services
 
 			// Gửi email
 			return client.SendMailAsync(mailMessage);
-
 		}
 
 		public Task SendUpdateEmailEmail(string newEmail, string otp)
@@ -134,8 +133,8 @@ namespace ChildrenVaccinationSystem.Services
 				Credentials = new NetworkCredential(mail, pw)
 			};
 
-			var productDomain = _confg["ProductDomain"];
-			string updateEmailUrl = $"{productDomain}/api/authentication/verify-reset-password?token={otp}";
+			var backendUrl = _confg["BACKEND_URL"];
+			string updateEmailUrl = $"{backendUrl}/api/authentication/verify-reset-password?token={otp}";
 
 			var message = $@"
 				<div style='font-family: Arial, sans-serif; line-height: 1.5;'>

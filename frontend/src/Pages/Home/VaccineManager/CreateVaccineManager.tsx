@@ -87,30 +87,134 @@ const CreateVaccine: React.FC = () => {
 
   return (
     <div style={{ padding: '24px' }}>
-      <Title level={2}>Create Vaccine</Title>
+      <Title level={2}>Thêm Vaccine</Title>
       <Form form={form} layout='vertical' onFinish={handleSave}>
         <Form.Item
-          label='Name'
+          label='Tên'
           name='name'
-          rules={[{ required: true, message: 'Please enter the vaccine name' }]}
+          rules={[{ required: true, message: 'Vui lòng nhập tên Vaccine' }]}
         >
           <Input />
         </Form.Item>
 
         <Form.Item
-          label='Price'
+          label='Giá'
           name='price'
           rules={[
-            { required: true, message: 'Please enter the price' },
+            { required: true, message: 'Vui lòng nhập giá Vaccine' },
             {
               validator: (_, value) => {
                 const num = Number(value)
                 if (isNaN(num)) {
-                  return Promise.reject(new Error('Price must be a number'))
+                  return Promise.reject(new Error('Giá phải là số'))
                 }
                 if (num <= 0) {
+                  return Promise.reject(new Error('Giá phải lớn hơn 0'))
+                }
+                return Promise.resolve()
+              },
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          label='Mô tả'
+          name='description'
+          rules={[{ required: true, message: 'Vui lòng nhập mô tả' }]}
+        >
+          <Input.TextArea rows={3} />
+        </Form.Item>
+
+        <Form.Item label='Tuổi khuyến khích' style={{ marginBottom: 0 }}>
+          <Form.Item
+            name='startRecommendedAge'
+            style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}
+            rules={[
+              { required: true, message: 'Nhập tuổi bắt đầu' },
+              {
+                validator(_, value) {
+                  if (value === undefined || value === null || value === '') {
+                    return Promise.reject('Yêu cầu nhập tuổi bắt đầu')
+                  }
+                  const num = Number(value)
+                  if (isNaN(num) || !Number.isInteger(num)) {
+                    return Promise.reject(
+                      'Tuổi bắt đầu phải là một số nguyên dương'
+                    )
+                  }
+                  if (num < 0 || num > 15) {
+                    return Promise.reject(
+                      'Tuổi bắt đầu phải nằm trong khoảng từ 0 đến 15'
+                    )
+                  }
+                  return Promise.resolve()
+                },
+              },
+            ]}
+          >
+            <Input placeholder='Tuổi bắt đầu' />
+          </Form.Item>
+
+          <span
+            style={{
+              display: 'inline-block',
+              width: '16px',
+              textAlign: 'center',
+            }}
+          >
+            -
+          </span>
+
+          <Form.Item
+            name='endRecommendedAge'
+            dependencies={['startRecommendedAge']}
+            style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}
+            rules={[
+              { required: true, message: 'Nhập tuổi kết thúc' },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (value === undefined || value === null || value === '') {
+                    return Promise.reject('Yêu cầu nhập tuổi kết thúc')
+                  }
+                  const endNum = Number(value)
+                  const startNum = Number(getFieldValue('startRecommendedAge'))
+                  if (isNaN(endNum) || !Number.isInteger(endNum)) {
+                    return Promise.reject(
+                      'Tuổi kết thúc phải là một số nguyên dương'
+                    )
+                  }
+                  if (endNum < 1 || endNum > 16) {
+                    return Promise.reject(
+                      'Tuổi kết thúc phải nằm trong khoảng từ 1 đến 16'
+                    )
+                  }
+                  if (startNum >= endNum) {
+                    return Promise.reject(
+                      'Tuổi kết thúc phải lớn hơn tuổi bắt đầu'
+                    )
+                  }
+                  return Promise.resolve()
+                },
+              }),
+            ]}
+          >
+            <Input placeholder='Tuổi kết thúc' />
+          </Form.Item>
+        </Form.Item>
+
+        <Form.Item
+          label='Số mũi tiêm'
+          name='sequence'
+          rules={[
+            { required: true, message: 'Vui lòng nhập số mũi tiêm' },
+            {
+              validator: (_, value) => {
+                const num = Number(value)
+                if (isNaN(num) || !Number.isInteger(num) || num <= 0) {
                   return Promise.reject(
-                    new Error('Price must be greater than 0')
+                    new Error('Số mũi tiêm phải là số nguyên dương')
                   )
                 }
                 return Promise.resolve()
@@ -122,113 +226,22 @@ const CreateVaccine: React.FC = () => {
         </Form.Item>
 
         <Form.Item
-          label='Description'
-          name='description'
-          rules={[{ required: true, message: 'Please enter the description' }]}
+          label='Liều lượng'
+          name='dosage'
+          rules={[{ required: true, message: 'Vui lòng nhập vào liều lượng' }]}
         >
-          <Input.TextArea rows={3} />
-        </Form.Item>
-
-        <Form.Item label='Recommended Age' style={{ marginBottom: 0 }}>
-          <Form.Item
-            name='startRecommendedAge'
-            style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}
-            rules={[
-              { required: true, message: 'Enter start age' },
-              () => ({
-                validator(_, value) {
-                  const num = Number(value)
-                  if (isNaN(num)) {
-                    return Promise.reject(
-                      new Error('Start age must be a number')
-                    )
-                  }
-                  if (num < 0 || num > 15) {
-                    return Promise.reject(
-                      new Error('Start age must be between 0 and 15')
-                    )
-                  }
-                  return Promise.resolve()
-                },
-              }),
-            ]}
-          >
-            <Input placeholder='Start Age' />
-          </Form.Item>
-          <span
-            style={{
-              display: 'inline-block',
-              width: '16px',
-              textAlign: 'center',
-            }}
-          >
-            -
-          </span>
-          <Form.Item
-            name='endRecommendedAge'
-            dependencies={['startRecommendedAge']}
-            style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}
-            rules={[
-              { required: true, message: 'Enter end age' },
-              ({ getFieldValue }) => ({
-                validator(_, value) {
-                  const startAge = Number(getFieldValue('startRecommendedAge'))
-                  const endAge = Number(value)
-
-                  if (isNaN(endAge)) {
-                    return Promise.reject(new Error('End age must be a number'))
-                  }
-                  if (endAge < 1 || endAge > 16) {
-                    return Promise.reject(
-                      new Error('End age must be between 1 and 16')
-                    )
-                  }
-                  if (endAge <= startAge) {
-                    return Promise.reject(
-                      new Error('End age must be greater than start age')
-                    )
-                  }
-                  return Promise.resolve()
-                },
-              }),
-            ]}
-          >
-            <Input placeholder='End Age' />
-          </Form.Item>
+          <Input />
         </Form.Item>
 
         <Form.Item
-          label='Sequence'
-          name='sequence'
+          label='Khoảng cách giữa các liều'
+          name='dosageInterval'
           rules={[
-            { required: true, message: 'Please enter sequence' },
-
             {
-              validator: (_, value) => {
-                const num = Number(value)
-                if (isNaN(num)) {
-                  return Promise.reject(new Error('Sequence must be a number'))
-                }
-                return Promise.resolve()
-              },
+              required: true,
+              message: 'Vui lòng nhập khoảng cách giữa các liều',
             },
           ]}
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item
-          label='Dosage'
-          name='dosage'
-          rules={[{ required: true, message: 'Please enter dosage' }]}
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item
-          label='Dosage Interval'
-          name='dosageInterval'
-          rules={[{ required: true, message: 'Please enter dosage interval' }]}
         >
           <Input />
         </Form.Item>
@@ -238,13 +251,11 @@ const CreateVaccine: React.FC = () => {
         ) : (
           categories && (
             <Form.Item
-              label='Category'
+              label='Danh mục Vaccines'
               name='categoryId'
-              rules={[
-                { required: true, message: 'Please select the category' },
-              ]}
+              rules={[{ required: true, message: 'Vui lòng chọn danh mục' }]}
             >
-              <Select placeholder='Select a category'>
+              <Select placeholder='Chọn danh mục Vaccine'>
                 {categories.data.items.map((cat) => (
                   <Option key={cat.id} value={cat.id}>
                     {cat.name}
@@ -260,13 +271,13 @@ const CreateVaccine: React.FC = () => {
         ) : (
           manufacturers && (
             <Form.Item
-              label='Manufacturer'
+              label='Nhà sản xuất'
               name='manufacturerId'
               rules={[
-                { required: true, message: 'Please select the manufacturer' },
+                { required: true, message: 'Vui lòng chọn nhà sản xuất' },
               ]}
             >
-              <Select placeholder='Select a manufacturer'>
+              <Select placeholder='Chọn nhà sản xuất'>
                 {manufacturers.data.items.map((man) => (
                   <Option key={man.id} value={man.id}>
                     {man.name}
@@ -278,7 +289,7 @@ const CreateVaccine: React.FC = () => {
         )}
 
         <Form.Item
-          label='Image Source'
+          label='Hình ảnh'
           name='imageSource'
           valuePropName='fileList'
           getValueFromEvent={(e) => {
@@ -287,24 +298,26 @@ const CreateVaccine: React.FC = () => {
             }
             return e?.fileList
           }}
-          rules={[{ required: true, message: 'Please upload image' }]}
+          rules={[{ required: true, message: 'Vui lòng đăng tải hình ảnh' }]}
         >
           <Upload
             name='image'
             listType='picture'
-            beforeUpload={() => false} // prevents auto upload
+            beforeUpload={() => false}
             maxCount={1}
           >
-            <Button icon={<UploadOutlined />}>Click to upload</Button>
+            <Button icon={<UploadOutlined />}>Nhấp vào để đăng tải</Button>
           </Upload>
         </Form.Item>
 
         <Form.Item>
           <div style={{ display: 'flex', gap: '16px' }}>
             <Button type='primary' htmlType='submit'>
-              Save
+              Lưu
             </Button>
-            <Button onClick={() => navigate('/manager/vaccine')}>Back</Button>
+            <Button onClick={() => navigate('/manager/vaccine')}>
+              Trở lại
+            </Button>
           </div>
         </Form.Item>
       </Form>

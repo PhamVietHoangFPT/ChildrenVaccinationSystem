@@ -38,15 +38,18 @@ import DoctorLayout from '../components/layout/DoctorLayout'
 import ManagerPackageList from '../Pages/Home/Package/PackageListManager'
 import ManagerPackageDetail from '../Pages/Home/Package/PackageDetailManager'
 import ManagerPackageCreate from '../Pages/Home/Package/CreatePackageManager'
-import PersonnelListManager from '../Pages/Home/Personnel/PersonnelListManager'
-import PersonnelDetailManager from '../Pages/Home/Personnel/PersonnelDetailManager'
-import CreatePersonnelManager from '../Pages/Home/Personnel/PersonnelCreateManager'
 import BlogDetail from '../Pages/Home/BlogManager/BlogDetailManager'
 import CreateBlog from '../Pages/Home/BlogManager/CreateBlogManager'
 import ManagerBlogList from '../Pages/Home/BlogManager/BlogListManager'
 import UpdatePassword from '../Pages/Profile/UpdatePassword'
 import UpdateEmail from '../Pages/Profile/UpdateEmail'
 import VaccinationSchedule from '../Pages/Staff/Schedule/VaccinationSchedule'
+import PersonnelListManager from '../Pages/Home/PersonnelManager/PersonnelListManager'
+import PersonnelDetailManager from '../Pages/Home/PersonnelManager/PersonnelDetailManager'
+import CreatePersonnelManager from '../Pages/Home/PersonnelManager/PersonnelCreateManager'
+import VaccinationsHistoryDetail from '../Pages/Vaccinations/VaccinationsHistoryDetail'
+import Blog from '../Pages/Blogs/Blog'
+import ForgotPassword from '../Pages/Profile/ForgotPassword'
 
 const routes: LayoutRoute[] = [
   {
@@ -64,10 +67,12 @@ const routes: LayoutRoute[] = [
       {
         path: '/profile/update-password',
         component: UpdatePassword,
+        role: ['Customer'],
       },
       {
         path: '/profile/update-email',
         component: UpdateEmail,
+        role: ['Customer'],
       },
       {
         path: '/vaccines',
@@ -84,12 +89,23 @@ const routes: LayoutRoute[] = [
       {
         path: '/force-update',
         component: ForceUpdateAccount,
+        role: ['Customer'],
       },
       {
         path: '/vaccinations-history',
         component: VaccinationsHistory,
+        role: ['Customer'],
       },
       { path: '/blogs/:id', component: BlogDetails },
+      {
+        path: '/vaccinations-history-detail/:vaccinationHistoryId',
+        component: VaccinationsHistoryDetail,
+        role: ['Customer'],
+      },
+      {
+        path: '/blogs',
+        component: Blog,
+      },
     ],
   },
   {
@@ -149,6 +165,10 @@ const routes: LayoutRoute[] = [
       {
         path: '/register',
         component: Register,
+      },
+      {
+        path: '/forgot-password',
+        component: ForgotPassword,
       },
     ],
   },

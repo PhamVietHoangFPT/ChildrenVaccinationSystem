@@ -34,7 +34,6 @@ const PersonnelListManager: React.FC = () => {
 
   useEffect(() => {
     if (data?.data?.items) {
-      // Filter thanh search
       const filtered = data.data.items.filter((personnel) =>
         personnel.name.toLowerCase().includes(searchText.toLowerCase())
       )
@@ -46,7 +45,7 @@ const PersonnelListManager: React.FC = () => {
 
   const columns: ColumnsType<Personnel> = [
     {
-      title: 'Name',
+      title: 'Tên',
       dataIndex: 'name',
       key: 'name',
       sorter: (a, b) => a.name.localeCompare(b.name),
@@ -58,26 +57,33 @@ const PersonnelListManager: React.FC = () => {
     },
 
     {
-      title: 'Facility',
+      title: 'Cơ sở',
       dataIndex: ['facility', 'name'],
       key: 'facility',
     },
 
     {
-      title: 'Role',
+      title: 'Chức vụ',
       dataIndex: 'role',
       key: 'role',
-      render: (role) => (role ? role : 'N/A'),
+      render: (role: number) => {
+        const roleMap: Record<number, string> = {
+          1: 'Nhân viên',
+          2: 'Bác sĩ',
+          3: 'Người tiêm',
+        }
+        return roleMap[role] || 'N/A'
+      },
     },
 
     {
-      title: 'Phone',
+      title: 'Số điện thoại',
       dataIndex: 'phoneNumber',
       key: 'phoneNumber',
       render: (phoneNumber) => (phoneNumber ? phoneNumber : 'N/A'),
     },
     {
-      title: 'Actions',
+      title: 'Hành động',
       key: 'actions',
       render: (_, record) => (
         <Button
@@ -85,7 +91,7 @@ const PersonnelListManager: React.FC = () => {
           icon={<EyeOutlined />}
           onClick={() => navigate(`/manager/personnel/${record.id}`)}
         >
-          Details
+          Chi tiết
         </Button>
       ),
     },
@@ -93,7 +99,7 @@ const PersonnelListManager: React.FC = () => {
 
   return (
     <div style={{ padding: '24px' }}>
-      <Title level={2}>Personnel List</Title>
+      <Title level={2}>Quản lý Nhân sự</Title>
 
       <div
         style={{
@@ -104,7 +110,7 @@ const PersonnelListManager: React.FC = () => {
         }}
       >
         <Input
-          placeholder='Search by personnel name'
+          placeholder='Tìm kiếm nhân sự theo tên'
           prefix={<SearchOutlined />}
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
@@ -116,7 +122,7 @@ const PersonnelListManager: React.FC = () => {
           icon={<PlusOutlined />}
           onClick={() => navigate('/manager/personnel/create')}
         >
-          Create Personnel
+          Thêm nhân sự
         </Button>
       </div>
 
@@ -137,6 +143,9 @@ const PersonnelListManager: React.FC = () => {
               current: currentPage,
               pageSize: pageSize,
               total: totalItems,
+              style: { textAlign: 'center' , justifyContent: 'center'},
+              align: 'center',
+              showSizeChanger: false,
               onChange: (page) => {
                 setCurrentPage(page)
               },

@@ -118,7 +118,7 @@ const VaccinationUpdateModal: React.FC<VaccinationUpdateModalProps> = ({
         vaccineName: vaccinationDetail.vaccine?.name || '',
         doctorId: vaccinationDetail.doctor?.id || undefined,
         vaccinatorId: vaccinationDetail.vaccinator?.id || undefined,
-        currentSequence: vaccinationDetail.currentSequence || ' '
+        currentSequence: vaccinationDetail.currentSequence || ' ',
       })
     }
   }, [vaccinationDetail, form])
@@ -135,7 +135,7 @@ const VaccinationUpdateModal: React.FC<VaccinationUpdateModalProps> = ({
       note: values.note || '',
       doctorId: values.doctorId,
       vaccinatorId: values.vaccinatorId,
-      currentSequence: values.currentSequence
+      currentSequence: values.currentSequence,
     }
     console.log('Submitting values:', inputValues)
 
@@ -173,7 +173,8 @@ const VaccinationUpdateModal: React.FC<VaccinationUpdateModalProps> = ({
   // Determine if doctor and vaccinator should be disabled based on status
   const isDoctorDisabled = vaccinationDetail?.status !== 1
   const isVaccinatorDisabled = vaccinationDetail?.status !== 3
-  const isScheduleDisabled = vaccinationDetail?.status === 1 || vaccinationDetail?.status === 0
+  const isScheduleDisabled =
+    vaccinationDetail?.status === 1 || vaccinationDetail?.status === 0
   return (
     <Modal
       title='Cập nhật thông tin lịch tiêm'
@@ -210,7 +211,7 @@ const VaccinationUpdateModal: React.FC<VaccinationUpdateModalProps> = ({
             vaccineName: vaccinationDetail.vaccine?.name,
             doctorId: vaccinationDetail.doctor?.id,
             vaccinatorId: vaccinationDetail.vaccinator?.id,
-            currentSequence: vaccinationDetail.currentSequence
+            currentSequence: vaccinationDetail.currentSequence,
           }}
         >
           <Form.Item label='Tên trẻ' name='childName'>
@@ -231,7 +232,10 @@ const VaccinationUpdateModal: React.FC<VaccinationUpdateModalProps> = ({
             label='Lịch tiêm'
             name='schedule'
             rules={[
-              { required: isScheduleDisabled, message: 'Please select a schedule date' },
+              {
+                required: isScheduleDisabled,
+                message: 'Please select a schedule date',
+              },
             ]}
           >
             <DatePicker

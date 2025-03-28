@@ -59,37 +59,37 @@ export const SideBar = () => {
     {
       key: 'manager',
       icon: <BarChartOutlined />,
-      label: 'Dashboard',
+      label: 'Bảng thống kê',
       onClick: () => navigate('/manager'),
     },
     {
       key: 'manager/staff',
       icon: <UserOutlined />,
-      label: 'Manage Staff',
+      label: 'Quản lý nhân sự',
       onClick: () => navigate('/manager/personnel'),
     },
     {
       key: 'manager/blog',
       icon: <FileOutlined />,
-      label: 'Manage Blogs',
+      label: 'Quản lý bài viết',
       onClick: () => navigate('/manager/blog'),
     },
     {
       key: 'manager/vaccine',
       icon: <MedicineBoxOutlined />,
-      label: 'Manage Vaccines',
+      label: 'Quản lý vắc xin',
       onClick: () => navigate('/manager/vaccine'),
     },
     {
       key: 'manager/package',
       icon: <FontAwesomeIcon icon={faBoxesPacking} />,
-      label: 'Manage Package',
+      label: 'Quản lý gói tiêm',
       onClick: () => navigate('/manager/package'),
     },
     {
       key: 'manager/facility',
       icon: <ShopOutlined />,
-      label: 'Manage Facility',
+      label: 'Quản lý cơ sở',
       onClick: () => navigate('/manager/facility'),
     },
   ]
@@ -212,7 +212,7 @@ export const SideBar = () => {
             style={{ width: collapsed ? '100%' : '100%' }}
             size={collapsed ? 'middle' : 'middle'}
           >
-            {!collapsed && 'Logout'}
+            {!collapsed && 'Đăng xuất'}
           </Button>
         </Tooltip>
       </div>
