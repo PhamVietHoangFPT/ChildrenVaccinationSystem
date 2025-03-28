@@ -119,6 +119,8 @@ const ManagerBlogList: React.FC = () => {
             current: currentPage,
             pageSize: pageSize,
             total: totalItems,
+            style: { textAlign: 'center' , justifyContent: 'center'},
+            align: 'center',
             onChange: (page) => {
               setCurrentPage(page)
             },
