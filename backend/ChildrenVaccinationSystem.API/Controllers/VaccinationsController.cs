@@ -5,7 +5,9 @@ using ChildrenVaccinationSystem.Core.Base;
 using ChildrenVaccinationSystem.Core.Enum;
 using ChildrenVaccinationSystem.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.CodeDom;
 using System.ComponentModel.DataAnnotations;
+using static ChildrenVaccinationSystem.Core.Base.BaseException;
 
 namespace ChildrenVaccinationSystem.API.Controllers
 {
@@ -116,9 +118,14 @@ namespace ChildrenVaccinationSystem.API.Controllers
 		}
 		
 		[HttpPost("register")]
-		public async Task<IActionResult> RegisterVaccination(VaccinationRegisterDto dto)
+		public async Task<IActionResult> RegisterVaccination([FromBody]VaccinationRegisterDto dto)
 		{
-			string vnPayUrl = await _vaccinationService.RegisterVaccination(HttpContext, dto);
+			if (!ModelState.IsValid)
+			{
+				throw new ErrorException(400, "bad_request", "Vui lòng chọn tất cả thông tin đăng ký");
+			}
+
+				string vnPayUrl = await _vaccinationService.RegisterVaccination(HttpContext, dto);
 
 
 			return Ok(new BaseResponse<object>(
