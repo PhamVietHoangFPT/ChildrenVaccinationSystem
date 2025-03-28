@@ -145,6 +145,8 @@ const PersonnelListManager: React.FC = () => {
               current: currentPage,
               pageSize: pageSize,
               total: totalItems,
+              style: { textAlign: 'center' , justifyContent: 'center'},
+              align: 'center',
               showSizeChanger: false,
               onChange: (page) => {
                 setCurrentPage(page)
