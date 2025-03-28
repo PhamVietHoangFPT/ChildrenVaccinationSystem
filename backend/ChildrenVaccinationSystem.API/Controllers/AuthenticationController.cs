@@ -11,11 +11,11 @@ namespace ChildrenVaccinationSystem.API.Controllers
 	public class AuthenticationController : ControllerBase
 	{
 		private readonly IAuthenticationService _authenticationService;
-		private readonly IConfiguration _configuration;
-		public AuthenticationController(IAuthenticationService authenticationService, IConfiguration configuration)
+		private readonly IConfiguration _config;
+		public AuthenticationController(IAuthenticationService authenticationService, IConfiguration config)
 		{
 			_authenticationService = authenticationService;
-			_configuration = configuration;
+			_config = config;
 		}
 
 		[HttpPost("login")]
@@ -58,7 +58,7 @@ namespace ChildrenVaccinationSystem.API.Controllers
 					data: null
 				));
 			}
-			return Redirect(_configuration["ProductWeb"]+"/login");
+			return Redirect(_config["FRONTEND_URL"] +"/login");
 		}
 
 		[HttpPost("forget-password")]
@@ -78,8 +78,7 @@ namespace ChildrenVaccinationSystem.API.Controllers
 		public async Task<IActionResult> VerifyResetPassowrd(string token)
 		{
 			await _authenticationService.VerifyResetPassowrd(token);
-
-			return Redirect($"http://localhost:5173/forgot-password?token={token}");
+			return Redirect(_config["FRONTEND_URL"]! + $"/forgot-password?token={token}");
 		}
 
 		[HttpPost("reset-password")]
