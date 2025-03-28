@@ -298,7 +298,7 @@ namespace ChildrenVaccinationSystem.Services
 							Note = "",
 							Status = (dto.PaymentChoice == 2)
 										? VaccinationStatusEnum.Paid
-										: (i == 0 && dto.PaymentChoice == 1 && dto.VaccineId == vaccine.Id)
+										: (i == 1 && dto.PaymentChoice == 1 && dto.VaccineId == vaccine.Id)
 											? VaccinationStatusEnum.Paid
 											: VaccinationStatusEnum.Pending,
 							CurrentSequence = i,
