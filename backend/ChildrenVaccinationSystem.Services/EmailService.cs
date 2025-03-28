@@ -120,7 +120,6 @@ namespace ChildrenVaccinationSystem.Services
 
 			// Gửi email
 			return client.SendMailAsync(mailMessage);
-
 		}
 
 		public Task SendUpdateEmailEmail(string newEmail, string otp)
