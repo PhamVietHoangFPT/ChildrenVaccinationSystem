@@ -30,9 +30,9 @@ export default function ForgotPassword() {
   const handleSubmit = async (values: { email: string }) => {
     try {
       // Gửi yêu cầu quên mật khẩu đến API
-      const response = await forgetPassword({ email: values.email })
-      message.success(response.data.message)
-      let countdown = 5
+      const response = await forgetPassword({ email: values.email }).unwrap()
+      message.success(response.message)
+      let countdown = 3
       const interval = setInterval(() => {
         message.info(`Chuyển hướng sau ${countdown} giây`, 0.5)
         countdown -= 1
@@ -43,7 +43,7 @@ export default function ForgotPassword() {
       }, 1000)
       // Xử lý phản hồi từ API nếu cần thiết
     } catch (error: any) {
-      console.error(error.error.message)
+      message.error(error.data.message)
     }
   }
 
@@ -56,9 +56,9 @@ export default function ForgotPassword() {
       const response = await resetPassword({
         newPassword: values.password,
         token: token as string,
-      })
+      }).unwrap()
       message.success(response.data.message)
-      let countdown = 5
+      let countdown = 3
       const interval = setInterval(() => {
         message.info(`Chuyển hướng sau ${countdown} giây`, 0.5)
         countdown -= 1
@@ -69,7 +69,7 @@ export default function ForgotPassword() {
       }, 1000)
       // Xử lý phản hồi từ API nếu cần thiết
     } catch (error: any) {
-      console.error(error.error.message)
+      message.error(error.data.message)
     }
   }
   const token = searchParams.get('token')
@@ -117,7 +117,7 @@ export default function ForgotPassword() {
                     level={2}
                     style={{ textAlign: 'center', marginBottom: '24px' }}
                   >
-                    Quên mật khẩu
+                    Đặt lại mật khẩu
                   </Title>
 
                   <div>
