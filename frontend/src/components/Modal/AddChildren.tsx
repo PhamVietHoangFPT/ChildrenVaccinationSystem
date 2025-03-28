@@ -176,12 +176,7 @@ const AddChildrenModal: React.FC<AddChildrenModalProps> = ({
             name='height'
             rules={[
               { required: true, message: 'Vui lòng nhập chiều cao!' },
-              {
-                type: 'number',
-                min: 1,
-                max: 60,
-                message: 'Chiều cao không hợp lệ!',
-              },
+              { type: 'number', min: 1, message: 'Chiều cao không hợp lệ!' },
             ]}
           >
             <InputNumber
@@ -196,12 +191,7 @@ const AddChildrenModal: React.FC<AddChildrenModalProps> = ({
             name='weight'
             rules={[
               { required: true, message: 'Vui lòng nhập cân nặng!' },
-              {
-                type: 'number',
-                min: 1,
-                max: 6,
-                message: 'Cân nặng không hợp lệ!',
-              },
+              { type: 'number', min: 1, message: 'Cân nặng không hợp lệ!' },
             ]}
           >
             <InputNumber
